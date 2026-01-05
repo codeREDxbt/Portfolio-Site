@@ -178,31 +178,39 @@ function confirmBooking(time) {
 // ==========================================
 async function generateGitHubGraph() {
   const graph = document.getElementById('contributionGraph');
+  const contributionCountEl = document.querySelector('.contribution-count');
   if (!graph) return;
   
   const username = 'codeREDxbt';
   
   try {
-    // Fetch real GitHub contribution data
-    const response = await fetch(`https://api.github.com/users/${username}/events/public?per_page=1000`);
-    const events = await response.json();
+    // Fetch from GitHub's GraphQL API via a proxy service
+    const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
+    const data = await response.json();
     
     // Count contributions by date
     const contributionMap = {};
-    const now = new Date();
-    const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+    let totalContributions = 0;
     
-    events.forEach(event => {
-      const date = new Date(event.created_at);
-      if (date >= oneYearAgo) {
-        const dateStr = date.toISOString().split('T')[0];
-        contributionMap[dateStr] = (contributionMap[dateStr] || 0) + 1;
-      }
-    });
+    if (data && data.contributions) {
+      data.contributions.forEach(contribution => {
+        const dateStr = contribution.date;
+        const count = contribution.count;
+        contributionMap[dateStr] = count;
+        totalContributions += count;
+      });
+    }
+    
+    // Update contribution count text
+    if (contributionCountEl && totalContributions > 0) {
+      contributionCountEl.textContent = `${totalContributions.toLocaleString()} contributions in the last year on GitHub`;
+    }
     
     // Generate 52 weeks * 7 days = 364 cells
     const weeks = 52;
     const daysPerWeek = 7;
+    const now = new Date();
+    const oneYearAgo = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
     let cellIndex = 0;
     
     for (let week = 0; week < weeks; week++) {
@@ -218,13 +226,13 @@ async function generateGitHubGraph() {
         const cellDate = new Date(oneYearAgo.getTime() + (cellIndex * 24 * 60 * 60 * 1000));
         const dateStr = cellDate.toISOString().split('T')[0];
         
-        // Get contribution level (0-4)
+        // Get contribution level (0-4) based on real data
         const contributions = contributionMap[dateStr] || 0;
         let level = 0;
         if (contributions > 0) level = 1;
-        if (contributions > 5) level = 2;
-        if (contributions > 10) level = 3;
-        if (contributions > 20) level = 4;
+        if (contributions > 3) level = 2;
+        if (contributions > 6) level = 3;
+        if (contributions > 10) level = 4;
         
         cell.classList.add(`level-${level}`);
         
@@ -237,8 +245,8 @@ async function generateGitHubGraph() {
       }
     }
   } catch (error) {
-    console.log('GitHub API rate limit or error - using fallback data');
-    // Fallback to random data if API fails
+    console.log('Using fallback visualization:', error);
+    // Fallback to pattern if API fails
     const weeks = 52;
     const daysPerWeek = 7;
     
