@@ -1389,99 +1389,6 @@ body.light-mode .tech-icon:hover {
 }
 
 /* ===========================
-   RESPONSIVE
-   =========================== */
-@media (max-width: 900px) {
-  .projects-scroll {
-    flex-direction: column;
-  }
-  
-  .project-item {
-    min-width: 100%;
-  }
-}
-
-@media (max-width: 600px) {
-  .nav-links {
-    gap: 20px;
-  }
-  
-  .nav-links a {
-    font-size: 13px;
-  }
-  
-  .hero-card {
-    padding: 30px 20px;
-  }
-  
-  .profile-name {
-    font-size: 28px;
-  }
-  
-  .profile-avatar {
-    width: 100px;
-    height: 100px;
-  }
-  
-  .status-badges {
-    flex-direction: column;
-    width: 100%;
-  }
-  
-  .status-badge {
-    width: 100%;
-  }
-}
-
-/* ===========================
-   RESPONSIVE
-   =========================== */
-@media (max-width: 900px) {
-  .hero-wrapper {
-    flex-direction: column;
-    gap: 40px;
-  }
-  
-  .hero-right {
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .projects-scroll {
-    flex-direction: column;
-  }
-  
-  .project-item {
-    min-width: 100%;
-  }
-}
-
-@media (max-width: 600px) {
-  .nav-links {
-    gap: 20px;
-  }
-  
-  .nav-links a {
-    font-size: 13px;
-  }
-  
-  .hero-name-display {
-    font-size: 28px;
-  }
-  
-  .footer-top {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-  }
-  
-  .footer-stats {
-    flex-direction: column;
-    gap: 12px;
-  }
-}
-
-/* ===========================
    CONTACT SECTION REDESIGN
    =========================== */
 .contact-section {
@@ -1942,7 +1849,21 @@ body.light-mode .tech-icon:hover {
   margin: 0;
 }
 
+/* ===========================
+   RESPONSIVE - MOBILE OPTIMIZATIONS
+   =========================== */
+
+/* Large Tablets & Small Desktops */
 @media (max-width: 1024px) {
+  .container {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+  
+  .section {
+    padding: 60px 0;
+  }
+  
   .calendar-container {
     grid-template-columns: 1fr;
     max-height: 80vh;
@@ -1954,24 +1875,841 @@ body.light-mode .tech-icon:hover {
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-}
-
-@media (max-width: 768px) {
-  .section-title-center {
-    font-size: 36px;
+  
+  .github-graph {
+    overflow-x: auto;
   }
   
-  .contact-para {
+  .graph-grid {
+    min-width: 600px;
+  }
+}
+
+/* Tablets & Large Phones */
+@media (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+  
+  .section {
+    padding: 50px 0;
+  }
+  
+  .section-title {
+    font-size: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .section-title-center {
+    font-size: 28px;
+  }
+  
+  /* Navbar */
+  .navbar {
+    top: 10px;
+    width: calc(100% - 24px);
+    max-width: 500px;
+  }
+  
+  .nav-wrapper {
+    padding: 8px 12px;
+    gap: 2px;
+  }
+  
+  .nav-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* Hero Section */
+  .hero {
+    padding: 90px 0 30px;
+  }
+  
+  .npx-command {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px 14px;
+    gap: 8px;
+  }
+  
+  .npx-label,
+  .npx-code {
+    font-size: 12px;
+  }
+  
+  .hero-card {
+    padding: 24px 20px;
+  }
+  
+  .card-header {
+    margin-bottom: 16px;
+  }
+  
+  .click-indicator {
+    margin-bottom: 16px;
+  }
+  
+  .click-text {
+    font-size: 12px;
+  }
+  
+  .profile-avatar {
+    width: 90px;
+    height: 90px;
+  }
+  
+  .profile-name {
+    font-size: 24px;
+  }
+  
+  .profile-title {
+    font-size: 13px;
+  }
+  
+  .profile-email {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+  
+  .profile-bio {
+    font-size: 14px;
+  }
+  
+  .status-badges {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .status-badge {
+    width: 100%;
+  }
+  
+  /* GitHub Section */
+  .github-section {
+    padding: 40px 0;
+  }
+  
+  .graph-header {
+    margin-bottom: 12px;
+  }
+  
+  .graph-months span {
+    font-size: 10px;
+  }
+  
+  .graph-days span {
+    font-size: 10px;
+  }
+  
+  .contribution-count {
+    font-size: 11px;
+  }
+  
+  /* Projects Section */
+  .projects-scroll-wrapper {
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+  
+  .project-card {
+    min-width: 320px;
+  }
+  
+  .card-preview {
+    height: 180px;
+  }
+  
+  .preview-title {
+    font-size: 18px;
+  }
+  
+  .preview-subtitle {
+    font-size: 12px;
+  }
+  
+  .card-title {
+    font-size: 18px;
+  }
+  
+  .card-description {
+    font-size: 13px;
+  }
+  
+  .tech-label {
+    font-size: 10px;
+  }
+  
+  .tech-icon {
     font-size: 16px;
   }
   
+  .projects-note {
+    font-size: 13px;
+  }
+  
+  /* Stack Section */
+  .stack-wrapper {
+    gap: 16px;
+  }
+  
+  .stack-icon {
+    width: 48px;
+    height: 48px;
+  }
+  
+  /* Contact Section */
+  .contact-para {
+    font-size: 15px;
+  }
+  
+  .contact-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .contact-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .quote-italic {
+    font-size: 14px;
+  }
+  
+  /* Calendar Modal */
+  .calendar-booking {
+    padding: 10px;
+  }
+  
+  .calendar-main {
+    padding: 20px;
+  }
+  
+  .calendar-header {
+    margin-bottom: 16px;
+  }
+  
+  .calendar-month {
+    font-size: 18px;
+  }
+  
+  .calendar-day {
+    font-size: 13px;
+  }
+  
+  .timeslots-panel {
+    padding: 20px;
+  }
+  
+  .booking-sidebar {
+    padding: 20px;
+  }
+  
+  .booking-title {
+    font-size: 20px;
+  }
+  
+  /* Footer */
   .footer-top {
     flex-direction: column;
     gap: 20px;
   }
   
+  .footer-btn,
+  .visitor-badge {
+    font-size: 13px;
+    padding: 10px 20px;
+  }
+  
   .footer-social {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .social-link {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+}
+
+/* Mobile Phones */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 16px;
+  }
+  
+  .section {
+    padding: 40px 0;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 24px;
+  }
+  
+  .section-title-center {
+    font-size: 24px;
+  }
+  
+  /* Navbar */
+  .navbar {
+    top: 8px;
+    width: calc(100% - 16px);
+  }
+  
+  .nav-wrapper {
+    padding: 6px 8px;
+    gap: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .nav-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .nav-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+  
+  /* Hero Section */
+  .hero {
+    padding: 75px 0 25px;
+  }
+  
+  .npx-command {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  
+  .npx-code {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+  
+  .npx-copy {
+    font-size: 14px;
+  }
+  
+  .hero-card {
+    padding: 20px 16px;
+    border-radius: 10px;
+  }
+  
+  .card-header {
+    margin-bottom: 12px;
+  }
+  
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .click-indicator {
+    margin-bottom: 12px;
+  }
+  
+  .click-arrow {
+    font-size: 20px;
+  }
+  
+  .click-text {
+    font-size: 11px;
+  }
+  
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .profile-name {
+    font-size: 20px;
+  }
+  
+  .verified-badge {
+    font-size: 12px;
+    width: 18px;
+    height: 18px;
+  }
+  
+  .profile-title {
+    font-size: 12px;
+  }
+  
+  .profile-email {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+  
+  .profile-bio {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  
+  .status-badges {
+    gap: 8px;
+  }
+  
+  .status-badge {
+    padding: 10px 12px;
+  }
+  
+  .badge-icon {
+    font-size: 18px;
+  }
+  
+  .badge-label {
+    font-size: 10px;
+  }
+  
+  .badge-value {
+    font-size: 13px;
+  }
+  
+  .badge-close {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .badge-close svg {
+    width: 12px;
+    height: 12px;
+  }
+  
+  /* GitHub Section */
+  .github-section {
+    padding: 30px 0;
+  }
+  
+  .graph-header {
+    margin-bottom: 10px;
+  }
+  
+  .graph-months {
+    gap: 8px;
+  }
+  
+  .graph-months span {
+    font-size: 9px;
+  }
+  
+  .graph-days span {
+    font-size: 9px;
+  }
+  
+  .graph-cell {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .contribution-count {
+    font-size: 10px;
+  }
+  
+  .graph-legend {
+    gap: 6px;
+    font-size: 10px;
+  }
+  
+  .legend-box {
+    width: 8px;
+    height: 8px;
+  }
+  
+  /* Projects Section */
+  .projects-section {
+    padding: 30px 0;
+  }
+  
+  .projects-scroll-wrapper {
+    margin: 0 -16px;
+    padding: 0 16px;
+  }
+  
+  .project-card {
+    min-width: 280px;
+  }
+  
+  .card-preview {
+    height: 160px;
+    border-radius: 8px;
+  }
+  
+  .preview-title {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+  
+  .preview-subtitle {
+    font-size: 11px;
+  }
+  
+  .search-demo input {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+  
+  .search-icon,
+  .search-shortcut {
+    font-size: 11px;
+  }
+  
+  .card-content {
+    padding: 14px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .card-description {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .tech-label {
+    font-size: 9px;
+    margin-bottom: 8px;
+  }
+  
+  .tech-icons {
+    gap: 8px;
+  }
+  
+  .tech-icon {
+    font-size: 14px;
+  }
+  
+  .projects-note {
+    font-size: 12px;
+    margin-top: 16px;
+  }
+  
+  /* Stack Section */
+  .stack-section {
+    padding: 30px 0;
+  }
+  
+  .stack-wrapper {
     gap: 12px;
+  }
+  
+  .stack-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .stack-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  /* Contact Section */
+  .contact-section {
+    padding: 30px 0;
+  }
+  
+  .contact-wrapper {
+    margin-bottom: 30px;
+  }
+  
+  .contact-para {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .contact-buttons {
+    margin-bottom: 24px;
+  }
+  
+  .contact-btn {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+  
+  .contact-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .quote-italic {
+    font-size: 13px;
+  }
+  
+  /* Calendar Modal */
+  .calendar-booking {
+    padding: 8px;
+  }
+  
+  .calendar-container {
+    border-radius: 12px;
+    max-height: 85vh;
+  }
+  
+  .calendar-main {
+    padding: 16px;
+  }
+  
+  .calendar-header {
+    margin-bottom: 12px;
+  }
+  
+  .calendar-month {
+    font-size: 16px;
+  }
+  
+  .calendar-nav-btn {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .calendar-nav-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .weekday {
+    font-size: 10px;
+    padding: 6px 0;
+  }
+  
+  .calendar-days {
+    gap: 6px;
+  }
+  
+  .calendar-day {
+    font-size: 12px;
+    border-radius: 6px;
+  }
+  
+  .timeslots-panel {
+    padding: 16px;
+  }
+  
+  .timeslots-header {
+    margin-bottom: 16px;
+  }
+  
+  .selected-date {
+    font-size: 14px;
+  }
+  
+  .format-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  
+  .timeslot {
+    padding: 10px;
+    font-size: 13px;
+  }
+  
+  .booking-sidebar {
+    padding: 16px;
+  }
+  
+  .booking-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .booking-name {
+    font-size: 13px;
+  }
+  
+  .booking-title {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+  
+  .booking-details {
+    gap: 12px;
+  }
+  
+  .booking-detail {
+    font-size: 13px;
+  }
+  
+  .booking-detail svg {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .calendar-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+  
+  .calendar-close svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  /* Footer */
+  .site-footer {
+    padding: 30px 0 20px;
+  }
+  
+  .footer-top {
+    margin-bottom: 30px;
+    gap: 16px;
+  }
+  
+  .footer-btn,
+  .visitor-badge {
+    font-size: 12px;
+    padding: 8px 16px;
+  }
+  
+  .footer-btn svg,
+  .visitor-badge svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .footer-social {
+    gap: 8px;
+  }
+  
+  .social-link {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+  
+  .social-link svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .footer-bottom {
+    margin-top: 24px;
+    padding-top: 20px;
+  }
+  
+  .footer-copyright {
+    font-size: 11px;
+  }
+}
+
+/* Extra Small Phones */
+@media (max-width: 360px) {
+  .container {
+    padding: 0 12px;
+  }
+  
+  .navbar {
+    width: calc(100% - 12px);
+  }
+  
+  .nav-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .nav-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .hero-card {
+    padding: 16px 12px;
+  }
+  
+  .profile-avatar {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .profile-name {
+    font-size: 18px;
+  }
+  
+  .project-card {
+    min-width: 260px;
+  }
+  
+  .stack-icon {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .stack-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Landscape Mode for Phones */
+@media (max-height: 600px) and (orientation: landscape) {
+  .hero {
+    padding: 80px 0 20px;
+  }
+  
+  .section {
+    padding: 30px 0;
+  }
+  
+  .calendar-container {
+    max-height: 90vh;
+  }
+  
+  .profile-avatar {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .status-badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase tap targets for better touch accessibility */
+  .nav-icon {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .contact-btn {
+    min-height: 44px;
+  }
+  
+  .calendar-day {
+    min-height: 36px;
+  }
+  
+  .timeslot {
+    min-height: 44px;
+  }
+  
+  /* Remove hover effects that don't work on touch */
+  .nav-icon:hover,
+  .card-preview:hover,
+  .stack-icon:hover,
+  .contact-btn:hover {
+    transform: none;
+  }
+  
+  /* Add active states for touch feedback */
+  .nav-icon:active {
+    transform: scale(0.95);
+  }
+  
+  .contact-btn:active {
+    transform: scale(0.98);
   }
 }
