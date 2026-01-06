@@ -1,4 +1,147 @@
 // ==========================================
+// SECURITY UTILITIES
+// ==========================================
+
+/**
+ * SECURITY: Sanitize user input to prevent XSS attacks
+ * Removes potentially dangerous characters and HTML tags
+ */
+function sanitizeInput(input) {
+  if (typeof input !== 'string') return '';
+  
+  // Remove HTML tags
+  let sanitized = input.replace(/<[^>]*>/g, '');
+  
+  // Escape special characters
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '/': '&#x2F;',
+  };
+  
+  sanitized = sanitized.replace(/[&<>"'/]/g, (char) => map[char]);
+  
+  return sanitized.trim();
+}
+
+/**
+ * SECURITY: Validate email format
+ */
+function isValidEmail(email) {
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email) && email.length <= 254;
+}
+
+/**
+ * SECURITY: Validate string length
+ */
+function isValidLength(str, min, max) {
+  const length = str.trim().length;
+  return length >= min && length <= max;
+}
+
+/**
+ * SECURITY: Check for spam/malicious content
+ */
+function containsSpam(text) {
+  const spamPatterns = [
+    /viagra|cialis|casino|lottery/gi,
+    /<script|javascript:|onclick|onerror/gi,
+  ];
+  
+  return spamPatterns.some(pattern => pattern.test(text));
+}
+
+// ==========================================
+// SECURE CONTACT FORM HANDLER
+// ==========================================
+
+/**
+ * SECURITY: Handles contact form submission with validation
+ * Integrates with secure backend API
+ */
+async function submitContactForm(name, email, message, subject = '') {
+  try {
+    // SECURITY: Validate inputs client-side (backend will validate again)
+    if (!isValidLength(name, 2, 100)) {
+      throw new Error('Name must be between 2 and 100 characters');
+    }
+    
+    if (!isValidEmail(email)) {
+      throw new Error('Please enter a valid email address');
+    }
+    
+    if (!isValidLength(message, 10, 5000)) {
+      throw new Error('Message must be between 10 and 5000 characters');
+    }
+    
+    if (subject && !isValidLength(subject, 0, 200)) {
+      throw new Error('Subject is too long (max 200 characters)');
+    }
+    
+    // SECURITY: Check for spam
+    if (containsSpam(message) || containsSpam(subject)) {
+      throw new Error('Message contains prohibited content');
+    }
+    
+    // SECURITY: Sanitize inputs
+    const sanitizedData = {
+      name: sanitizeInput(name),
+      email: email.trim().toLowerCase(),
+      message: sanitizeInput(message),
+      subject: sanitizeInput(subject)
+    };
+    
+    // Send to secure backend API
+    const response = await fetch('/api/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(sanitizedData)
+    });
+    
+    const result = await response.json();
+    
+    // Handle rate limiting
+    if (response.status === 429) {
+      return {
+        success: false,
+        message: result.message || 'Too many requests. Please try again later.'
+      };
+    }
+    
+    // Handle validation errors
+    if (response.status === 400) {
+      return {
+        success: false,
+        message: result.message || 'Invalid input. Please check your data.'
+      };
+    }
+    
+    // Success
+    if (result.status === 'success') {
+      return {
+        success: true,
+        message: result.message
+      };
+    }
+    
+    throw new Error(result.message || 'Failed to send message');
+    
+  } catch (error) {
+    console.error('Contact form error:', error);
+    return {
+      success: false,
+      message: error.message || 'Failed to send message. Please try again later.'
+    };
+  }
+}
+
+// ==========================================
 // THEME TOGGLE WITH SOUND
 // ==========================================
 function initThemeToggle() {
@@ -156,25 +299,68 @@ function confirmBooking(time) {
                       'July', 'August', 'September', 'October', 'November', 'December'];
   
   const date = `${monthNames[currentMonth]} ${selectedDay}, ${currentYear}`;
-  const bookingDetails = `Date: ${date}\nTime: ${time}`;
   
-  // Send email notification via FormSubmit
-  const email = 'codeREDx07@proton.me';
-  const subject = 'New Calendar Booking';
-  const body = `A call has been booked!\n\n${bookingDetails}`;
+  // SECURITY: Validate inputs before sending
+  const name = prompt('Please enter your name:');
+  if (!name || name.trim().length < 2) {
+    alert('Please enter a valid name');
+    return;
+  }
   
-  // Open email client
-  window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const email = prompt('Please enter your email:');
+  // SECURITY: Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    alert('Please enter a valid email address');
+    return;
+  }
   
-  // Show confirmation
-  setTimeout(() => {
-    alert(`✓ Booking confirmed for ${date} at ${time}!\nOpening your email to send confirmation.`);
-    closeCalendar();
-  }, 100);
+  // SECURITY: Send booking through secure backend API
+  const bookingDate = new Date(currentYear, currentMonth, selectedDay);
+  
+  fetch('/api/booking', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      date: bookingDate.toISOString(),
+      time: time
+    })
+  })
+  .then(async response => {
+    const result = await response.json();
+    
+    // Handle rate limiting
+    if (response.status === 429) {
+      alert(`⚠️ ${result.message}`);
+      return;
+    }
+    
+    // Handle validation errors
+    if (response.status === 400) {
+      alert(`⚠️ ${result.message}`);
+      return;
+    }
+    
+    // Success
+    if (result.status === 'success') {
+      alert(`✓ ${result.message}`);
+      closeCalendar();
+    } else {
+      throw new Error(result.message);
+    }
+  })
+  .catch(error => {
+    console.error('Booking error:', error);
+    alert('Failed to process booking. Please try again later.');
+  });
 }
 
 // ==========================================
-// GITHUB CONTRIBUTION GRAPH
+// GITHUB CONTRIBUTION GRAPH - SECURE API CALL
 // ==========================================
 async function generateGitHubGraph() {
   const graph = document.getElementById('contributionGraph');
@@ -184,9 +370,27 @@ async function generateGitHubGraph() {
   const username = 'codeREDxbt';
   
   try {
-    // Fetch from GitHub's GraphQL API via a proxy service
-    const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
-    const data = await response.json();
+    // SECURITY: Fetch through secure Vercel serverless function
+    // Handles rate limiting, validation, and API key management
+    const response = await fetch(`/api/github-contributions?username=${encodeURIComponent(username)}`);
+    
+    // Handle rate limiting gracefully
+    if (response.status === 429) {
+      const errorData = await response.json();
+      console.log('Rate limit reached:', errorData.message);
+      // Fall back to visual pattern
+      generateFallbackGraph(graph, username);
+      return;
+    }
+    
+    const result = await response.json();
+    
+    // Check if request was successful
+    if (result.status !== 'success') {
+      throw new Error(result.message || 'Failed to fetch data');
+    }
+    
+    const data = result.data;
     
     // Count contributions by date
     const contributionMap = {};
@@ -245,8 +449,15 @@ async function generateGitHubGraph() {
       }
     }
   } catch (error) {
-    console.log('Using fallback visualization:', error);
-    // Fallback to pattern if API fails
+    console.error('GitHub API Error:', error.message);
+    
+    // SECURITY: Graceful fallback without exposing error details
+    generateFallbackGraph(graph, username);
+  }
+}
+
+// Helper function to generate fallback graph
+function generateFallbackGraph(graph, username) {
     const weeks = 52;
     const daysPerWeek = 7;
     
@@ -739,14 +950,15 @@ function addCustomStyles() {
 }
 
 // ==========================================
-// CONSOLE ART
+// CONSOLE ART - SECURITY: Removed sensitive info
 // ==========================================
 function consoleArt() {
   console.log('%c🚀 Portfolio Loaded!', 'color: #ffffff; font-size: 20px; font-weight: bold;');
   console.log('%cBuilt with ❤️ by codeRED', 'color: #a3a3a3; font-size: 14px;');
   console.log('%c\nHey there! 👋', 'color: #ededed; font-size: 16px;');
   console.log('%cLike what you see? Let\'s build something together!', 'color: #a3a3a3; font-size: 12px;');
-  console.log('%cEmail: codeREDx07@proton.me', 'color: #ffffff; font-size: 12px;');
+  // SECURITY: Don't expose email in console (prevents scraping)
+  console.log('%cContact me via the website', 'color: #ffffff; font-size: 12px;');
 }
 
 // ==========================================
@@ -774,40 +986,48 @@ function initStatusBadgeClose() {
 }
 
 // ==========================================
-// VISITOR COUNTER WITH REAL-TIME DATA
+// VISITOR COUNTER - SECURE API CALL
 // ==========================================
-function initVisitorCounter() {
+async function initVisitorCounter() {
   const visitorCount = document.getElementById('visitorCount');
   if (!visitorCount) return;
   
-  // Get stored count from localStorage
+  // SECURITY: Get stored count from localStorage as fallback
   let storedCount = localStorage.getItem('visitorCount');
   let count = storedCount ? parseInt(storedCount) : 36761;
   
-  // Increment by random 1-5 to simulate active visitors
-  count += Math.floor(Math.random() * 5) + 1;
-  
-  // Update localStorage
-  localStorage.setItem('visitorCount', count);
-  
-  // Display count immediately
+  // Display cached count immediately for better UX
   visitorCount.textContent = count.toLocaleString();
   
-  // Try to fetch real data from CountAPI
-  fetch(`https://api.countapi.xyz/hit/codeREDxbt-portfolio/visitors`)
-    .then(response => response.json())
-    .then(data => {
-      if (data && data.value) {
-        // Use API data and update display
-        const apiCount = data.value;
-        visitorCount.textContent = apiCount.toLocaleString();
-        localStorage.setItem('visitorCount', apiCount);
+  try {
+    // SECURITY: Fetch through secure Vercel serverless function with rate limiting
+    const response = await fetch('/api/visitor-increment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
       }
-    })
-    .catch(error => {
-      console.log('CountAPI unavailable, using local count');
-      // Keep showing localStorage value
     });
+    
+    // Handle rate limiting gracefully
+    if (response.status === 429) {
+      console.log('Visitor counter rate limit reached');
+      return; // Keep showing cached value
+    }
+    
+    const result = await response.json();
+    
+    if (result.status === 'success' && result.count) {
+      const apiCount = result.count;
+      visitorCount.textContent = apiCount.toLocaleString();
+      // Update localStorage cache
+      localStorage.setItem('visitorCount', apiCount);
+    }
+    
+  } catch (error) {
+    console.error('Visitor counter error:', error.message);
+    // SECURITY: Fail gracefully, keep showing cached count
+    // Don't expose error details to user
+  }
 }
 
 // ==========================================
