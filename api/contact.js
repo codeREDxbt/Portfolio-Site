@@ -104,7 +104,7 @@ function sanitizeInput(input) {
   return sanitized.trim();
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // SECURITY: Set security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -210,4 +210,4 @@ module.exports = async (req, res) => {
       message: 'Failed to process contact form. Please try again later.'
     });
   }
-};
+}

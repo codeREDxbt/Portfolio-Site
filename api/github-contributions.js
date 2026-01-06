@@ -1,6 +1,7 @@
 // Vercel Serverless Function - GitHub Contributions
 // SECURITY: Rate limiting, input validation, caching
 
+// Global cache and rate limit storage (persists across invocations)
 const cache = new Map();
 const CACHE_TTL = 3600000; // 1 hour
 
@@ -48,7 +49,7 @@ function validateUsername(username) {
   return { valid: true, username: cleaned };
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // SECURITY: Set security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -161,4 +162,4 @@ module.exports = async (req, res) => {
       fallback: true
     });
   }
-};
+}
