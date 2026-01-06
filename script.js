@@ -458,26 +458,25 @@ async function generateGitHubGraph() {
 
 // Helper function to generate fallback graph
 function generateFallbackGraph(graph, username) {
-    const weeks = 52;
-    const daysPerWeek = 7;
-    
-    for (let week = 0; week < weeks; week++) {
-      for (let day = 0; day < daysPerWeek; day++) {
-        const cell = document.createElement('a');
-        cell.className = 'graph-cell';
-        cell.href = `https://github.com/${username}`;
-        cell.target = '_blank';
-        cell.rel = 'noopener noreferrer';
-        cell.style.cursor = 'pointer';
-        
-        const level = Math.floor(Math.random() * 5);
-        const adjustedLevel = level < 3 ? Math.floor(Math.random() * 3) : level;
-        
-        cell.classList.add(`level-${adjustedLevel}`);
-        cell.title = `${adjustedLevel * 5} contributions`;
-        
-        graph.appendChild(cell);
-      }
+  const weeks = 52;
+  const daysPerWeek = 7;
+  
+  for (let week = 0; week < weeks; week++) {
+    for (let day = 0; day < daysPerWeek; day++) {
+      const cell = document.createElement('a');
+      cell.className = 'graph-cell';
+      cell.href = `https://github.com/${username}`;
+      cell.target = '_blank';
+      cell.rel = 'noopener noreferrer';
+      cell.style.cursor = 'pointer';
+      
+      const level = Math.floor(Math.random() * 5);
+      const adjustedLevel = level < 3 ? Math.floor(Math.random() * 3) : level;
+      
+      cell.classList.add(`level-${adjustedLevel}`);
+      cell.title = `${adjustedLevel * 5} contributions`;
+      
+      graph.appendChild(cell);
     }
   }
 }
