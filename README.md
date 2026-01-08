@@ -2,8 +2,25 @@
 
 A modern, interactive portfolio website showcasing Web3 and fullstack development projects with advanced animations, theming, and user engagement features.
 
+## 🔒 Security Features
+
+**This portfolio has been hardened with comprehensive security measures following OWASP best practices:**
+
+- ✅ **Rate Limiting**: IP-based protection on all API endpoints with graceful 429 responses
+- ✅ **Input Validation**: Schema-based validation, type checking, length limits, and sanitization
+- ✅ **Secure API Key Handling**: Environment variables, no hardcoded keys, API proxy pattern
+- ✅ **XSS Prevention**: Client and server-side input sanitization
+- ✅ **NoSQL Injection Protection**: Sanitized queries and parameterization
+- ✅ **Security Headers**: Helmet.js with CSP, HSTS, and XSS protection
+- ✅ **CORS Protection**: Configurable allowed origins
+- ✅ **DoS Prevention**: Request size limits and timeouts
+
+**[📖 Read the complete security documentation →](SECURITY.md)**
+
+---
+
 ## Description
-This portfolio showcases projects and skills as a Web3 x Fullstack Developer. Built with semantic HTML5, CSS3, and vanilla JavaScript, it features a sophisticated dark theme with glassmorphism design, animated backgrounds, and extensive interactivity.
+This portfolio showcases projects and skills as a Web3 x Fullstack Developer. Built with semantic HTML5, CSS3, vanilla JavaScript, and a secure Node.js/Express backend for API management.
 
 ## Key Features
 
@@ -101,39 +118,103 @@ The site is fully responsive across all devices:
   - Simplified navigation
 
 ## Technologies Used
-- **HTML5**: Semantic markup with accessibility features
-- **CSS3**: 
-  - CSS Grid & Flexbox layouts
-  - CSS Custom Properties (variables)
-  - Keyframe animations
-  - Backdrop filters for glassmorphism
-- **JavaScript (ES6+)**:
-  - Classes for component architecture
-  - Async/await for API calls
-  - Event delegation
-  - Local Storage API
-  - Canvas API for particle effects
+- **Frontend**:
+  - HTML5: Semantic markup with accessibility features
+  - CSS3: Grid, Flexbox, Custom Properties, Keyframe animations, Backdrop filters
+  - JavaScript (ES6+): Classes, Async/await, Event delegation, Canvas API
+  
+- **Backend (Secure API Server)**:
+  - Node.js & Express: RESTful API server
+  - Helmet: Security headers (CSP, HSTS, XSS protection)
+  - express-rate-limit: IP-based rate limiting
+  - express-validator: Input validation and sanitization
+  - express-mongo-sanitize: NoSQL injection prevention
+  - node-cache: Response caching
+  - CORS: Cross-origin resource sharing control
+  - dotenv: Environment variable management
+  
 - **External APIs**:
-  - GitHub API for contribution data
-  - CountAPI for visitor tracking
+  - GitHub API for contribution data (proxied through backend)
+  - CountAPI for visitor tracking (proxied through backend)
   - Google Fonts (Inter family)
 
-## How to View
-1. Clone the repository
-2. Open `index.html` in any modern web browser (Chrome, Edge, Firefox, Safari)
-3. No build process or dependencies required - runs entirely in the browser
-4. For best experience, use a desktop browser with JavaScript enabled
+## 🚀 How to Run
 
-## Project Structure
+### Quick Start (Static Frontend Only)
+1. Clone the repository
+2. Open `index.html` in any modern web browser
+3. Note: API features will not work without the backend server
+
+### Full Setup (With Secure Backend)
+
+**Prerequisites:**
+- Node.js 16+ and npm installed
+- Git
+
+**Installation:**
+
+```bash
+# 1. Clone the repository
+git clone <repository-url>
+cd "Portfolio Site"
+
+# 2. Install dependencies
+npm install
+
+# 3. Configure environment variables
+cp .env.example .env
+# Edit .env and add your configuration
+
+# 4. Start the server
+npm start
+
+# For development with auto-reload:
+npm run dev
+```
+
+**Access the site:**
+- Open browser to `http://localhost:3000`
+- All API endpoints available at `http://localhost:3000/api/`
+
+**Environment Configuration:**
+Edit `.env` file with your settings:
+```env
+NODE_ENV=production
+PORT=3000
+ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com
+COUNT_API_URL=https://api.countapi.xyz/hit/your-namespace/your-key
+```
+
+See [SECURITY.md](SECURITY.md) for detailed setup instructions and security configuration.
+
+## 📁 Project Structure
 ```
 Portfolio Site/
-├── index.html          # Main HTML structure
-├── style.css          # Complete styling (1978 lines)
-├── script.js          # All functionality (873 lines)
-├── codeRED logo.png   # Profile avatar
-├── resume.pdf         # Resume download
-└── README.md          # This file
+├── index.html              # Main HTML structure
+├── style.css              # Complete styling (2716 lines)
+├── script.js              # Frontend functionality with security utils
+├── server.js              # Secure Express.js API server
+├── package.json           # Node.js dependencies
+├── .env.example           # Environment variables template
+├── .env                   # Your configuration (git-ignored)
+├── .gitignore            # Git ignore rules (includes .env)
+├── SECURITY.md           # Comprehensive security documentation
+├── README.md             # This file
+├── codeRED logo.png      # Profile avatar
+└── resume.pdf            # Resume download
 ```
+
+## 🔐 API Endpoints
+
+All endpoints are prefixed with `/api/` and include rate limiting:
+
+- `GET /api/health` - Health check
+- `GET /api/github/contributions?username=<username>` - GitHub contributions (30/hour)
+- `POST /api/visitor/increment` - Visitor counter (10/5min)
+- `POST /api/contact` - Contact form (5/hour)
+- `POST /api/booking` - Calendar booking (5/hour)
+
+See [SECURITY.md](SECURITY.md) for complete API documentation and security details.
 
 ## Browser Compatibility
 - Chrome/Edge: ✅ Full support
@@ -141,9 +222,60 @@ Portfolio Site/
 - Safari: ✅ Full support
 - Mobile browsers: ✅ Optimized for touch
 
+## 🧪 Testing Security
+
+Test rate limiting:
+```bash
+# Should block after 100 requests in 15 minutes
+for i in {1..150}; do curl http://localhost:3000/api/health; done
+```
+
+Test input validation:
+```bash
+# Should reject invalid inputs with 400 error
+curl -X POST http://localhost:3000/api/contact \
+  -H "Content-Type: application/json" \
+  -d '{"name":"<script>alert(1)</script>","email":"bad","message":"x"}'
+```
+
+See [SECURITY.md](SECURITY.md) for comprehensive testing guide.
+
+## 📝 Security Best Practices
+
+1. **Never commit `.env` file** - Contains sensitive API keys
+2. **Rotate API keys regularly** - Every 90 days recommended
+3. **Monitor rate limits** - Check logs for suspicious activity
+4. **Keep dependencies updated** - Run `npm audit` regularly
+5. **Use HTTPS in production** - Configure SSL/TLS certificates
+6. **Set NODE_ENV=production** - For production deployments
+
 ## Future Enhancements
 - Real-time Spotify integration
 - Blog section with articles
 - Project case studies with detailed pages
 - Animated page transitions
 - Multi-language support
+- Enhanced analytics dashboard
+- Two-factor authentication for admin features
+
+## 🤝 Contributing
+
+When contributing:
+- Ensure all new endpoints have rate limiting
+- Validate and sanitize all user inputs
+- Never commit API keys or secrets
+- Update security documentation
+- Test security features
+
+## 📞 Support
+
+For general questions: See documentation
+For security issues: Contact privately (don't publicly disclose)
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+---
+
+**Built with security in mind by codeRED** 🔒
