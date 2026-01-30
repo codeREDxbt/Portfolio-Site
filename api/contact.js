@@ -22,7 +22,6 @@ function checkRateLimit(ip) {
   };
 }
 
-// SECURITY: Input validation
 function validateContactForm(data) {
   const errors = [];
   
@@ -65,7 +64,6 @@ function validateContactForm(data) {
   return errors;
 }
 
-// SECURITY: Spam detection
 function containsSpam(text) {
   const spamPatterns = [
     /viagra|cialis|casino|lottery|winner/gi,
@@ -75,7 +73,6 @@ function containsSpam(text) {
   return spamPatterns.some(pattern => pattern.test(text));
 }
 
-// SECURITY: Sanitize input
 function sanitizeInput(input) {
   if (typeof input !== 'string') return '';
   
@@ -191,4 +188,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
+
 

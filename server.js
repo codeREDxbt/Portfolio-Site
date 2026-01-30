@@ -1,8 +1,4 @@
-﻿// ==========================================
-// Portfolio Site with OWASP Security Best Practices
-// ==========================================
-
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -14,10 +10,6 @@ const { body, validationResult, query } = require('express-validator');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// ==========================================
-// ==========================================
-// Protects against XSS, clickjacking, MIME sniffing, etc.
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -46,8 +38,6 @@ app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(mongoSanitize());
 
-// ==========================================
-// ==========================================
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -203,9 +193,6 @@ app.use((req, res, next) => {
   
   next();
 });
-
-// ==========================================
-// ==========================================
 
 app.use(express.static('.', {
   dotfiles: 'deny',
@@ -482,4 +469,5 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
+
 

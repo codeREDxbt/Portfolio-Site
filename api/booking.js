@@ -22,7 +22,6 @@ function checkRateLimit(ip) {
   };
 }
 
-// SECURITY: Input validation
 function validateBooking(data) {
   const errors = [];
   
@@ -150,4 +149,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
 
