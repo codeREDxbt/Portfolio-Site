@@ -1,5 +1,4 @@
-// ==========================================
-// SECURE BACKEND API SERVER
+﻿// ==========================================
 // Portfolio Site with OWASP Security Best Practices
 // ==========================================
 
@@ -17,10 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ==========================================
-// SECURITY MIDDLEWARE - OWASP Best Practices
 // ==========================================
-
-// Helmet: Sets various HTTP headers for security
 // Protects against XSS, clickjacking, MIME sniffing, etc.
 app.use(helmet({
   contentSecurityPolicy: {
@@ -39,8 +35,6 @@ app.use(helmet({
     preload: true
   }
 }));
-
-// CORS: Configure allowed origins
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000'],
   optionsSuccessStatus: 200,
@@ -48,19 +42,12 @@ const corsOptions = {
   maxAge: 86400 // 24 hours
 };
 app.use(cors(corsOptions));
-
-// Body parser with size limits to prevent DoS
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
-
-// Sanitize data to prevent NoSQL injection
 app.use(mongoSanitize());
 
 // ==========================================
-// RATE LIMITING - IP & User-based
 // ==========================================
-
-// General API rate limiter (IP-based)
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
@@ -80,8 +67,6 @@ const generalLimiter = rateLimit({
     });
   }
 });
-
-// Strict rate limiter for GitHub API endpoint
 const githubApiLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 30, // 30 requests per hour per IP
@@ -98,8 +83,6 @@ const githubApiLimiter = rateLimit({
     });
   }
 });
-
-// Strict rate limiter for visitor counter
 const visitorCounterLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 10, // 10 requests per 5 minutes per IP
@@ -108,8 +91,6 @@ const visitorCounterLimiter = rateLimit({
     message: 'Visitor counter rate limit exceeded.'
   }
 });
-
-// Contact form rate limiter (most restrictive)
 const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // 5 contact submissions per hour per IP
@@ -126,25 +107,11 @@ const contactLimiter = rateLimit({
     });
   }
 });
-
-// Apply general rate limiting to all routes
 app.use('/api/', generalLimiter);
-
-// ==========================================
-// CACHING LAYER
-// ==========================================
-
-// Cache for GitHub API responses (reduces external API calls)
 const cache = new NodeCache({ 
   stdTTL: 3600, // 1 hour default TTL
   checkperiod: 600 // Check for expired keys every 10 minutes
 });
-
-// ==========================================
-// INPUT VALIDATION MIDDLEWARE
-// ==========================================
-
-// Validation for GitHub username
 const validateGithubUsername = [
   query('username')
     .trim()
@@ -154,8 +121,6 @@ const validateGithubUsername = [
     .withMessage('Username can only contain alphanumeric characters and hyphens')
     .customSanitizer(value => value.replace(/[^a-zA-Z0-9-]/g, ''))
 ];
-
-// Validation for contact form
 const validateContactForm = [
   body('name')
     .trim()
@@ -186,8 +151,6 @@ const validateContactForm = [
     .withMessage('Subject is too long')
     .escape()
 ];
-
-// Validation for booking
 const validateBooking = [
   body('date')
     .trim()
@@ -214,8 +177,6 @@ const validateBooking = [
     .withMessage('Name must be between 2 and 100 characters')
     .escape()
 ];
-
-// Error handler for validation
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -232,15 +193,9 @@ const handleValidationErrors = (req, res, next) => {
   next();
 };
 
-// ==========================================
-// SECURITY HEADERS MIDDLEWARE
-// ==========================================
-
 app.use((req, res, next) => {
-  // Remove powered by header
   res.removeHeader('X-Powered-By');
   
-  // Add additional security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
@@ -250,7 +205,6 @@ app.use((req, res, next) => {
 });
 
 // ==========================================
-// SERVE STATIC FILES (Frontend)
 // ==========================================
 
 app.use(express.static('.', {
@@ -265,12 +219,6 @@ app.use(express.static('.', {
     }
   }
 }));
-
-// ==========================================
-// API ENDPOINTS
-// ==========================================
-
-// Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -278,8 +226,6 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
-// GitHub contributions endpoint with caching
 app.get('/api/github/contributions', 
   githubApiLimiter,
   validateGithubUsername,
@@ -338,8 +284,6 @@ app.get('/api/github/contributions',
     }
   }
 );
-
-// Visitor counter endpoint
 app.post('/api/visitor/increment',
   visitorCounterLimiter,
   async (req, res) => {
@@ -391,8 +335,6 @@ app.post('/api/visitor/increment',
     }
   }
 );
-
-// Contact form endpoint with validation
 app.post('/api/contact',
   contactLimiter,
   validateContactForm,
@@ -446,8 +388,6 @@ app.post('/api/contact',
     }
   }
 );
-
-// Booking endpoint with validation
 app.post('/api/booking',
   contactLimiter, // Reuse contact limiter for bookings
   validateBooking,
@@ -500,10 +440,6 @@ app.post('/api/booking',
   }
 );
 
-// ==========================================
-// ERROR HANDLING MIDDLEWARE
-// ==========================================
-
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({
@@ -512,8 +448,6 @@ app.use((req, res) => {
     message: 'Endpoint not found'
   });
 });
-
-// Global error handler
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   
@@ -526,27 +460,21 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ==========================================
-// START SERVER
-// ==========================================
-
 app.listen(PORT, () => {
   console.log(`
-╔═══════════════════════════════════════════════╗
-║   🔒 SECURE PORTFOLIO API SERVER             ║
-║                                               ║
-║   Port: ${PORT}                                  ║
-║   Environment: ${process.env.NODE_ENV || 'development'}                ║
-║   Security: ✓ Enabled                        ║
-║   Rate Limiting: ✓ Active                    ║
-║   Input Validation: ✓ Active                 ║
-║                                               ║
-║   Server is running securely!                ║
-╔═══════════════════════════════════════════════╝
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘   ðŸ”’ SECURE PORTFOLIO API SERVER             â•‘
+â•‘                                               â•‘
+â•‘   Port: ${PORT}                                  â•‘
+â•‘   Environment: ${process.env.NODE_ENV || 'development'}                â•‘
+â•‘   Security: âœ“ Enabled                        â•‘
+â•‘   Rate Limiting: âœ“ Active                    â•‘
+â•‘   Input Validation: âœ“ Active                 â•‘
+â•‘                                               â•‘
+â•‘   Server is running securely!                â•‘
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   `);
 });
-
-// Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, closing server gracefully...');
   server.close(() => {
@@ -554,3 +482,4 @@ process.on('SIGTERM', () => {
     process.exit(0);
   });
 });
+

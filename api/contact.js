@@ -1,7 +1,4 @@
-// Vercel Serverless Function - Contact Form
-// SECURITY: Rate limiting, input validation, spam detection
-
-// Simple in-memory rate limiter
+﻿// Simple in-memory rate limiter
 const rateLimits = new Map();
 const RATE_LIMIT_WINDOW = 3600000; // 1 hour
 const RATE_LIMIT_MAX = 5;
@@ -29,7 +26,6 @@ function checkRateLimit(ip) {
 function validateContactForm(data) {
   const errors = [];
   
-  // Name validation
   if (!data.name || typeof data.name !== 'string') {
     errors.push({ field: 'name', message: 'Name is required' });
   } else {
@@ -42,7 +38,6 @@ function validateContactForm(data) {
     }
   }
   
-  // Email validation
   if (!data.email || typeof data.email !== 'string') {
     errors.push({ field: 'email', message: 'Email is required' });
   } else {
@@ -52,7 +47,6 @@ function validateContactForm(data) {
     }
   }
   
-  // Message validation
   if (!data.message || typeof data.message !== 'string') {
     errors.push({ field: 'message', message: 'Message is required' });
   } else {
@@ -62,7 +56,6 @@ function validateContactForm(data) {
     }
   }
   
-  // Subject validation (optional)
   if (data.subject && typeof data.subject === 'string') {
     if (data.subject.length > 200) {
       errors.push({ field: 'subject', message: 'Subject is too long (max 200 characters)' });
@@ -86,10 +79,8 @@ function containsSpam(text) {
 function sanitizeInput(input) {
   if (typeof input !== 'string') return '';
   
-  // Remove HTML tags
   let sanitized = input.replace(/<[^>]*>/g, '');
   
-  // Escape special characters
   const map = {
     '&': '&amp;',
     '<': '&lt;',
@@ -105,12 +96,10 @@ function sanitizeInput(input) {
 }
 
 export default async function handler(req, res) {
-  // SECURITY: Set security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   
-  // CORS headers
   const allowedOrigins = ['https://coderedxbt.vercel.app', 'http://localhost:3000'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -119,7 +108,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  // Handle preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -132,7 +120,6 @@ export default async function handler(req, res) {
   }
   
   try {
-    // SECURITY: Rate limiting
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
     const rateCheck = checkRateLimit(ip);
     
@@ -149,10 +136,8 @@ export default async function handler(req, res) {
       });
     }
     
-    // Parse body
     const data = req.body;
     
-    // SECURITY: Validate inputs
     const errors = validateContactForm(data);
     if (errors.length > 0) {
       return res.status(400).json({
@@ -163,7 +148,6 @@ export default async function handler(req, res) {
       });
     }
     
-    // SECURITY: Check for spam
     const message = data.message || '';
     const subject = data.subject || '';
     
@@ -175,7 +159,6 @@ export default async function handler(req, res) {
       });
     }
     
-    // SECURITY: Sanitize inputs
     const sanitizedData = {
       name: sanitizeInput(data.name),
       email: data.email.trim().toLowerCase(),
@@ -183,7 +166,6 @@ export default async function handler(req, res) {
       subject: sanitizeInput(data.subject || 'Contact Form Submission')
     };
     
-    // Log submission (in production, send email via service like SendGrid)
     console.log('Contact Form Submission:', {
       name: sanitizedData.name,
       email: sanitizedData.email,
@@ -193,9 +175,7 @@ export default async function handler(req, res) {
       ip
     });
     
-    // TODO: Integrate with email service
-    // Example: await sendEmail(sanitizedData);
-    
+      
     res.status(200).json({
       status: 'success',
       message: 'Your message has been received. We will get back to you soon!'
@@ -211,3 +191,4 @@ export default async function handler(req, res) {
     });
   }
 }
+

@@ -1,18 +1,6 @@
-// ==========================================
-// SECURITY UTILITIES
-// ==========================================
-
-/**
- * SECURITY: Sanitize user input to prevent XSS attacks
- * Removes potentially dangerous characters and HTML tags
- */
-function sanitizeInput(input) {
+﻿function sanitizeInput(input) {
   if (typeof input !== 'string') return '';
-
-  // Remove HTML tags
   let sanitized = input.replace(/<[^>]*>/g, '');
-
-  // Escape special characters
   const map = {
     '&': '&amp;',
     '<': '&lt;',
@@ -27,25 +15,16 @@ function sanitizeInput(input) {
   return sanitized.trim();
 }
 
-/**
- * SECURITY: Validate email format
- */
 function isValidEmail(email) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   return emailRegex.test(email) && email.length <= 254;
 }
 
-/**
- * SECURITY: Validate string length
- */
 function isValidLength(str, min, max) {
   const length = str.trim().length;
   return length >= min && length <= max;
 }
 
-/**
- * SECURITY: Check for spam/malicious content
- */
 function containsSpam(text) {
   const spamPatterns = [
     /viagra|cialis|casino|lottery/gi,
@@ -55,17 +34,8 @@ function containsSpam(text) {
   return spamPatterns.some(pattern => pattern.test(text));
 }
 
-// ==========================================
-// SECURE CONTACT FORM HANDLER
-// ==========================================
-
-/**
- * SECURITY: Handles contact form submission with validation
- * Integrates with secure backend API
- */
 async function submitContactForm(name, email, message, subject = '') {
   try {
-    // SECURITY: Validate inputs client-side (backend will validate again)
     if (!isValidLength(name, 2, 100)) {
       throw new Error('Name must be between 2 and 100 characters');
     }
@@ -82,12 +52,10 @@ async function submitContactForm(name, email, message, subject = '') {
       throw new Error('Subject is too long (max 200 characters)');
     }
 
-    // SECURITY: Check for spam
     if (containsSpam(message) || containsSpam(subject)) {
       throw new Error('Message contains prohibited content');
     }
 
-    // SECURITY: Sanitize inputs
     const sanitizedData = {
       name: sanitizeInput(name),
       email: email.trim().toLowerCase(),
@@ -95,7 +63,6 @@ async function submitContactForm(name, email, message, subject = '') {
       subject: sanitizeInput(subject)
     };
 
-    // Send to secure backend API
     const response = await fetch('/api/contact', {
       method: 'POST',
       headers: {
@@ -106,7 +73,6 @@ async function submitContactForm(name, email, message, subject = '') {
 
     const result = await response.json();
 
-    // Handle rate limiting
     if (response.status === 429) {
       return {
         success: false,
@@ -114,7 +80,6 @@ async function submitContactForm(name, email, message, subject = '') {
       };
     }
 
-    // Handle validation errors
     if (response.status === 400) {
       return {
         success: false,
@@ -122,7 +87,6 @@ async function submitContactForm(name, email, message, subject = '') {
       };
     }
 
-    // Success
     if (result.status === 'success') {
       return {
         success: true,
@@ -141,17 +105,12 @@ async function submitContactForm(name, email, message, subject = '') {
   }
 }
 
-// ==========================================
-// THEME TOGGLE WITH SOUND
-// ==========================================
 function initThemeToggle() {
   const themeToggle = document.getElementById('themeToggle');
 
-  // Create click sound
   const clickSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZRAE');
   clickSound.volume = 0.3;
 
-  // Check for saved theme and apply
   const savedTheme = localStorage.getItem('theme');
   if (savedTheme === 'light') {
     document.body.classList.add('light-mode');
@@ -160,14 +119,11 @@ function initThemeToggle() {
   if (!themeToggle) return;
 
   themeToggle.addEventListener('click', () => {
-    // Play sound
     clickSound.currentTime = 0;
     clickSound.play().catch(e => console.log('Audio play failed:', e));
 
-    // Toggle theme - CSS handles the icon animation automatically
     document.body.classList.toggle('light-mode');
 
-    // Save preference
     if (document.body.classList.contains('light-mode')) {
       localStorage.setItem('theme', 'light');
     } else {
@@ -176,9 +132,6 @@ function initThemeToggle() {
   });
 }
 
-// ==========================================
-// CALENDAR BOOKING FUNCTIONALITY
-// ==========================================
 let currentMonth = 0; // January 2026
 let currentYear = 2026;
 let selectedDay = 6;
@@ -220,7 +173,6 @@ function generateCalendar() {
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
 
-  // Update month display
   const monthDisplay = document.querySelector('.calendar-month');
   if (monthDisplay) {
     monthDisplay.innerHTML = `${monthNames[currentMonth]} <span>${currentYear}</span>`;
@@ -229,14 +181,12 @@ function generateCalendar() {
   const firstDay = new Date(currentYear, currentMonth, 1).getDay();
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  // Add empty cells for days before the month starts
   for (let i = 0; i < firstDay; i++) {
     const emptyDay = document.createElement('div');
     emptyDay.className = 'calendar-day disabled';
     calendarDays.appendChild(emptyDay);
   }
 
-  // Add days of the month
   for (let day = 1; day <= daysInMonth; day++) {
     const dayEl = document.createElement('div');
     dayEl.className = 'calendar-day';
@@ -285,8 +235,6 @@ function confirmBooking(time) {
     'July', 'August', 'September', 'October', 'November', 'December'];
 
   const date = `${monthNames[currentMonth]} ${selectedDay}, ${currentYear}`;
-
-  // SECURITY: Validate inputs before sending
   const name = prompt('Please enter your name:');
   if (!name || name.trim().length < 2) {
     alert('Please enter a valid name');
@@ -294,14 +242,12 @@ function confirmBooking(time) {
   }
 
   const email = prompt('Please enter your email:');
-  // SECURITY: Basic email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email || !emailRegex.test(email)) {
     alert('Please enter a valid email address');
     return;
   }
 
-  // SECURITY: Send booking through secure backend API
   const bookingDate = new Date(currentYear, currentMonth, selectedDay);
 
   fetch('/api/booking', {
@@ -319,21 +265,18 @@ function confirmBooking(time) {
     .then(async response => {
       const result = await response.json();
 
-      // Handle rate limiting
-      if (response.status === 429) {
-        alert(`⚠️ ${result.message}`);
+        if (response.status === 429) {
+        alert(`âš ï¸ ${result.message}`);
         return;
       }
 
-      // Handle validation errors
-      if (response.status === 400) {
-        alert(`⚠️ ${result.message}`);
+        if (response.status === 400) {
+        alert(`âš ï¸ ${result.message}`);
         return;
       }
 
-      // Success
-      if (result.status === 'success') {
-        alert(`✓ ${result.message}`);
+        if (result.status === 'success') {
+        alert(`âœ“ ${result.message}`);
         closeCalendar();
       } else {
         throw new Error(result.message);
@@ -356,29 +299,23 @@ async function generateGitHubGraph() {
   const username = 'codeREDxbt';
 
   try {
-    // SECURITY: Fetch through secure Vercel serverless function
-    // Handles rate limiting, validation, and API key management
     const response = await fetch(`/api/github-contributions?username=${encodeURIComponent(username)}`);
 
-    // Handle rate limiting gracefully
     if (response.status === 429) {
       const errorData = await response.json();
       console.log('Rate limit reached:', errorData.message);
-      // Fall back to visual pattern
-      generateFallbackGraph(graph, username);
+        generateFallbackGraph(graph, username);
       return;
     }
 
     const result = await response.json();
 
-    // Check if request was successful
     if (result.status !== 'success') {
       throw new Error(result.message || 'Failed to fetch data');
     }
 
     const data = result.data;
 
-    // Count contributions by date
     const contributionMap = {};
     let totalContributions = 0;
 
@@ -391,12 +328,10 @@ async function generateGitHubGraph() {
       });
     }
 
-    // Update contribution count text
     if (contributionCountEl && totalContributions > 0) {
       contributionCountEl.textContent = `${totalContributions.toLocaleString()} contributions in the last year on GitHub`;
     }
 
-    // Generate 52 weeks * 7 days = 364 cells
     const weeks = 52;
     const daysPerWeek = 7;
     const now = new Date();
@@ -412,12 +347,10 @@ async function generateGitHubGraph() {
         cell.rel = 'noopener noreferrer';
         cell.style.cursor = 'pointer';
 
-        // Calculate date for this cell
-        const cellDate = new Date(oneYearAgo.getTime() + (cellIndex * 24 * 60 * 60 * 1000));
+            const cellDate = new Date(oneYearAgo.getTime() + (cellIndex * 24 * 60 * 60 * 1000));
         const dateStr = cellDate.toISOString().split('T')[0];
 
-        // Get contribution level (0-4) based on real data
-        const contributions = contributionMap[dateStr] || 0;
+            const contributions = contributionMap[dateStr] || 0;
         let level = 0;
         if (contributions > 0) level = 1;
         if (contributions > 3) level = 2;
@@ -426,8 +359,7 @@ async function generateGitHubGraph() {
 
         cell.classList.add(`level-${level}`);
 
-        // Tooltip on hover
-        const text = contributions > 0 ? `${contributions} contributions` : 'No contributions';
+            const text = contributions > 0 ? `${contributions} contributions` : 'No contributions';
         cell.title = `${text} on ${dateStr}`;
 
         graph.appendChild(cell);
@@ -437,7 +369,6 @@ async function generateGitHubGraph() {
   } catch (error) {
     console.error('GitHub API Error:', error.message);
 
-    // SECURITY: Graceful fallback without exposing error details
     generateFallbackGraph(graph, username);
   }
 }
@@ -467,9 +398,6 @@ function generateFallbackGraph(graph, username) {
   }
 }
 
-// ==========================================
-// PARTICLE SYSTEM WITH CANVAS
-// ==========================================
 class ParticleSystem {
   constructor() {
     this.canvas = document.createElement('canvas');
@@ -526,12 +454,10 @@ class ParticleSystem {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.particles.forEach((particle, i) => {
-      // Move particles
-      particle.x += particle.vx;
+        particle.x += particle.vx;
       particle.y += particle.vy;
 
-      // Mouse interaction - repel particles
-      const dx = this.mouse.x - particle.x;
+        const dx = this.mouse.x - particle.x;
       const dy = this.mouse.y - particle.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
@@ -541,12 +467,10 @@ class ParticleSystem {
         particle.y -= dy * force * 0.02;
       }
 
-      // Boundary check with bounce
-      if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+        if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
       if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
 
-      // Draw particle - Complete inversion for light mode
-      this.ctx.beginPath();
+        this.ctx.beginPath();
       this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
       const isLightMode = document.body.classList.contains('light-mode');
       this.ctx.fillStyle = isLightMode
@@ -559,9 +483,6 @@ class ParticleSystem {
   }
 }
 
-// ==========================================
-// SMOOTH SCROLL FOR ANCHOR LINKS
-// ==========================================
 function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -577,9 +498,6 @@ function initSmoothScroll() {
   });
 }
 
-// ==========================================
-// HEADER SCROLL EFFECTS
-// ==========================================
 function initHeaderScroll() {
   let lastScroll = 0;
   const header = document.querySelector('.site-header');
@@ -588,27 +506,22 @@ function initHeaderScroll() {
   window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
 
-    // Legacy header scroll effects (if header exists)
     if (header) {
-      // Add background on scroll
-      if (currentScroll > 100) {
+        if (currentScroll > 100) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
 
-      // Hide/show header on scroll direction
-      if (currentScroll > lastScroll && currentScroll > 200) {
+        if (currentScroll > lastScroll && currentScroll > 200) {
         header.style.transform = 'translateY(-100%)';
       } else {
         header.style.transform = 'translateY(0)';
       }
     }
 
-    // Floating dock navbar hide/show on scroll
     if (navbar) {
-      // Only hide if scrolled past threshold and scrolling down
-      if (currentScroll > lastScroll && currentScroll > 150) {
+        if (currentScroll > lastScroll && currentScroll > 150) {
         navbar.classList.add('navbar-hidden');
       } else {
         navbar.classList.remove('navbar-hidden');
@@ -619,9 +532,6 @@ function initHeaderScroll() {
   });
 }
 
-// ==========================================
-// COPY NPX COMMAND TO CLIPBOARD
-// ==========================================
 function initCopyButton() {
   const copyBtn = document.querySelector('.npx-copy');
   if (!copyBtn) return;
@@ -632,19 +542,17 @@ function initCopyButton() {
     try {
       await navigator.clipboard.writeText(code);
 
-      // Success feedback
-      copyBtn.textContent = '✓';
+        copyBtn.textContent = 'âœ“';
       copyBtn.style.color = '#10b981';
 
       setTimeout(() => {
-        copyBtn.textContent = '📋';
+        copyBtn.textContent = 'ðŸ“‹';
         copyBtn.style.color = '';
       }, 2000);
     } catch (err) {
       console.error('Failed to copy:', err);
 
-      // Fallback for older browsers
-      const textarea = document.createElement('textarea');
+        const textarea = document.createElement('textarea');
       textarea.value = code;
       textarea.style.position = 'fixed';
       textarea.style.opacity = '0';
@@ -653,10 +561,10 @@ function initCopyButton() {
 
       try {
         document.execCommand('copy');
-        copyBtn.textContent = '✓';
+        copyBtn.textContent = 'âœ“';
         copyBtn.style.color = '#10b981';
         setTimeout(() => {
-          copyBtn.textContent = '📋';
+          copyBtn.textContent = 'ðŸ“‹';
           copyBtn.style.color = '';
         }, 2000);
       } catch (err) {
@@ -668,21 +576,16 @@ function initCopyButton() {
   });
 }
 
-// ==========================================
-// PROFILE AVATAR CLICK EFFECT
-// ==========================================
 function initProfileAvatar() {
   const profileAvatar = document.querySelector('.profile-avatar');
   if (!profileAvatar) return;
 
   profileAvatar.addEventListener('click', () => {
-    // Reset animation
     profileAvatar.style.animation = 'none';
     setTimeout(() => {
       profileAvatar.style.animation = '';
     }, 10);
 
-    // Create ripple effect
     const ripple = document.createElement('div');
     ripple.style.cssText = `
       position: absolute;
@@ -701,9 +604,6 @@ function initProfileAvatar() {
   });
 }
 
-// ==========================================
-// INTERSECTION OBSERVER FOR SCROLL ANIMATIONS
-// ==========================================
 function initScrollAnimations() {
   const observerOptions = {
     threshold: 0.1,
@@ -718,8 +618,6 @@ function initScrollAnimations() {
       }
     });
   }, observerOptions);
-
-  // Observe animated elements
   document.querySelectorAll('.project-item, .stack-badge, .github-placeholder').forEach(el => {
     el.style.opacity = '0';
     el.style.transform = 'translateY(30px)';
@@ -765,9 +663,6 @@ function initProjectsScroll() {
   });
 }
 
-// ==========================================
-// CURSOR TRAIL EFFECT
-// ==========================================
 class CursorTrail {
   constructor() {
     this.trail = [];
@@ -802,7 +697,6 @@ class CursorTrail {
       removed.remove();
     }
 
-    // Fade out animation
     setTimeout(() => {
       dot.style.opacity = '0';
       dot.style.transform = 'scale(0)';
@@ -814,9 +708,6 @@ class CursorTrail {
   }
 }
 
-// ==========================================
-// PARALLAX EFFECT FOR HERO CARD
-// ==========================================
 function initParallax() {
   const heroCard = document.querySelector('.hero-card');
   if (!heroCard) return;
@@ -832,7 +723,6 @@ function initParallax() {
   };
 
   const animate = () => {
-    // Smooth easing
     currentX += (targetX - currentX) * 0.08;
     currentY += (targetY - currentY) * 0.08;
 
@@ -850,9 +740,6 @@ function initParallax() {
   animate();
 }
 
-// ==========================================
-// STAGGER ANIMATION FOR STATUS BADGES
-// ==========================================
 function initStatusBadges() {
   const badges = document.querySelectorAll('.status-badge');
   badges.forEach((badge, index) => {
@@ -888,8 +775,7 @@ function initProjectModals() {
     btn.addEventListener('click', function () {
       const projectTitle = this.closest('.project-item').querySelector('.project-title').textContent;
 
-      // Create modal (basic implementation)
-      const modal = document.createElement('div');
+        const modal = document.createElement('div');
       modal.style.cssText = `
         position: fixed;
         top: 0;
@@ -923,9 +809,6 @@ function initProjectModals() {
   });
 }
 
-// ==========================================
-// ADD RIPPLE ANIMATION KEYFRAMES
-// ==========================================
 function addCustomStyles() {
   const style = document.createElement('style');
   style.textContent = `
@@ -952,17 +835,13 @@ function addCustomStyles() {
 // CONSOLE ART - SECURITY: Removed sensitive info
 // ==========================================
 function consoleArt() {
-  console.log('%c🚀 Portfolio Loaded!', 'color: #ffffff; font-size: 20px; font-weight: bold;');
-  console.log('%cBuilt with ❤️ by codeRED', 'color: #a3a3a3; font-size: 14px;');
-  console.log('%c\nHey there! 👋', 'color: #ededed; font-size: 16px;');
+  console.log('%cðŸš€ Portfolio Loaded!', 'color: #ffffff; font-size: 20px; font-weight: bold;');
+  console.log('%cBuilt with â¤ï¸ by codeRED', 'color: #a3a3a3; font-size: 14px;');
+  console.log('%c\nHey there! ðŸ‘‹', 'color: #ededed; font-size: 16px;');
   console.log('%cLike what you see? Let\'s build something together!', 'color: #a3a3a3; font-size: 12px;');
-  // SECURITY: Don't expose email in console (prevents scraping)
   console.log('%cContact me via the website', 'color: #ffffff; font-size: 12px;');
 }
 
-// ==========================================
-// STATUS BADGE CLOSE BUTTONS
-// ==========================================
 function initStatusBadgeClose() {
   const closeButtons = document.querySelectorAll('.badge-close');
 
@@ -971,13 +850,11 @@ function initStatusBadgeClose() {
       e.stopPropagation();
       const badge = button.closest('.status-badge');
 
-      // Fade out animation
-      badge.style.transition = 'all 0.3s ease';
+        badge.style.transition = 'all 0.3s ease';
       badge.style.opacity = '0';
       badge.style.transform = 'scale(0.8) translateY(-10px)';
 
-      // Remove after animation
-      setTimeout(() => {
+        setTimeout(() => {
         badge.remove();
       }, 300);
     });
@@ -990,16 +867,11 @@ function initStatusBadgeClose() {
 async function initVisitorCounter() {
   const visitorCount = document.getElementById('visitorCount');
   if (!visitorCount) return;
-
-  // SECURITY: Get stored count from localStorage as fallback
   let storedCount = localStorage.getItem('visitorCount');
   let count = storedCount ? parseInt(storedCount) : 36761;
-
-  // Display cached count immediately for better UX
   visitorCount.textContent = count.toLocaleString();
 
   try {
-    // SECURITY: Fetch through secure Vercel serverless function with rate limiting
     const response = await fetch('/api/visitor-increment', {
       method: 'POST',
       headers: {
@@ -1007,7 +879,6 @@ async function initVisitorCounter() {
       }
     });
 
-    // Handle rate limiting gracefully
     if (response.status === 429) {
       console.log('Visitor counter rate limit reached');
       return; // Keep showing cached value
@@ -1018,20 +889,16 @@ async function initVisitorCounter() {
     if (result.status === 'success' && result.count) {
       const apiCount = result.count;
       visitorCount.textContent = apiCount.toLocaleString();
-      // Update localStorage cache
-      localStorage.setItem('visitorCount', apiCount);
+        localStorage.setItem('visitorCount', apiCount);
     }
 
   } catch (error) {
     console.error('Visitor counter error:', error.message);
-    // SECURITY: Fail gracefully, keep showing cached count
-    // Don't expose error details to user
   }
 }
 
 // ==========================================
 window.addEventListener('DOMContentLoaded', () => {
-  // Initialize all components
   initThemeToggle();
   initVisitorCounter();
   generateGitHubGraph();
@@ -1050,7 +917,6 @@ window.addEventListener('DOMContentLoaded', () => {
   initProjectModals();
   addCustomStyles();
   consoleArt();
-  // Calendar modal listeners (only if a modal trigger exists)
   const calendarTrigger = document.querySelector('[data-modal="calendar"]');
   if (calendarTrigger) {
     calendarTrigger.addEventListener('click', (e) => {
@@ -1067,12 +933,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  console.log('✓ All features initialized successfully!');
+  console.log('âœ“ All features initialized successfully!');
 });
 
-// ==========================================
-// PERFORMANCE OPTIMIZATION
-// ==========================================
 // Debounce function for resize events
 function debounce(func, wait) {
   let timeout;
@@ -1097,3 +960,4 @@ function requestTick(callback) {
     ticking = true;
   }
 }
+

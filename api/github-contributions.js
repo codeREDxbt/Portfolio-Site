@@ -1,7 +1,4 @@
-// Vercel Serverless Function - GitHub Contributions
-// SECURITY: Rate limiting, input validation, caching
-
-// Global cache and rate limit storage (persists across invocations)
+﻿// Global cache and rate limit storage (persists across invocations)
 const cache = new Map();
 const CACHE_TTL = 3600000; // 1 hour
 
@@ -14,7 +11,6 @@ function checkRateLimit(ip) {
   const now = Date.now();
   const userLimits = rateLimits.get(ip) || { count: 0, resetTime: now + RATE_LIMIT_WINDOW };
   
-  // Reset if window expired
   if (now > userLimits.resetTime) {
     userLimits.count = 0;
     userLimits.resetTime = now + RATE_LIMIT_WINDOW;
@@ -50,12 +46,10 @@ function validateUsername(username) {
 }
 
 export default async function handler(req, res) {
-  // SECURITY: Set security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   
-  // CORS headers
   const allowedOrigins = ['https://coderedxbt.vercel.app', 'http://localhost:3000'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -64,7 +58,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  // Handle preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -77,7 +70,6 @@ export default async function handler(req, res) {
   }
   
   try {
-    // SECURITY: Rate limiting
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
     const rateCheck = checkRateLimit(ip);
     
@@ -94,7 +86,6 @@ export default async function handler(req, res) {
       });
     }
     
-    // SECURITY: Validate input
     const username = req.query.username || 'codeREDxbt';
     const validation = validateUsername(username);
     
@@ -108,7 +99,6 @@ export default async function handler(req, res) {
     
     const cleanUsername = validation.username;
     
-    // Check cache
     const cacheKey = `github_${cleanUsername}`;
     const cached = cache.get(cacheKey);
     
@@ -120,7 +110,6 @@ export default async function handler(req, res) {
       });
     }
     
-    // Fetch from GitHub API
     const response = await fetch(
       `https://github-contributions-api.jogruber.de/v4/${cleanUsername}?y=last`,
       {
@@ -140,7 +129,6 @@ export default async function handler(req, res) {
       throw new Error('Invalid response from GitHub API');
     }
     
-    // Cache the result
     cache.set(cacheKey, {
       data,
       timestamp: Date.now()
@@ -163,3 +151,4 @@ export default async function handler(req, res) {
     });
   }
 }
+

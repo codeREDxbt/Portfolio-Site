@@ -1,7 +1,4 @@
-// Vercel Serverless Function - Visitor Counter
-// SECURITY: Rate limiting, caching
-
-const cache = new Map();
+﻿const cache = new Map();
 const CACHE_TTL = 300000; // 5 minutes
 
 // Simple in-memory rate limiter
@@ -29,12 +26,10 @@ function checkRateLimit(ip) {
 }
 
 export default async function handler(req, res) {
-  // SECURITY: Set security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   
-  // CORS headers
   const allowedOrigins = ['https://coderedxbt.vercel.app', 'http://localhost:3000'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -43,7 +38,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  // Handle preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -56,7 +50,6 @@ export default async function handler(req, res) {
   }
   
   try {
-    // SECURITY: Rate limiting
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
     const rateCheck = checkRateLimit(ip);
     
@@ -73,7 +66,6 @@ export default async function handler(req, res) {
       });
     }
     
-    // Check cache
     const cacheKey = 'visitor_count';
     const cached = cache.get(cacheKey);
     
@@ -85,15 +77,13 @@ export default async function handler(req, res) {
       });
     }
     
-    // Fetch from CountAPI (use environment variable if set)
     const countApiUrl = process.env.COUNT_API_URL || 'https://api.countapi.xyz/hit/codeREDxbt-portfolio/visitors';
     
     const response = await fetch(countApiUrl);
     const data = await response.json();
     
     if (data && data.value) {
-      // Cache the result
-      cache.set(cacheKey, {
+          cache.set(cacheKey, {
         count: data.value,
         timestamp: Date.now()
       });
@@ -110,7 +100,6 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Visitor Counter Error:', error.message);
     
-    // Fallback count
     const fallbackCount = 36761 + Math.floor(Math.random() * 100);
     
     res.status(200).json({
@@ -120,3 +109,4 @@ export default async function handler(req, res) {
     });
   }
 }
+

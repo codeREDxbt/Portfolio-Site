@@ -1,7 +1,4 @@
-// Vercel Serverless Function - Booking
-// SECURITY: Rate limiting, input validation
-
-// Simple in-memory rate limiter
+﻿// Simple in-memory rate limiter
 const rateLimits = new Map();
 const RATE_LIMIT_WINDOW = 3600000; // 1 hour
 const RATE_LIMIT_MAX = 5;
@@ -29,7 +26,6 @@ function checkRateLimit(ip) {
 function validateBooking(data) {
   const errors = [];
   
-  // Name validation
   if (!data.name || typeof data.name !== 'string') {
     errors.push({ field: 'name', message: 'Name is required' });
   } else {
@@ -39,7 +35,6 @@ function validateBooking(data) {
     }
   }
   
-  // Email validation
   if (!data.email || typeof data.email !== 'string') {
     errors.push({ field: 'email', message: 'Email is required' });
   } else {
@@ -49,7 +44,6 @@ function validateBooking(data) {
     }
   }
   
-  // Date validation
   if (!data.date) {
     errors.push({ field: 'date', message: 'Date is required' });
   } else {
@@ -63,7 +57,6 @@ function validateBooking(data) {
     }
   }
   
-  // Time validation
   if (!data.time || typeof data.time !== 'string') {
     errors.push({ field: 'time', message: 'Time is required' });
   } else if (!/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(data.time)) {
@@ -74,12 +67,10 @@ function validateBooking(data) {
 }
 
 export default async function handler(req, res) {
-  // SECURITY: Set security headers
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   
-  // CORS headers
   const allowedOrigins = ['https://coderedxbt.vercel.app', 'http://localhost:3000'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
@@ -88,7 +79,6 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   
-  // Handle preflight
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -101,7 +91,6 @@ export default async function handler(req, res) {
   }
   
   try {
-    // SECURITY: Rate limiting
     const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
     const rateCheck = checkRateLimit(ip);
     
@@ -118,10 +107,8 @@ export default async function handler(req, res) {
       });
     }
     
-    // Parse body
     const data = req.body;
     
-    // SECURITY: Validate inputs
     const errors = validateBooking(data);
     if (errors.length > 0) {
       return res.status(400).json({
@@ -134,7 +121,6 @@ export default async function handler(req, res) {
     
     const bookingDate = new Date(data.date);
     
-    // Log booking (in production, integrate with calendar API)
     console.log('Booking Submission:', {
       name: data.name.trim(),
       email: data.email.trim().toLowerCase(),
@@ -144,7 +130,6 @@ export default async function handler(req, res) {
       ip
     });
     
-    // TODO: Integrate with calendar service (Google Calendar, Calendly, etc.)
     
     res.status(200).json({
       status: 'success',
@@ -165,3 +150,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
