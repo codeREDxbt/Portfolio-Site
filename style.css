@@ -962,6 +962,28 @@ body.light-mode .legend-box.level-4 {
   pointer-events: none;
 }
 
+.card-preview--image {
+  padding: 0;
+  height: 220px;
+  background: #0a0a0a;
+}
+
+.card-preview--image::before {
+  display: none;
+}
+
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+
+.project-card:hover .preview-img {
+  transform: scale(1.03);
+}
+
 .preview-content {
   position: relative;
   z-index: 1;
@@ -1147,6 +1169,10 @@ body.light-mode .card-preview {
 
 body.light-mode .card-preview::before {
   background: radial-gradient(circle at 50% 0%, rgba(0, 0, 0, 0.03), transparent 70%);
+}
+
+body.light-mode .card-preview--image {
+  background: #f0f0f0;
 }
 
 body.light-mode .search-demo {

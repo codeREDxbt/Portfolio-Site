@@ -636,6 +636,7 @@ const projects = [
     subtitle: 'Attendance, overtime & payroll manager.',
     placeholder: 'Search employees...',
     icon: '💰',
+    previewImage: './preview-paytrack.png',
     description: 'Employee salary tracker for managing attendance, overtime, and payroll with a clean, modern dashboard.',
     techStack: [
       { class: 'devicon-react-original', title: 'React' },
@@ -668,6 +669,7 @@ const projects = [
     subtitle: 'AI-powered ad management platform.',
     placeholder: 'Analyze campaign performance...',
     icon: '📊',
+    previewImage: './preview-ryze.png',
     description: 'AI-powered ad management platform that monitors campaigns 24/7, finds wasted spend, and optimizes performance automatically.',
     techStack: [
       { class: 'devicon-nextjs-plain', title: 'Next.js' },
@@ -684,6 +686,7 @@ const projects = [
     subtitle: 'Blockchain-based educational platform.',
     placeholder: 'Search courses...',
     icon: '🎓',
+    previewImage: './preview-blockademia.png',
     description: 'Blockchain-based educational platform for Web3 learning, empowering users with decentralized knowledge and certifications.',
     techStack: [
       { class: 'devicon-solidity-plain', title: 'Solidity' },
@@ -700,6 +703,7 @@ const projects = [
     subtitle: 'Easy course creation with Move smart contracts.',
     placeholder: 'Create your course...',
     icon: '📚',
+    previewImage: './preview-aptos.png',
     description: 'A no-code LMS dApp built on the Aptos blockchain, facilitating easy course creation and management with Move smart contracts.',
     techStack: [
       { text: 'M', title: 'Move' },
@@ -744,9 +748,11 @@ function buildCardHTML(project) {
         Repo
       </span>`;
 
-  return `
-    <article class="project-card">
-      <div class="card-preview">
+  const previewHTML = project.previewImage
+    ? `<div class="card-preview card-preview--image">
+        <img src="${project.previewImage}" alt="${project.name} preview" class="preview-img" loading="lazy" />
+      </div>`
+    : `<div class="card-preview">
         <div class="preview-content">
           <h3 class="preview-title">${project.tagline}</h3>
           <p class="preview-subtitle">${project.subtitle}</p>
@@ -755,7 +761,11 @@ function buildCardHTML(project) {
             <span class="search-icon">${project.icon}</span>
           </div>
         </div>
-      </div>
+      </div>`;
+
+  return `
+    <article class="project-card">
+      ${previewHTML}
       <div class="card-content">
         <h3 class="card-title">${project.name}</h3>
         <p class="card-description">${project.description}</p>
