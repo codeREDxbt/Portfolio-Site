@@ -10,28 +10,32 @@ const { body, validationResult, query } = require('express-validator');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https:"],
-      scriptSrc: ["'self'"],
-      connectSrc: ["'self'"],
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        scriptSrc: ["'self'"],
+        connectSrc: ["'self'"],
+      },
     },
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
-}));
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+  })
+);
 const corsOptions = {
-  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000'],
+  origin: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : ['http://localhost:3000'],
   optionsSuccessStatus: 200,
   credentials: true,
-  maxAge: 86400 // 24 hours
+  maxAge: 86400, // 24 hours
 };
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10kb' }));
@@ -44,7 +48,7 @@ const generalLimiter = rateLimit({
   message: {
     status: 429,
     message: 'Too many requests from this IP, please try again later.',
-    retryAfter: '15 minutes'
+    retryAfter: '15 minutes',
   },
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
@@ -53,54 +57,54 @@ const generalLimiter = rateLimit({
       status: 'error',
       statusCode: 429,
       message: 'Too many requests. Please slow down and try again later.',
-      retryAfter: res.getHeader('RateLimit-Reset')
+      retryAfter: res.getHeader('RateLimit-Reset'),
     });
-  }
+  },
 });
 const githubApiLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 30, // 30 requests per hour per IP
   message: {
     status: 429,
-    message: 'GitHub API rate limit exceeded. Please try again later.'
+    message: 'GitHub API rate limit exceeded. Please try again later.',
   },
   handler: (req, res) => {
     res.status(429).json({
       status: 'error',
       statusCode: 429,
       message: 'GitHub API rate limit exceeded. Please try again in an hour.',
-      retryAfter: res.getHeader('RateLimit-Reset')
+      retryAfter: res.getHeader('RateLimit-Reset'),
     });
-  }
+  },
 });
 const visitorCounterLimiter = rateLimit({
   windowMs: 5 * 60 * 1000, // 5 minutes
   max: 10, // 10 requests per 5 minutes per IP
   message: {
     status: 429,
-    message: 'Visitor counter rate limit exceeded.'
-  }
+    message: 'Visitor counter rate limit exceeded.',
+  },
 });
 const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // 5 contact submissions per hour per IP
   message: {
     status: 429,
-    message: 'Too many contact form submissions. Please try again later.'
+    message: 'Too many contact form submissions. Please try again later.',
   },
   handler: (req, res) => {
     res.status(429).json({
       status: 'error',
       statusCode: 429,
       message: 'You have exceeded the contact form submission limit. Please try again in an hour.',
-      retryAfter: res.getHeader('RateLimit-Reset')
+      retryAfter: res.getHeader('RateLimit-Reset'),
     });
-  }
+  },
 });
 app.use('/api/', generalLimiter);
-const cache = new NodeCache({ 
+const cache = new NodeCache({
   stdTTL: 3600, // 1 hour default TTL
-  checkperiod: 600 // Check for expired keys every 10 minutes
+  checkperiod: 600, // Check for expired keys every 10 minutes
 });
 const validateGithubUsername = [
   query('username')
@@ -109,7 +113,7 @@ const validateGithubUsername = [
     .withMessage('Username must be between 1 and 39 characters')
     .matches(/^[a-zA-Z0-9-]+$/)
     .withMessage('Username can only contain alphanumeric characters and hyphens')
-    .customSanitizer(value => value.replace(/[^a-zA-Z0-9-]/g, ''))
+    .customSanitizer((value) => value.replace(/[^a-zA-Z0-9-]/g, '')),
 ];
 const validateContactForm = [
   body('name')
@@ -119,7 +123,7 @@ const validateContactForm = [
     .matches(/^[a-zA-Z\s-']+$/)
     .withMessage('Name can only contain letters, spaces, hyphens, and apostrophes')
     .escape(),
-  
+
   body('email')
     .trim()
     .isEmail()
@@ -127,32 +131,28 @@ const validateContactForm = [
     .normalizeEmail()
     .isLength({ max: 254 })
     .withMessage('Email is too long'),
-  
+
   body('message')
     .trim()
     .isLength({ min: 10, max: 5000 })
     .withMessage('Message must be between 10 and 5000 characters')
     .escape(),
-  
+
   body('subject')
     .optional()
     .trim()
     .isLength({ max: 200 })
     .withMessage('Subject is too long')
-    .escape()
+    .escape(),
 ];
 const validateBooking = [
-  body('date')
-    .trim()
-    .isISO8601()
-    .withMessage('Invalid date format')
-    .toDate(),
-  
+  body('date').trim().isISO8601().withMessage('Invalid date format').toDate(),
+
   body('time')
     .trim()
     .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
     .withMessage('Invalid time format (HH:MM)'),
-  
+
   body('email')
     .trim()
     .isEmail()
@@ -160,12 +160,12 @@ const validateBooking = [
     .normalizeEmail()
     .isLength({ max: 254 })
     .withMessage('Email is too long'),
-  
+
   body('name')
     .trim()
     .isLength({ min: 2, max: 100 })
     .withMessage('Name must be between 2 and 100 characters')
-    .escape()
+    .escape(),
 ];
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -174,10 +174,10 @@ const handleValidationErrors = (req, res, next) => {
       status: 'error',
       statusCode: 400,
       message: 'Validation failed',
-      errors: errors.array().map(err => ({
+      errors: errors.array().map((err) => ({
         field: err.param,
-        message: err.msg
-      }))
+        message: err.msg,
+      })),
     });
   }
   next();
@@ -185,168 +185,172 @@ const handleValidationErrors = (req, res, next) => {
 
 app.use((req, res, next) => {
   res.removeHeader('X-Powered-By');
-  
+
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
+
   next();
 });
 
-app.use(express.static('.', {
-  dotfiles: 'deny',
-  index: 'index.html',
-  setHeaders: (res, path) => {
-    // Set cache headers for static assets
-    if (path.endsWith('.css') || path.endsWith('.js')) {
-      res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day
-    } else if (path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg')) {
-      res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
-    }
-  }
-}));
+app.use(
+  express.static('.', {
+    dotfiles: 'deny',
+    index: 'index.html',
+    setHeaders: (res, path) => {
+      // Set cache headers for static assets
+      if (path.endsWith('.css') || path.endsWith('.js')) {
+        res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day
+      } else if (path.endsWith('.png') || path.endsWith('.jpg') || path.endsWith('.jpeg')) {
+        res.setHeader('Cache-Control', 'public, max-age=604800'); // 7 days
+      }
+    },
+  })
+);
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'success',
     message: 'API is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
-app.get('/api/github/contributions', 
+app.get(
+  ['/api/github/contributions', '/api/github-contributions'],
   githubApiLimiter,
   validateGithubUsername,
   handleValidationErrors,
   async (req, res) => {
     try {
       const username = req.query.username || 'codeREDxbt';
-      
+
       // Check cache first
       const cacheKey = `github_${username}`;
       const cachedData = cache.get(cacheKey);
-      
+
       if (cachedData) {
         return res.status(200).json({
           status: 'success',
           data: cachedData,
-          cached: true
+          cached: true,
         });
       }
-      
+
       // Fetch from GitHub API
       const response = await axios.get(
         `https://github-contributions-api.jogruber.de/v4/${username}?y=last`,
         {
           timeout: 10000, // 10 second timeout
           headers: {
-            'User-Agent': 'Portfolio-Site-Secure/1.0'
-          }
+            'User-Agent': 'Portfolio-Site-Secure/1.0',
+          },
         }
       );
-      
+
       // Validate response data
       if (!response.data || !response.data.contributions) {
         throw new Error('Invalid response from GitHub API');
       }
-      
+
       // Cache the successful response
       cache.set(cacheKey, response.data, 3600); // 1 hour
-      
+
       res.status(200).json({
         status: 'success',
         data: response.data,
-        cached: false
+        cached: false,
       });
-      
     } catch (error) {
       console.error('GitHub API Error:', error.message);
-      
+
       // Return graceful error response
       res.status(error.response?.status || 500).json({
         status: 'error',
         statusCode: error.response?.status || 500,
         message: 'Failed to fetch GitHub contributions',
-        fallback: true
+        fallback: true,
       });
     }
   }
 );
-app.post('/api/visitor/increment',
+app.post(
+  ['/api/visitor/increment', '/api/visitor-increment'],
   visitorCounterLimiter,
   async (req, res) => {
     try {
       // Use CountAPI with environment variable
-      const countApiUrl = process.env.COUNT_API_URL || 'https://api.countapi.xyz/hit/codeREDxbt-portfolio/visitors';
-      
+      const countApiUrl =
+        process.env.COUNT_API_URL || 'https://api.countapi.xyz/hit/codeREDxbt-portfolio/visitors';
+
       // Check cache first
       const cacheKey = 'visitor_count';
       const cachedCount = cache.get(cacheKey);
-      
+
       if (cachedCount) {
         return res.status(200).json({
           status: 'success',
           count: cachedCount,
-          cached: true
+          cached: true,
         });
       }
-      
+
       // Fetch from CountAPI
       const response = await axios.get(countApiUrl, {
-        timeout: 5000
+        timeout: 5000,
       });
-      
+
       if (response.data && response.data.value) {
         // Cache for 5 minutes
         cache.set(cacheKey, response.data.value, 300);
-        
+
         return res.status(200).json({
           status: 'success',
           count: response.data.value,
-          cached: false
+          cached: false,
         });
       }
-      
+
       throw new Error('Invalid response from CountAPI');
-      
     } catch (error) {
       console.error('Visitor Counter Error:', error.message);
-      
+
       // Return fallback count
       const fallbackCount = 36761 + Math.floor(Math.random() * 100);
-      
+
       res.status(200).json({
         status: 'success',
         count: fallbackCount,
-        fallback: true
+        fallback: true,
       });
     }
   }
 );
-app.post('/api/contact',
+app.post(
+  '/api/contact',
   contactLimiter,
   validateContactForm,
   handleValidationErrors,
   async (req, res) => {
     try {
       const { name, email, message, subject } = req.body;
-      
+
       // Additional security: Check for spam patterns
       const spamPatterns = [
         /viagra|cialis|casino|lottery|winner/gi,
         /<script|javascript:|onclick/gi,
-        /http:\/\/|https:\/\//gi // Limit URLs in message
+        /http:\/\/|https:\/\//gi, // Limit URLs in message
       ];
-      
+
       for (const pattern of spamPatterns) {
         if (pattern.test(message) || pattern.test(subject || '')) {
           return res.status(400).json({
             status: 'error',
             statusCode: 400,
-            message: 'Message contains prohibited content'
+            message: 'Message contains prohibited content',
           });
         }
       }
-      
+
       // Log contact submission (in production, save to database or send email)
       console.log('Contact Form Submission:', {
         name,
@@ -354,47 +358,47 @@ app.post('/api/contact',
         subject: subject || 'No subject',
         message: message.substring(0, 100) + '...',
         timestamp: new Date().toISOString(),
-        ip: req.ip
+        ip: req.ip,
       });
-      
+
       // In production, integrate with email service (SendGrid, AWS SES, etc.)
       // For now, return success
       res.status(200).json({
         status: 'success',
-        message: 'Your message has been received. We will get back to you soon!'
+        message: 'Your message has been received. We will get back to you soon!',
       });
-      
     } catch (error) {
       console.error('Contact Form Error:', error.message);
-      
+
       res.status(500).json({
         status: 'error',
         statusCode: 500,
-        message: 'Failed to process contact form. Please try again later.'
+        message: 'Failed to process contact form. Please try again later.',
       });
     }
   }
 );
-app.post('/api/booking',
+app.post(
+  '/api/booking',
   contactLimiter, // Reuse contact limiter for bookings
   validateBooking,
   handleValidationErrors,
   async (req, res) => {
     try {
       const { date, time, email, name } = req.body;
-      
+
       // Validate date is in the future
       const bookingDate = new Date(date);
       const now = new Date();
-      
+
       if (bookingDate < now) {
         return res.status(400).json({
           status: 'error',
           statusCode: 400,
-          message: 'Cannot book dates in the past'
+          message: 'Cannot book dates in the past',
         });
       }
-      
+
       // Log booking (in production, save to database or send email)
       console.log('Booking Submission:', {
         name,
@@ -402,26 +406,25 @@ app.post('/api/booking',
         date: bookingDate.toISOString(),
         time,
         timestamp: new Date().toISOString(),
-        ip: req.ip
+        ip: req.ip,
       });
-      
+
       // In production, integrate with calendar API (Google Calendar, Calendly, etc.)
       res.status(200).json({
         status: 'success',
         message: 'Booking confirmed! You will receive a confirmation email shortly.',
         booking: {
           date: bookingDate.toISOString().split('T')[0],
-          time
-        }
+          time,
+        },
       });
-      
     } catch (error) {
       console.error('Booking Error:', error.message);
-      
+
       res.status(500).json({
         status: 'error',
         statusCode: 500,
-        message: 'Failed to process booking. Please try again later.'
+        message: 'Failed to process booking. Please try again later.',
       });
     }
   }
@@ -432,23 +435,24 @@ app.use((req, res) => {
   res.status(404).json({
     status: 'error',
     statusCode: 404,
-    message: 'Endpoint not found'
+    message: 'Endpoint not found',
   });
 });
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  
+
   res.status(err.status || 500).json({
     status: 'error',
     statusCode: err.status || 500,
-    message: process.env.NODE_ENV === 'production' 
-      ? 'An unexpected error occurred' 
-      : err.message
+    message: process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : err.message,
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`
+let server;
+
+if (require.main === module) {
+  server = app.listen(PORT, () => {
+    console.log(`
 â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
 â•‘   ðŸ”’ SECURE PORTFOLIO API SERVER             â•‘
 â•‘                                               â•‘
@@ -461,13 +465,19 @@ app.listen(PORT, () => {
 â•‘   Server is running securely!                â•‘
 â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   `);
-});
+  });
+}
+
 process.on('SIGTERM', () => {
   console.log('SIGTERM received, closing server gracefully...');
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
-  });
+  if (server) {
+    server.close(() => {
+      console.log('Server closed');
+      process.exit(0);
+    });
+    return;
+  }
+  process.exit(0);
 });
 
-
+module.exports = app;

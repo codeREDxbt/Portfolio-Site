@@ -170,6 +170,11 @@ npm start
 
 # For development with auto-reload:
 npm run dev
+
+# Quality checks
+npm run lint
+npm run format:check
+npm test
 ```
 
 **Access the site:**
@@ -209,10 +214,20 @@ Portfolio Site/
 All endpoints are prefixed with `/api/` and include rate limiting:
 
 - `GET /api/health` - Health check
-- `GET /api/github/contributions?username=<username>` - GitHub contributions (30/hour)
-- `POST /api/visitor/increment` - Visitor counter (10/5min)
+- `GET /api/github-contributions?username=<username>` - GitHub contributions (30/hour)
+  - Compatibility alias: `GET /api/github/contributions?username=<username>`
+- `POST /api/visitor-increment` - Visitor counter (10/5min)
+  - Compatibility alias: `POST /api/visitor/increment`
 - `POST /api/contact` - Contact form (5/hour)
 - `POST /api/booking` - Calendar booking (5/hour)
+
+## ✅ Code Quality & Automation
+
+- **Linting**: ESLint via `npm run lint`
+- **Formatting**: Prettier via `npm run format` / `npm run format:check`
+- **Tests**: Node test runner + Supertest via `npm test`
+- **CI**: GitHub Actions workflow at `.github/workflows/ci.yml`
+- **Dependency Updates**: Dependabot config at `.github/dependabot.yml`
 
 See [SECURITY.md](SECURITY.md) for complete API documentation and security details.
 
