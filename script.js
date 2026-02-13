@@ -265,17 +265,17 @@ function confirmBooking(time) {
     .then(async response => {
       const result = await response.json();
 
-        if (response.status === 429) {
+      if (response.status === 429) {
         alert(`âš ï¸ ${result.message}`);
         return;
       }
 
-        if (response.status === 400) {
+      if (response.status === 400) {
         alert(`âš ï¸ ${result.message}`);
         return;
       }
 
-        if (result.status === 'success') {
+      if (result.status === 'success') {
         alert(`âœ“ ${result.message}`);
         closeCalendar();
       } else {
@@ -304,7 +304,7 @@ async function generateGitHubGraph() {
     if (response.status === 429) {
       const errorData = await response.json();
       console.log('Rate limit reached:', errorData.message);
-        generateFallbackGraph(graph, username);
+      generateFallbackGraph(graph, username);
       return;
     }
 
@@ -347,10 +347,10 @@ async function generateGitHubGraph() {
         cell.rel = 'noopener noreferrer';
         cell.style.cursor = 'pointer';
 
-            const cellDate = new Date(oneYearAgo.getTime() + (cellIndex * 24 * 60 * 60 * 1000));
+        const cellDate = new Date(oneYearAgo.getTime() + (cellIndex * 24 * 60 * 60 * 1000));
         const dateStr = cellDate.toISOString().split('T')[0];
 
-            const contributions = contributionMap[dateStr] || 0;
+        const contributions = contributionMap[dateStr] || 0;
         let level = 0;
         if (contributions > 0) level = 1;
         if (contributions > 3) level = 2;
@@ -359,7 +359,7 @@ async function generateGitHubGraph() {
 
         cell.classList.add(`level-${level}`);
 
-            const text = contributions > 0 ? `${contributions} contributions` : 'No contributions';
+        const text = contributions > 0 ? `${contributions} contributions` : 'No contributions';
         cell.title = `${text} on ${dateStr}`;
 
         graph.appendChild(cell);
@@ -454,10 +454,10 @@ class ParticleSystem {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.particles.forEach((particle, i) => {
-        particle.x += particle.vx;
+      particle.x += particle.vx;
       particle.y += particle.vy;
 
-        const dx = this.mouse.x - particle.x;
+      const dx = this.mouse.x - particle.x;
       const dy = this.mouse.y - particle.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
@@ -467,10 +467,10 @@ class ParticleSystem {
         particle.y -= dy * force * 0.02;
       }
 
-        if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+      if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
       if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
 
-        this.ctx.beginPath();
+      this.ctx.beginPath();
       this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
       const isLightMode = document.body.classList.contains('light-mode');
       this.ctx.fillStyle = isLightMode
@@ -507,13 +507,13 @@ function initHeaderScroll() {
     const currentScroll = window.pageYOffset;
 
     if (header) {
-        if (currentScroll > 100) {
+      if (currentScroll > 100) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
 
-        if (currentScroll > lastScroll && currentScroll > 200) {
+      if (currentScroll > lastScroll && currentScroll > 200) {
         header.style.transform = 'translateY(-100%)';
       } else {
         header.style.transform = 'translateY(0)';
@@ -521,7 +521,7 @@ function initHeaderScroll() {
     }
 
     if (navbar) {
-        if (currentScroll > lastScroll && currentScroll > 150) {
+      if (currentScroll > lastScroll && currentScroll > 150) {
         navbar.classList.add('navbar-hidden');
       } else {
         navbar.classList.remove('navbar-hidden');
@@ -542,7 +542,7 @@ function initCopyButton() {
     try {
       await navigator.clipboard.writeText(code);
 
-        copyBtn.textContent = 'âœ“';
+      copyBtn.textContent = 'âœ“';
       copyBtn.style.color = '#10b981';
 
       setTimeout(() => {
@@ -552,7 +552,7 @@ function initCopyButton() {
     } catch (err) {
       console.error('Failed to copy:', err);
 
-        const textarea = document.createElement('textarea');
+      const textarea = document.createElement('textarea');
       textarea.value = code;
       textarea.style.position = 'fixed';
       textarea.style.opacity = '0';
@@ -627,26 +627,226 @@ function initScrollAnimations() {
 }
 
 // ==========================================
-// PROJECT CARDS DRAG-TO-SCROLL
+// PROJECTS DATA & RENDERING
+// ==========================================
+const projects = [
+  {
+    name: 'PayTrack',
+    tagline: 'Employee salary tracking, simplified.',
+    subtitle: 'Attendance, overtime & payroll manager.',
+    placeholder: 'Search employees...',
+    icon: '💰',
+    description: 'Employee salary tracker for managing attendance, overtime, and payroll with a clean, modern dashboard.',
+    techStack: [
+      { class: 'devicon-react-original', title: 'React' },
+      { class: 'devicon-vitejs-plain', title: 'Vite' },
+      { class: 'devicon-firebase-plain', title: 'Firebase' },
+      { class: 'devicon-tailwindcss-original', title: 'Tailwind CSS' }
+    ],
+    liveUrl: 'https://paytrackx.vercel.app',
+    repoUrl: 'https://github.com/codeREDxbt/PayTrack'
+  },
+  {
+    name: 'MediChainAI',
+    tagline: 'AI-powered healthcare, on-chain.',
+    subtitle: 'Decentralized medical records & diagnostics.',
+    placeholder: 'Search patient records...',
+    icon: '🏥',
+    description: 'AI-powered healthcare platform combining blockchain security with intelligent diagnostics for decentralized medical record management.',
+    techStack: [
+      { class: 'devicon-nextjs-plain', title: 'Next.js' },
+      { class: 'devicon-typescript-plain', title: 'TypeScript' },
+      { class: 'devicon-postgresql-plain', title: 'PostgreSQL' },
+      { class: 'devicon-tailwindcss-original', title: 'Tailwind CSS' }
+    ],
+    liveUrl: '',
+    repoUrl: 'https://github.com/codeREDxbt/Ryze-Ai'
+  },
+  {
+    name: 'Ryze AI',
+    tagline: 'Stop wasting ad budget, start scaling profits.',
+    subtitle: 'AI-powered ad management platform.',
+    placeholder: 'Analyze campaign performance...',
+    icon: '📊',
+    description: 'AI-powered ad management platform that monitors campaigns 24/7, finds wasted spend, and optimizes performance automatically.',
+    techStack: [
+      { class: 'devicon-nextjs-plain', title: 'Next.js' },
+      { class: 'devicon-tensorflow-original', title: 'AI/ML' },
+      { class: 'devicon-typescript-plain', title: 'TypeScript' },
+      { class: 'devicon-graphql-plain', title: 'Analytics' }
+    ],
+    liveUrl: 'https://ryze-ai-codered.vercel.app',
+    repoUrl: 'https://github.com/codeREDxbt/Ryze-Ai'
+  },
+  {
+    name: 'Blockademia.live',
+    tagline: 'Learn Web3, earn certifications.',
+    subtitle: 'Blockchain-based educational platform.',
+    placeholder: 'Search courses...',
+    icon: '🎓',
+    description: 'Blockchain-based educational platform for Web3 learning, empowering users with decentralized knowledge and certifications.',
+    techStack: [
+      { class: 'devicon-solidity-plain', title: 'Solidity' },
+      { class: 'devicon-react-original', title: 'React' },
+      { class: 'devicon-nodejs-plain', title: 'Node.js' },
+      { class: 'devicon-web3js-plain', title: 'Web3' }
+    ],
+    liveUrl: 'https://blockademia.live',
+    repoUrl: 'https://github.com/codeREDxbt/blockademia-platform'
+  },
+  {
+    name: 'Aptos LMS',
+    tagline: 'No-code LMS on Aptos blockchain.',
+    subtitle: 'Easy course creation with Move smart contracts.',
+    placeholder: 'Create your course...',
+    icon: '📚',
+    description: 'A no-code LMS dApp built on the Aptos blockchain, facilitating easy course creation and management with Move smart contracts.',
+    techStack: [
+      { text: 'M', title: 'Move' },
+      { text: 'A', title: 'Aptos' },
+      { class: 'devicon-react-original', title: 'React' },
+      { class: 'devicon-typescript-plain', title: 'TypeScript' }
+    ],
+    liveUrl: 'https://no-code-lm-sbuilder-with-aptos-paym.vercel.app',
+    repoUrl: 'https://github.com/codeREDxbt/NoCodeLMSbuilder-withAptosPayments'
+  }
+];
+
+function buildCardHTML(project) {
+  const techIconsHTML = project.techStack.map(tech => {
+    if (tech.class) {
+      return `<i class="${tech.class} tech-icon" title="${tech.title}"></i>`;
+    }
+    return `<span class="tech-icon" title="${tech.title}">${tech.text}</span>`;
+  }).join('');
+
+  // Always show both buttons; disable if no URL
+  const liveClass = project.liveUrl ? 'card-link-btn card-link-primary' : 'card-link-btn card-link-primary card-link-disabled';
+  const repoClass = project.repoUrl ? 'card-link-btn card-link-secondary' : 'card-link-btn card-link-secondary card-link-disabled';
+
+  const liveBtn = project.liveUrl
+    ? `<a href="${project.liveUrl}" target="_blank" rel="noreferrer noopener" class="${liveClass}" aria-label="View ${project.name} live site">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Live
+      </a>`
+    : `<span class="${liveClass}" aria-label="${project.name} is not live yet">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Live
+      </span>`;
+
+  const repoBtn = project.repoUrl
+    ? `<a href="${project.repoUrl}" target="_blank" rel="noreferrer noopener" class="${repoClass}" aria-label="View ${project.name} source code on GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        Repo
+      </a>`
+    : `<span class="${repoClass}" aria-label="${project.name} repo is not public">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+        Repo
+      </span>`;
+
+  return `
+    <article class="project-card">
+      <div class="card-preview">
+        <div class="preview-content">
+          <h3 class="preview-title">${project.tagline}</h3>
+          <p class="preview-subtitle">${project.subtitle}</p>
+          <div class="search-demo">
+            <input type="text" placeholder="${project.placeholder}" readonly />
+            <span class="search-icon">${project.icon}</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">${project.name}</h3>
+        <p class="card-description">${project.description}</p>
+        <div class="card-tech">
+          <span class="tech-label">TECHNOLOGIES</span>
+          <div class="tech-icons">${techIconsHTML}</div>
+        </div>
+        <div class="card-links">
+          ${liveBtn}
+          ${repoBtn}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderProjects() {
+  const container = document.getElementById('projectsScroll');
+  if (!container) return;
+
+  // Build original cards
+  const cardsHTML = projects.map(p => buildCardHTML(p)).join('');
+  // Duplicate for infinite scroll effect
+  container.innerHTML = cardsHTML + cardsHTML;
+}
+
+// ==========================================
+// PROJECT CARDS SCROLL & NAVIGATION
 // ==========================================
 function initProjectsScroll() {
   const projectsScroll = document.querySelector('.projects-scroll');
   if (!projectsScroll) return;
 
+  const cardWidth = 440; // card min-width + gap
+  let autoScrollInterval = null;
+  let isPaused = false;
+
+  // --- JS-based auto-scroll ---
+  function startAutoScroll() {
+    if (autoScrollInterval) return;
+    autoScrollInterval = setInterval(() => {
+      if (isPaused) return;
+      projectsScroll.scrollLeft += 1;
+      // Loop back when reaching the duplicate set
+      const halfScroll = projectsScroll.scrollWidth / 2;
+      if (projectsScroll.scrollLeft >= halfScroll) {
+        projectsScroll.scrollLeft = 0;
+      }
+    }, 20);
+  }
+
+  function stopAutoScroll() {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = null;
+  }
+
+  function pauseAutoScroll(durationMs) {
+    isPaused = true;
+    clearTimeout(projectsScroll._resumeTimer);
+    projectsScroll._resumeTimer = setTimeout(() => {
+      isPaused = false;
+    }, durationMs || 3000);
+  }
+
+  // Pause on hover
+  projectsScroll.addEventListener('mouseenter', () => { isPaused = true; });
+  projectsScroll.addEventListener('mouseleave', () => {
+    if (!isDown) isPaused = false;
+  });
+
+  // Start auto-scroll on load
+  startAutoScroll();
+
+  // --- Drag-to-scroll ---
   let isDown = false;
   let startX;
   let scrollLeft;
 
   projectsScroll.addEventListener('mousedown', (e) => {
     isDown = true;
+    isPaused = true;
     projectsScroll.style.cursor = 'grabbing';
     startX = e.pageX - projectsScroll.offsetLeft;
     scrollLeft = projectsScroll.scrollLeft;
   });
 
   projectsScroll.addEventListener('mouseleave', () => {
-    isDown = false;
-    projectsScroll.style.cursor = 'grab';
+    if (isDown) {
+      isDown = false;
+      projectsScroll.style.cursor = 'grab';
+    }
   });
 
   projectsScroll.addEventListener('mouseup', () => {
@@ -658,9 +858,27 @@ function initProjectsScroll() {
     if (!isDown) return;
     e.preventDefault();
     const x = e.pageX - projectsScroll.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll speed multiplier
+    const walk = (x - startX) * 2;
     projectsScroll.scrollLeft = scrollLeft - walk;
   });
+
+  // --- Navigation buttons ---
+  const prevBtn = document.querySelector('.projects-nav-prev');
+  const nextBtn = document.querySelector('.projects-nav-next');
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      pauseAutoScroll(3000);
+      projectsScroll.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      pauseAutoScroll(3000);
+      projectsScroll.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    });
+  }
 }
 
 class CursorTrail {
@@ -765,50 +983,6 @@ function typeWriter(element, text, speed = 50) {
   type();
 }
 
-// ==========================================
-// PROJECT PREVIEW MODAL (PLACEHOLDER)
-// ==========================================
-function initProjectModals() {
-  const previewButtons = document.querySelectorAll('.project-btn');
-
-  previewButtons.forEach(btn => {
-    btn.addEventListener('click', function () {
-      const projectTitle = this.closest('.project-item').querySelector('.project-title').textContent;
-
-        const modal = document.createElement('div');
-      modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10000;
-        animation: fadeIn 0.3s ease;
-      `;
-
-      modal.innerHTML = `
-        <div style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 40px; max-width: 600px; text-align: center;">
-          <h2 style="color: #ededed; margin-bottom: 20px;">${projectTitle}</h2>
-          <p style="color: #a3a3a3; margin-bottom: 30px;">Preview coming soon...</p>
-          <button onclick="this.closest('div').parentElement.remove()" style="background: #3b82f6; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer;">Close</button>
-        </div>
-      `;
-
-      document.body.appendChild(modal);
-
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.remove();
-        }
-      });
-    });
-  });
-}
-
 function addCustomStyles() {
   const style = document.createElement('style');
   style.textContent = `
@@ -850,11 +1024,11 @@ function initStatusBadgeClose() {
       e.stopPropagation();
       const badge = button.closest('.status-badge');
 
-        badge.style.transition = 'all 0.3s ease';
+      badge.style.transition = 'all 0.3s ease';
       badge.style.opacity = '0';
       badge.style.transform = 'scale(0.8) translateY(-10px)';
 
-        setTimeout(() => {
+      setTimeout(() => {
         badge.remove();
       }, 300);
     });
@@ -889,7 +1063,7 @@ async function initVisitorCounter() {
     if (result.status === 'success' && result.count) {
       const apiCount = result.count;
       visitorCount.textContent = apiCount.toLocaleString();
-        localStorage.setItem('visitorCount', apiCount);
+      localStorage.setItem('visitorCount', apiCount);
     }
 
   } catch (error) {
@@ -910,11 +1084,11 @@ window.addEventListener('DOMContentLoaded', () => {
   initCopyButton();
   initProfileAvatar();
   initScrollAnimations();
+  renderProjects();
   initProjectsScroll();
   initParallax();
   initStatusBadges();
   initStatusBadgeClose();
-  initProjectModals();
   addCustomStyles();
   consoleArt();
   const calendarTrigger = document.querySelector('[data-modal="calendar"]');
