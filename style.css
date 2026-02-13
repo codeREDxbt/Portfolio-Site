@@ -211,7 +211,13 @@ button {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  animation: fadeInDown 0.6s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.navbar.navbar-hidden {
+  transform: translateX(-50%) translateY(-150%);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .nav-wrapper {
