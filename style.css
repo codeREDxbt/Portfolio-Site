@@ -1755,6 +1755,26 @@ body.light-mode .stack-icon:hover {
   transform: translateY(-2px);
 }
 
+/* Light Mode Buttons Adaptation */
+body.light-mode .contact-btn {
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .btn-primary {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .btn-primary:hover {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
 .quote-italic {
   font-size: 16px;
   font-style: italic;
