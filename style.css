@@ -305,12 +305,7 @@ button {
 
 #themeToggle {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  display: grid !important;
-  grid-template-areas: "stack";
-  place-items: center;
-  align-items: center;
-  justify-content: center;
+  margin-left: -8px;
 }
 
 #themeToggle:hover {
@@ -318,7 +313,12 @@ button {
 }
 
 .theme-icon {
-  grid-area: stack;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
   width: 24px;
   height: 24px;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
