@@ -1,4 +1,4 @@
-﻿// Simple in-memory rate limiter
+// Simple in-memory rate limiter
 const rateLimits = new Map();
 const RATE_LIMIT_WINDOW = 3600000; // 1 hour
 const RATE_LIMIT_MAX = 5;
@@ -129,10 +129,24 @@ export default async function handler(req, res) {
       ip
     });
     
+    const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+    if (webhookUrl) {
+      try {
+        await fetch(webhookUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: `📅 **New Booking Request**\n**Name:** ${data.name.trim()}\n**Email:** ${data.email.trim().toLowerCase()}\n**Date:** ${bookingDate.toISOString().split('T')[0]}\n**Time:** ${data.time}`
+          })
+        });
+      } catch (webhookErr) {
+        console.error('Discord Webhook Error:', webhookErr);
+      }
+    }
     
     res.status(200).json({
       status: 'success',
-      message: 'Booking confirmed! You will receive a confirmation email shortly.',
+      message: 'Booking confirmed! I will reach out shortly.',
       booking: {
         date: bookingDate.toISOString().split('T')[0],
         time: data.time

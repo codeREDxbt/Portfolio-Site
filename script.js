@@ -1,110 +1,3 @@
-﻿function sanitizeInput(input) {
-  if (typeof input !== 'string') return '';
-  let sanitized = input.replace(/<[^>]*>/g, '');
-  const map = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#x27;',
-    '/': '&#x2F;',
-  };
-
-  sanitized = sanitized.replace(/[&<>"'/]/g, (char) => map[char]);
-
-  return sanitized.trim();
-}
-
-function isValidEmail(email) {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email) && email.length <= 254;
-}
-
-function isValidLength(str, min, max) {
-  const length = str.trim().length;
-  return length >= min && length <= max;
-}
-
-function containsSpam(text) {
-  const spamPatterns = [
-    /viagra|cialis|casino|lottery/gi,
-    /<script|javascript:|onclick|onerror/gi,
-  ];
-
-  return spamPatterns.some(pattern => pattern.test(text));
-}
-
-async function submitContactForm(name, email, message, subject = '') {
-  try {
-    if (!isValidLength(name, 2, 100)) {
-      throw new Error('Name must be between 2 and 100 characters');
-    }
-
-    if (!isValidEmail(email)) {
-      throw new Error('Please enter a valid email address');
-    }
-
-    if (!isValidLength(message, 10, 5000)) {
-      throw new Error('Message must be between 10 and 5000 characters');
-    }
-
-    if (subject && !isValidLength(subject, 0, 200)) {
-      throw new Error('Subject is too long (max 200 characters)');
-    }
-
-    if (containsSpam(message) || containsSpam(subject)) {
-      throw new Error('Message contains prohibited content');
-    }
-
-    const sanitizedData = {
-      name: sanitizeInput(name),
-      email: email.trim().toLowerCase(),
-      message: sanitizeInput(message),
-      subject: sanitizeInput(subject)
-    };
-
-    const response = await fetch('/api/contact', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(sanitizedData)
-    });
-
-    const result = await response.json();
-
-    if (response.status === 429) {
-      return {
-        success: false,
-        message: result.message || 'Too many requests. Please try again later.'
-      };
-    }
-
-    if (response.status === 400) {
-      return {
-        success: false,
-        message: result.message || 'Invalid input. Please check your data.'
-      };
-    }
-
-    if (result.status === 'success') {
-      return {
-        success: true,
-        message: result.message
-      };
-    }
-
-    throw new Error(result.message || 'Failed to send message');
-
-  } catch (error) {
-    console.error('Contact form error:', error);
-    return {
-      success: false,
-      message: error.message || 'Failed to send message. Please try again later.'
-    };
-  }
-}
-
 function initThemeToggle() {
   const themeToggle = document.getElementById('themeToggle');
 
@@ -223,69 +116,110 @@ function generateTimeslots() {
     const slot = document.createElement('div');
     slot.className = 'timeslot';
     slot.textContent = time;
-    slot.addEventListener('click', () => {
-      confirmBooking(time);
+    slot.addEventListener('click', (e) => {
+      confirmBooking(time, e.target);
     });
     timeslotsList.appendChild(slot);
   });
 }
 
-function confirmBooking(time) {
+let currentBookingData = null;
+
+function initBookingForm() {
+  const backBtn = document.getElementById('backToSlotsBtn');
+  const form = document.getElementById('bookingForm');
+  const timeslotsPanel = document.getElementById('timeslotsPanel');
+  const bookingFormPanel = document.getElementById('bookingFormPanel');
+  const submitBtn = document.getElementById('submitBookingBtn');
+  const btnText = submitBtn ? submitBtn.querySelector('span') : null;
+  const spinner = submitBtn ? submitBtn.querySelector('.spinner-border') : null;
+  const feedback = document.getElementById('bookingFeedback');
+
+  if (backBtn) {
+    backBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      bookingFormPanel.style.display = 'none';
+      timeslotsPanel.style.display = 'block';
+      feedback.style.display = 'none';
+    });
+  }
+
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('bookingName').value.trim();
+      const email = document.getElementById('bookingEmail').value.trim().toLowerCase();
+      
+      if (!currentBookingData) return;
+      
+      submitBtn.disabled = true;
+      btnText.textContent = 'Processing...';
+      spinner.style.display = 'block';
+      feedback.style.display = 'none';
+
+      fetch('/api/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          date: currentBookingData.date,
+          time: currentBookingData.time
+        })
+      })
+        .then(async response => {
+          const result = await response.json();
+
+          if (response.status !== 200) {
+            throw new Error(result.message || 'Validation failed');
+          }
+
+          feedback.textContent = `✓ ${result.message}`;
+          feedback.className = 'booking-feedback success';
+          feedback.style.display = 'block';
+          
+          setTimeout(() => {
+            closeCalendar();
+            bookingFormPanel.style.display = 'none';
+            timeslotsPanel.style.display = 'block';
+            form.reset();
+            feedback.style.display = 'none';
+            submitBtn.disabled = false;
+            btnText.textContent = 'Confirm Booking';
+            spinner.style.display = 'none';
+          }, 2000);
+        })
+        .catch(error => {
+          console.error('Booking error:', error);
+          feedback.textContent = `⚠️ ${error.message || 'Failed to process booking.'}`;
+          feedback.className = 'booking-feedback error';
+          feedback.style.display = 'block';
+          submitBtn.disabled = false;
+          btnText.textContent = 'Confirm Booking';
+          spinner.style.display = 'none';
+        });
+    });
+  }
+}
+
+function confirmBooking(time, slotElement) {
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
 
-  const date = `${monthNames[currentMonth]} ${selectedDay}, ${currentYear}`;
-  const name = prompt('Please enter your name:');
-  if (!name || name.trim().length < 2) {
-    alert('Please enter a valid name');
-    return;
-  }
-
-  const email = prompt('Please enter your email:');
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email || !emailRegex.test(email)) {
-    alert('Please enter a valid email address');
-    return;
-  }
-
+  const dateStr = `${monthNames[currentMonth]} ${selectedDay}, ${currentYear}`;
   const bookingDate = new Date(currentYear, currentMonth, selectedDay);
-
-  fetch('/api/booking', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      date: bookingDate.toISOString(),
-      time: time
-    })
-  })
-    .then(async response => {
-      const result = await response.json();
-
-      if (response.status === 429) {
-        alert(`âš ï¸ ${result.message}`);
-        return;
-      }
-
-      if (response.status === 400) {
-        alert(`âš ï¸ ${result.message}`);
-        return;
-      }
-
-      if (result.status === 'success') {
-        alert(`âœ“ ${result.message}`);
-        closeCalendar();
-      } else {
-        throw new Error(result.message);
-      }
-    })
-    .catch(error => {
-      console.error('Booking error:', error);
-      alert('Failed to process booking. Please try again later.');
-    });
+  
+  currentBookingData = {
+    date: bookingDate.toISOString(),
+    time: time
+  };
+  
+  document.getElementById('bookingSelectedTime').innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px; vertical-align:middle"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span style="vertical-align:middle">Booking for ${dateStr} at ${time}</span>`;
+  document.getElementById('timeslotsPanel').style.display = 'none';
+  document.getElementById('bookingFormPanel').style.display = 'flex';
 }
 
 // ==========================================
@@ -542,11 +476,11 @@ function initCopyButton() {
     try {
       await navigator.clipboard.writeText(code);
 
-      copyBtn.textContent = 'âœ“';
+      copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
       copyBtn.style.color = '#10b981';
 
       setTimeout(() => {
-        copyBtn.textContent = 'ðŸ“‹';
+        copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
         copyBtn.style.color = '';
       }, 2000);
     } catch (err) {
@@ -561,10 +495,10 @@ function initCopyButton() {
 
       try {
         document.execCommand('copy');
-        copyBtn.textContent = 'âœ“';
+        copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
         copyBtn.style.color = '#10b981';
         setTimeout(() => {
-          copyBtn.textContent = 'ðŸ“‹';
+          copyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
           copyBtn.style.color = '';
         }, 2000);
       } catch (err) {
@@ -635,7 +569,7 @@ const projects = [
     tagline: 'Employee salary tracking, simplified.',
     subtitle: 'Attendance, overtime & payroll manager.',
     placeholder: 'Search employees...',
-    icon: '💰',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>',
     previewImage: './preview-paytrack.png',
     description: 'Employee salary tracker for managing attendance, overtime, and payroll with a clean, modern dashboard.',
     techStack: [
@@ -652,7 +586,8 @@ const projects = [
     tagline: 'AI-powered healthcare, on-chain.',
     subtitle: 'Decentralized medical records & diagnostics.',
     placeholder: 'Search patient records...',
-    icon: '🏥',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>',
+    previewImage: './preview-medichain.png',
     description: 'AI-powered healthcare platform combining blockchain security with intelligent diagnostics for decentralized medical record management.',
     techStack: [
       { class: 'devicon-nextjs-plain', title: 'Next.js' },
@@ -661,31 +596,46 @@ const projects = [
       { class: 'devicon-tailwindcss-original', title: 'Tailwind CSS' }
     ],
     liveUrl: '',
-    repoUrl: 'https://github.com/codeREDxbt/Ryze-Ai'
+    repoUrl: 'https://github.com/codeREDxbt/MediChainAI'
   },
   {
-    name: 'Ryze AI',
-    tagline: 'Stop wasting ad budget, start scaling profits.',
-    subtitle: 'AI-powered ad management platform.',
-    placeholder: 'Analyze campaign performance...',
-    icon: '📊',
-    previewImage: './preview-ryze.png',
-    description: 'AI-powered ad management platform that monitors campaigns 24/7, finds wasted spend, and optimizes performance automatically.',
+    name: 'StellarPulse',
+    tagline: 'Analytics and insights for the Stellar network.',
+    subtitle: 'Real-time blockchain explorer.',
+    placeholder: 'Search transactions...',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>',
+    previewImage: './preview-stellarpulse.png',
+    description: 'A comprehensive explorer and analytics platform built for the Stellar network, providing real-time insights and data visualization.',
     techStack: [
-      { class: 'devicon-nextjs-plain', title: 'Next.js' },
-      { class: 'devicon-tensorflow-original', title: 'AI/ML' },
+      { class: 'devicon-react-original', title: 'React' },
       { class: 'devicon-typescript-plain', title: 'TypeScript' },
-      { class: 'devicon-graphql-plain', title: 'Analytics' }
+      { class: 'devicon-nodejs-plain', title: 'Node.js' }
     ],
-    liveUrl: 'https://ryze-ai-codered.vercel.app',
-    repoUrl: 'https://github.com/codeREDxbt/Ryze-Ai'
+    liveUrl: '',
+    repoUrl: 'https://github.com/codeREDxbt/StellarPulse'
+  },
+  {
+    name: 'Veilpay',
+    tagline: 'Seamless multi-chain fiat gateway.',
+    subtitle: 'Hardened multi-chain wallet security.',
+    placeholder: 'Enter payment amount...',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>',
+    underDev: true,
+    description: 'A production-ready multi-chain wallet featuring robust protocol-specific address isolation and an integrated fiat on-ramp/off-ramp.',
+    techStack: [
+      { class: 'devicon-react-original', title: 'React' },
+      { class: 'devicon-typescript-plain', title: 'TypeScript' },
+      { class: 'devicon-tailwindcss-original', title: 'Tailwind CSS' }
+    ],
+    liveUrl: '',
+    repoUrl: 'https://github.com/codeREDxbt/Veilpay'
   },
   {
     name: 'Blockademia.live',
     tagline: 'Learn Web3, earn certifications.',
     subtitle: 'Blockchain-based educational platform.',
     placeholder: 'Search courses...',
-    icon: '🎓',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>',
     previewImage: './preview-blockademia.png',
     description: 'Blockchain-based educational platform for Web3 learning, empowering users with decentralized knowledge and certifications.',
     techStack: [
@@ -702,7 +652,7 @@ const projects = [
     tagline: 'No-code LMS on Aptos blockchain.',
     subtitle: 'Easy course creation with Move smart contracts.',
     placeholder: 'Create your course...',
-    icon: '📚',
+    icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>',
     previewImage: './preview-aptos.png',
     description: 'A no-code LMS dApp built on the Aptos blockchain, facilitating easy course creation and management with Move smart contracts.',
     techStack: [
@@ -711,7 +661,7 @@ const projects = [
       { class: 'devicon-react-original', title: 'React' },
       { class: 'devicon-typescript-plain', title: 'TypeScript' }
     ],
-    liveUrl: 'https://no-code-lm-sbuilder-with-aptos-paym.vercel.app',
+    liveUrl: '',
     repoUrl: 'https://github.com/codeREDxbt/NoCodeLMSbuilder-withAptosPayments'
   }
 ];
@@ -754,6 +704,7 @@ function buildCardHTML(project) {
       </div>`
     : `<div class="card-preview">
         <div class="preview-content">
+          ${project.underDev ? '<span style="background: rgba(255, 60, 60, 0.15); color: #ff5252; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 12px; display: inline-block; border: 1px solid rgba(255, 60, 60, 0.3);">Under Dev</span>' : ''}
           <h3 class="preview-title">${project.tagline}</h3>
           <p class="preview-subtitle">${project.subtitle}</p>
           <div class="search-demo">
@@ -1019,9 +970,9 @@ function addCustomStyles() {
 // CONSOLE ART - SECURITY: Removed sensitive info
 // ==========================================
 function consoleArt() {
-  console.log('%cðŸš€ Portfolio Loaded!', 'color: #ffffff; font-size: 20px; font-weight: bold;');
-  console.log('%cBuilt with â¤ï¸ by codeRED', 'color: #a3a3a3; font-size: 14px;');
-  console.log('%c\nHey there! ðŸ‘‹', 'color: #ededed; font-size: 16px;');
+  console.log('%c🚀 Portfolio Loaded!', 'color: #ffffff; font-size: 20px; font-weight: bold;');
+  console.log('%cBuilt with ❤️ by codeRED', 'color: #a3a3a3; font-size: 14px;');
+  console.log('%c\nHey there! 👋', 'color: #ededed; font-size: 16px;');
   console.log('%cLike what you see? Let\'s build something together!', 'color: #a3a3a3; font-size: 12px;');
   console.log('%cContact me via the website', 'color: #ffffff; font-size: 12px;');
 }
@@ -1101,6 +1052,7 @@ window.addEventListener('DOMContentLoaded', () => {
   initStatusBadgeClose();
   addCustomStyles();
   consoleArt();
+  initBookingForm();
   const calendarTrigger = document.querySelector('[data-modal="calendar"]');
   if (calendarTrigger) {
     calendarTrigger.addEventListener('click', (e) => {
@@ -1117,7 +1069,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  console.log('âœ“ All features initialized successfully!');
+  console.log('✓ All features initialized successfully!');
 });
 
 // Debounce function for resize events
