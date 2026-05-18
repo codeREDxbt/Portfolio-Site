@@ -2227,12 +2227,10 @@ body.light-mode .calendar-container {
 }
 
 body.light-mode .booking-sidebar,
+body.light-mode .timeslots-panel,
 body.light-mode .booking-form-panel {
-  border-color: rgba(0, 0, 0, 0.1);
-}
-
-body.light-mode .booking-sidebar {
   background: rgba(245, 245, 245, 0.5);
+  border-color: rgba(0, 0, 0, 0.1);
 }
 
 body.light-mode .calendar-nav-btn {
