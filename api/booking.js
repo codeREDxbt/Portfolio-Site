@@ -47,12 +47,18 @@ function validateBooking(data) {
     errors.push({ field: 'date', message: 'Date is required' });
   } else {
     const bookingDate = new Date(data.date);
-    const now = new Date();
     
     if (isNaN(bookingDate.getTime())) {
       errors.push({ field: 'date', message: 'Invalid date format' });
-    } else if (bookingDate < now) {
-      errors.push({ field: 'date', message: 'Cannot book dates in the past' });
+    } else {
+      // Compare calendar dates only (YYYY-MM-DD) to avoid timezone-induced false positives.
+      // new Date(year, month, day).toISOString() is UTC midnight, which can appear as
+      // "yesterday" for IST (UTC+5:30) and similar ahead-of-UTC timezones.
+      const todayStr = new Date().toISOString().split('T')[0];
+      const bookingStr = bookingDate.toISOString().split('T')[0];
+      if (bookingStr < todayStr) {
+        errors.push({ field: 'date', message: 'Cannot book dates in the past' });
+      }
     }
   }
   
