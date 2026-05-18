@@ -28,6 +28,7 @@ function initThemeToggle() {
 let currentMonth = 0; // January 2026
 let currentYear = 2026;
 let selectedDay = 6;
+let timeFormat = '12h';
 
 function openCalendar() {
   const calendarBooking = document.getElementById('calendarBooking');
@@ -115,7 +116,17 @@ function generateTimeslots() {
   times.forEach(time => {
     const slot = document.createElement('div');
     slot.className = 'timeslot';
-    slot.textContent = time;
+    
+    let displayTime = time;
+    if (timeFormat === '12h') {
+      const [hour, min] = time.split(':');
+      const h = parseInt(hour, 10);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      displayTime = `${h12}:${min} ${ampm}`;
+    }
+
+    slot.textContent = displayTime;
     slot.addEventListener('click', (e) => {
       confirmBooking(time, e.target);
     });
@@ -381,7 +392,8 @@ class ParticleSystem {
         vx: (Math.random() - 0.5) * 0.5,
         vy: (Math.random() - 0.5) * 0.5,
         radius: Math.random() * 2 + 1,
-        opacity: Math.random() * 0.5 + 0.2
+        opacity: Math.random() * 0.5 + 0.2,
+        isAccent: Math.random() < 0.25
       });
     }
   }
@@ -409,9 +421,15 @@ class ParticleSystem {
       this.ctx.beginPath();
       this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
       const isLightMode = document.body.classList.contains('light-mode');
-      this.ctx.fillStyle = isLightMode
-        ? `rgba(0, 0, 0, ${particle.opacity})`
-        : `rgba(255, 255, 255, ${particle.opacity})`;
+      if (particle.isAccent) {
+        this.ctx.fillStyle = isLightMode
+          ? `rgba(0, 0, 0, ${particle.opacity * 0.8})`
+          : `rgba(255, 255, 255, ${particle.opacity * 0.8})`;
+      } else {
+        this.ctx.fillStyle = isLightMode
+          ? `rgba(0, 0, 0, ${particle.opacity * 0.4})`
+          : `rgba(255, 255, 255, ${particle.opacity * 0.35})`;
+      }
       this.ctx.fill();
     });
 
@@ -457,11 +475,7 @@ function initHeaderScroll() {
     }
 
     if (navbar) {
-      if (currentScroll > lastScroll && currentScroll > 150) {
-        navbar.classList.add('navbar-hidden');
-      } else {
-        navbar.classList.remove('navbar-hidden');
-      }
+      navbar.classList.remove('navbar-hidden');
     }
 
     lastScroll = currentScroll;
@@ -863,7 +877,7 @@ class CursorTrail {
       top: ${y}px;
       width: 10px;
       height: 10px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.9), transparent);
+      background: radial-gradient(circle, var(--accent), transparent);
       border-radius: 50%;
       pointer-events: none;
       z-index: 6;
@@ -999,6 +1013,54 @@ function initStatusBadgeClose() {
   });
 }
 
+function initTimeFormatToggle() {
+  const formatButtons = document.querySelectorAll('.format-btn');
+  formatButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      formatButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      timeFormat = btn.textContent.trim().toLowerCase();
+      generateTimeslots();
+    });
+  });
+}
+
+function initScrollSpy() {
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-wrapper a.nav-icon');
+
+  const options = {
+    threshold: 0.15,
+    rootMargin: '-15% 0px -25% 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const id = entry.target.getAttribute('id');
+      const link = document.querySelector(`.nav-wrapper a[href="#${id}"]`) || 
+                   (id === 'contact' ? document.querySelector('.nav-wrapper a[href^="mailto:"]') : null);
+      
+      if (link) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(l => {
+            if (l !== link) l.classList.remove('nav-icon-active');
+          });
+          link.classList.add('nav-icon-active');
+        } else {
+          if (link.classList.contains('nav-icon-active')) {
+            link.classList.remove('nav-icon-active');
+          }
+        }
+      }
+    });
+  }, options);
+
+  sections.forEach(section => {
+    observer.observe(section);
+  });
+}
+
 // ==========================================
 // VISITOR COUNTER - SECURE API CALL
 // ==========================================
@@ -1053,6 +1115,8 @@ window.addEventListener('DOMContentLoaded', () => {
   initParallax();
   initStatusBadges();
   initStatusBadgeClose();
+  initTimeFormatToggle();
+  initScrollSpy();
   addCustomStyles();
   consoleArt();
   initBookingForm();
