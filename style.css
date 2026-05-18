@@ -2219,6 +2219,56 @@ body.light-mode .btn-secondary:hover {
   transform: rotate(90deg);
 }
 
+/* Light Mode Calendar Booking Modal */
+body.light-mode .calendar-container {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+body.light-mode .booking-sidebar,
+body.light-mode .booking-form-panel {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .booking-sidebar {
+  background: rgba(245, 245, 245, 0.5);
+}
+
+body.light-mode .calendar-nav-btn {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .calendar-nav-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .calendar-day:hover {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .form-group input {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: var(--text);
+}
+
+body.light-mode .form-group input:focus {
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .calendar-close {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .calendar-close:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
 /* ===========================
    FOOTER REDESIGN
    =========================== */
