@@ -611,7 +611,7 @@ const projects = [
       { class: 'devicon-typescript-plain', title: 'TypeScript' },
       { class: 'devicon-nodejs-plain', title: 'Node.js' }
     ],
-    liveUrl: '',
+    liveUrl: 'https://stellarpulse-xi.vercel.app/',
     repoUrl: 'https://github.com/codeREDxbt/StellarPulse'
   },
   {
@@ -929,6 +929,7 @@ function initStatusBadges() {
 // ==========================================
 // TYPING EFFECT (OPTIONAL FOR BIO)
 // ==========================================
+// eslint-disable-next-line no-unused-vars
 function typeWriter(element, text, speed = 50) {
   let i = 0;
   element.textContent = '';
@@ -1072,7 +1073,8 @@ window.addEventListener('DOMContentLoaded', () => {
   console.log('✓ All features initialized successfully!');
 });
 
-// Debounce function for resize events
+// Debounce function for resize events — kept for future use
+// eslint-disable-next-line no-unused-vars
 function debounce(func, wait) {
   let timeout;
   return function executedFunction(...args) {
@@ -1085,8 +1087,10 @@ function debounce(func, wait) {
   };
 }
 
-// Optimize scroll performance
+// Optimize scroll performance — kept for future use
+// eslint-disable-next-line no-unused-vars
 let ticking = false;
+// eslint-disable-next-line no-unused-vars
 function requestTick(callback) {
   if (!ticking) {
     window.requestAnimationFrame(() => {
