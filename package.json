@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "npx vercel dev",
+    "test": "echo \"No test suite configured\" && exit 0",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
     "format": "prettier \"{.github,test}/**/*.{yml,yaml,js}\" \"*.{json,cjs}\" \"vercel.json\" --write",
