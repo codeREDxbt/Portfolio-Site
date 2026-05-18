@@ -304,21 +304,11 @@ button {
 }
 
 #themeToggle {
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  outline: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 0 0 -4px;
-  box-sizing: border-box;
 }
 
 #themeToggle:hover {
@@ -2373,10 +2363,6 @@ body.light-mode .card-link-secondary:hover {
     height: 40px;
   }
 
-  #themeToggle {
-    margin-left: 0;
-  }
-
   /* Hero Section */
   .hero {
     padding: 90px 0 30px;
@@ -2629,10 +2615,6 @@ body.light-mode .card-link-secondary:hover {
   .nav-icon {
     width: 36px;
     height: 36px;
-  }
-
-  #themeToggle {
-    margin-left: 0;
   }
 
   .nav-icon svg {
@@ -3076,10 +3058,6 @@ body.light-mode .card-link-secondary:hover {
   .nav-icon {
     width: 32px;
     height: 32px;
-  }
-
-  #themeToggle {
-    margin-left: 0;
   }
 
   .nav-icon svg {
