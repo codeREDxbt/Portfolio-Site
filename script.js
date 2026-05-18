@@ -233,13 +233,14 @@ async function generateGitHubGraph() {
   const username = 'codeREDxbt';
 
   try {
-    const response = await fetch(`/api/github-contributions?username=${encodeURIComponent(username)}`);
+    // Add cache-busting so browsers always get fresh data every hour
+    const hourBucket = Math.floor(Date.now() / 3600000);
+    const response = await fetch(
+      `/api/github-contributions?username=${encodeURIComponent(username)}&_t=${hourBucket}`
+    );
 
-    if (response.status === 429) {
-      const errorData = await response.json();
-      console.log('Rate limit reached:', errorData.message);
-      generateFallbackGraph(graph, username);
-      return;
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
     }
 
     const result = await response.json();
@@ -262,8 +263,10 @@ async function generateGitHubGraph() {
       });
     }
 
-    if (contributionCountEl && totalContributions > 0) {
-      contributionCountEl.textContent = `${totalContributions.toLocaleString()} contributions in the last year on GitHub`;
+    if (contributionCountEl) {
+      contributionCountEl.textContent = totalContributions > 0
+        ? `${totalContributions.toLocaleString()} contributions in the last year on GitHub`
+        : 'No contributions data available';
     }
 
     const weeks = 52;
@@ -302,12 +305,14 @@ async function generateGitHubGraph() {
     }
   } catch (error) {
     console.error('GitHub API Error:', error.message);
-
+    if (contributionCountEl) {
+      contributionCountEl.textContent = 'Could not load contribution data';
+    }
     generateFallbackGraph(graph, username);
   }
 }
 
-// Helper function to generate fallback graph
+// Helper function to generate fallback graph (used when API is unavailable)
 function generateFallbackGraph(graph, username) {
   const weeks = 52;
   const daysPerWeek = 7;
@@ -321,11 +326,8 @@ function generateFallbackGraph(graph, username) {
       cell.rel = 'noopener noreferrer';
       cell.style.cursor = 'pointer';
 
-      const level = Math.floor(Math.random() * 5);
-      const adjustedLevel = level < 3 ? Math.floor(Math.random() * 3) : level;
-
-      cell.classList.add(`level-${adjustedLevel}`);
-      cell.title = `${adjustedLevel * 5} contributions`;
+      cell.classList.add('level-0');
+      cell.title = 'Data unavailable';
 
       graph.appendChild(cell);
     }
