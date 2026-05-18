@@ -306,7 +306,9 @@ button {
 #themeToggle {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  display: flex;
+  display: grid !important;
+  grid-template-areas: "stack";
+  place-items: center;
   align-items: center;
   justify-content: center;
 }
@@ -316,9 +318,7 @@ button {
 }
 
 .theme-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  grid-area: stack;
   width: 24px;
   height: 24px;
   transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -327,22 +327,22 @@ button {
 
 .sun-icon {
   opacity: 1;
-  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  transform: rotate(0deg) scale(1);
 }
 
 .moon-icon {
   opacity: 0;
-  transform: translate(-50%, -50%) rotate(90deg) scale(0);
+  transform: rotate(90deg) scale(0);
 }
 
 body.light-mode .sun-icon {
   opacity: 0;
-  transform: translate(-50%, -50%) rotate(-90deg) scale(0);
+  transform: rotate(-90deg) scale(0);
 }
 
 body.light-mode .moon-icon {
   opacity: 1;
-  transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  transform: rotate(0deg) scale(1);
 }
 
 /* Old header styles - keep for compatibility */
