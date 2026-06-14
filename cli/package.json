@@ -1,0 +1,25 @@
+{
+  "name": "coderedxbt",
+  "version": "1.0.0",
+  "description": "A CLI version of Vinayak Vashisth's (codeREDxbt) portfolio",
+  "main": "index.js",
+  "bin": {
+    "coderedxbt": "index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "portfolio",
+    "cli",
+    "coderedxbt",
+    "resume"
+  ],
+  "author": "Vinayak Vashisth (codeREDxbt)",
+  "license": "MIT",
+  "dependencies": {
+    "boxen": "^7.1.1",
+    "chalk": "^5.3.0"
+  },
+  "type": "module"
+}
