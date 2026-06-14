@@ -25,9 +25,12 @@ function initThemeToggle() {
   });
 }
 
-let currentMonth = 0; // January 2026
-let currentYear = 2026;
-let selectedDay = 6;
+const todayInit = new Date();
+let currentMonth = todayInit.getMonth();
+let currentYear = todayInit.getFullYear();
+let selectedDay = todayInit.getDate();
+let selectedMonth = currentMonth;
+let selectedYear = currentYear;
 let timeFormat = '12h';
 
 function openCalendar() {
@@ -81,21 +84,32 @@ function generateCalendar() {
     calendarDays.appendChild(emptyDay);
   }
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   for (let day = 1; day <= daysInMonth; day++) {
     const dayEl = document.createElement('div');
     dayEl.className = 'calendar-day';
     dayEl.textContent = day;
 
-    if (day === selectedDay && currentMonth === 0 && currentYear === 2026) {
-      dayEl.classList.add('selected');
-    }
+    const cellDate = new Date(currentYear, currentMonth, day);
+    
+    if (cellDate < today) {
+      dayEl.classList.add('disabled');
+    } else {
+      if (day === selectedDay && currentMonth === selectedMonth && currentYear === selectedYear) {
+        dayEl.classList.add('selected');
+      }
 
-    dayEl.addEventListener('click', () => {
-      document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
-      dayEl.classList.add('selected');
-      selectedDay = day;
-      generateTimeslots();
-    });
+      dayEl.addEventListener('click', () => {
+        document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+        dayEl.classList.add('selected');
+        selectedDay = day;
+        selectedMonth = currentMonth;
+        selectedYear = currentYear;
+        generateTimeslots();
+      });
+    }
 
     calendarDays.appendChild(dayEl);
   }
@@ -220,11 +234,13 @@ function confirmBooking(time, slotElement) {
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'];
 
-  const dateStr = `${monthNames[currentMonth]} ${selectedDay}, ${currentYear}`;
-  const bookingDate = new Date(currentYear, currentMonth, selectedDay);
+  const dateStr = `${monthNames[selectedMonth]} ${selectedDay}, ${selectedYear}`;
+  const formattedMonth = String(selectedMonth + 1).padStart(2, '0');
+  const formattedDay = String(selectedDay).padStart(2, '0');
+  const dateString = `${selectedYear}-${formattedMonth}-${formattedDay}`;
   
   currentBookingData = {
-    date: bookingDate.toISOString(),
+    date: dateString,
     time: time
   };
   
