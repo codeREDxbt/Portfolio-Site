@@ -1,6 +1,6 @@
 {
   "name": "coderedxbt",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A CLI version of Vinayak Vashisth's (codeREDxbt) portfolio",
   "main": "index.js",
   "bin": {
