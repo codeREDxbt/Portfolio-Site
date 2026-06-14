@@ -119,6 +119,15 @@ function generateTimeslots() {
   const timeslotsList = document.getElementById('timeslotsList');
   if (!timeslotsList) return;
 
+  const selectedDateHeader = document.querySelector('.timeslots-header .selected-date');
+  if (selectedDateHeader) {
+    const dateObj = new Date(selectedYear, selectedMonth, selectedDay);
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayName = dayNames[dateObj.getDay()];
+    const dayFormatted = selectedDay.toString().padStart(2, '0');
+    selectedDateHeader.textContent = `${dayName} ${dayFormatted}`;
+  }
+
   timeslotsList.innerHTML = '';
 
   const times = [
