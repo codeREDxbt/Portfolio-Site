@@ -14,12 +14,12 @@ const data = {
   web: chalk.cyan("https://coderedxbt.dev/"),
   npx: chalk.green("npx coderedxbt"),
   
-  labelWork: chalk.white.bold("      💻 Work:"),
-  labelTwitter: chalk.white.bold("   🐦 Twitter:"),
-  labelGitHub: chalk.white.bold("    🐙 GitHub:"),
-  labelLinkedIn: chalk.white.bold("  🔗 LinkedIn:"),
-  labelWeb: chalk.white.bold("       🌍 Web:"),
-  labelCard: chalk.white.bold("      📦 Card:")
+  labelWork: chalk.white.bold("       Work:"),
+  labelTwitter: chalk.white.bold("    Twitter:"),
+  labelGitHub: chalk.white.bold("     GitHub:"),
+  labelLinkedIn: chalk.white.bold("   LinkedIn:"),
+  labelWeb: chalk.white.bold("        Web:"),
+  labelCard: chalk.white.bold("       Card:")
 };
 
 const newline = '\n';
