@@ -28,9 +28,11 @@ desktop.ini
 *~
 
 # Build outputs
+.next/
 dist/
 build/
 .cache/
+*.tsbuildinfo
 
 # Temporary files
 tmp/
