@@ -4,13 +4,13 @@ import { HeroVisual } from "./HeroVisual";
 
 export function Hero() {
   return (
-    <section id="index" className="relative overflow-hidden px-6 pb-24 pt-32 md:px-16 md:pt-40 lg:px-24">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
+    <section id="index" className="relative overflow-hidden px-6 pb-24 pt-28 md:px-16 md:pt-32 lg:px-24">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div>
           <p className="fade-in-up font-mono text-[11px] uppercase tracking-[0.22em] text-red">
             {profile.name} / {profile.title}
           </p>
-          <h1 className="mt-10 max-w-5xl text-[clamp(3.5rem,9vw,8.5rem)] font-medium leading-[0.92] tracking-[-0.075em]">
+          <h1 className="mt-10 max-w-[840px] text-balance text-[clamp(3rem,6.8vw,6.5rem)] font-medium leading-[0.96] tracking-[-0.065em]">
             <span className="hero-line"><span>Building secure,</span></span>
             <span className="hero-line"><span>expressive products</span></span>
             <span className="hero-line"><span>for the decentralized web.</span></span>
