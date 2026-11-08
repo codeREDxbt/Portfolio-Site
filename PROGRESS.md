@@ -123,11 +123,29 @@ Runtime checks passed:
 - No external links missing `noopener`
 - Canonical, OG, Twitter, robots, and sitemap metadata verified
 
+## Dependency status
+
+Dependencies were upgraded to the latest compatible versions:
+
+- Next.js 16.4.5
+- React 19.3.1
+- Motion 14.10.1
+- Three.js 0.187.0
+- Tailwind CSS 4.3.5
+- ESLint 10.14.0
+- Prettier 3.9.10
+- TypeScript 6.0.3
+
+TypeScript 7.0.2 is available, but the official Next.js ESLint chain currently depends on `typescript-eslint`, which supports TypeScript `<6.1.0`. TypeScript 6.0.3 is therefore the latest fully validated compatible version.
+
+A Next 16 production preview was started at `http://localhost:3000` and validated successfully.
+
 ## Git history
 
 ```text
 4ed47e9 Docs: add FigCraft-first portfolio redesign plan
 623675e Feat: rebuild portfolio with Next.js red signal design
+009ec02 Docs: add portfolio redesign progress tracker
 ```
 
 The local branch is currently ahead of `origin/main`; changes have not been pushed or deployed publicly.

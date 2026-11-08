@@ -4,7 +4,7 @@ A redesigned portfolio for Vinayak Vashisth / codeRED, built from a FigCraft-fir
 
 ## Stack
 
-- Next.js 15 + React 19 + TypeScript
+- Next.js 16 + React 19 + TypeScript 6 (latest lint-compatible TypeScript)
 - Tailwind CSS 4 design tokens
 - Motion for viewport/menu transitions
 - Lenis for reduced-motion-safe smooth scrolling
