@@ -41,6 +41,7 @@ export const projects: Project[] = [
     role: "Design + Development",
     year: "2026",
     stack: ["React", "TypeScript", "Tailwind CSS", "Web3"],
+    liveUrl: "https://www.veilpayapp.com",
     repoUrl: "https://github.com/codeREDxbt/Veilpay",
     featured: true,
   },

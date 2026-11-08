@@ -163,6 +163,7 @@ The local branch is currently ahead of `origin/main`; changes have not been push
 ### Optional polish
 
 - Hero scale was adjusted after review so the headline fits standard desktop viewports.
+- Veilpay now links to the live product at `https://www.veilpayapp.com`.
 - Use `NEXT_SESSION_PROMPT.md` for the next identity/wow-factor pass.
 - Add individual case-study pages.
 - Add more project impact metrics.
