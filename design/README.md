@@ -31,6 +31,7 @@ Keep the FigCraft window open. The workspace MCP config at `D:\Portfolio-Site-ma
 - `exports/booking-concept.png` — 1200×800 booking modal.
 - `exports/og-concept.png` — 1200×630 social preview.
 - `exports/ui-states-concept.png` — 900×700 buttons, inputs, chips, and focus/error states.
+- `exports/works-reference-concept.png` — 1440×1200 reference-inspired Works system pass.
 
 ## Notes
 

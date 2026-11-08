@@ -62,6 +62,8 @@ The site should feel like codeRED, not like a polished clone of shaahid.in. Keep
 
 ### 4. Project storytelling
 
+The user specifically loved the Works section at `shaahid.in`. Preserve and strengthen the new media-first Works direction: sticky editorial heading, project-specific imagery, structured metadata, and the red pixel-grid “View project” CTA.
+
 - Make each featured project feel like a mini case study, not just a card.
 - Add project-specific visual treatments and metadata.
 - Consider expandable project rows, modal case studies, or dedicated routes if justified.

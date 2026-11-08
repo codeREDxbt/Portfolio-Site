@@ -53,7 +53,8 @@ Implemented:
 - Motion viewport/menu transitions
 - Lenis smooth scrolling with reduced-motion safeguards
 - Lazy-loaded Three.js hero signal scene
-- Editorial hero, narrative, projects, stack/activity, contact, and footer
+- Editorial hero, narrative, stack/activity, contact, and footer
+- Reference-inspired Works section with sticky media heading, media-first project cards, metadata rows, and pixel-grid CTA
 - Desktop/mobile menu overlay
 - Booking modal
 - GitHub contribution graph

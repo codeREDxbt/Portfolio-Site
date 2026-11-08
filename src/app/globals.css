@@ -121,6 +121,48 @@ body::before {
   background: #e5484d;
 }
 
+.project-view {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 420ms var(--ease-out-expo),
+    transform 420ms var(--ease-out-expo);
+}
+
+.project-card:hover .project-view,
+.project-media:focus-visible .project-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pixel-grid {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: repeat(3, 4px);
+  gap: 2px;
+}
+
+.pixel-grid span {
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  background: #e5484d;
+  opacity: 0.25;
+  animation: pixelgrid-wave 760ms ease-in-out infinite;
+}
+
+@keyframes pixelgrid-wave {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+}
+
 @keyframes line-reveal {
   to {
     transform: translateY(0);
