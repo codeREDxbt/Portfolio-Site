@@ -161,6 +161,7 @@ The local branch is currently ahead of `origin/main`; changes have not been push
 
 ### Optional polish
 
+- Use `NEXT_SESSION_PROMPT.md` for the next identity/wow-factor pass.
 - Add individual case-study pages.
 - Add more project impact metrics.
 - Add a designed light mode if desired.
