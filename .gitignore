@@ -45,3 +45,7 @@ credentials.json
 # Backup files
 *.backup
 *.bak
+
+# Python cache
+__pycache__/
+*.py[cod]
