@@ -57,17 +57,35 @@ export function Hero() {
 
           <div className="col-span-12 flex flex-col gap-8 lg:col-span-4 lg:justify-end">
             <figure className="portrait-plate relative overflow-hidden rounded-xl border border-line bg-surface">
-              <Image
-                src="/brand/photo.jpg"
-                alt="Portrait of Vinayak Vashisth"
-                width={560}
-                height={700}
-                priority
-                className="portrait-image aspect-[4/3] w-full object-cover object-[50%_25%] lg:aspect-[4/5]"
-              />
-              <div aria-hidden="true" className="portrait-grade pointer-events-none absolute inset-0" />
+              {/* glitch plate: the person ⇄ the mark, swapped in slice bursts */}
+              <div className="glitch-stage relative aspect-[4/3] lg:aspect-[4/5]">
+                <div className="glitch-layer glitch-photo">
+                  <Image
+                    src="/brand/photo.jpg"
+                    alt="Portrait of Vinayak Vashisth"
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                    className="portrait-image object-cover object-[50%_25%]"
+                  />
+                </div>
+                <div className="glitch-layer glitch-logo" aria-hidden="true">
+                  <Image
+                    src="/brand/codeRED-logo.png"
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 33vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div aria-hidden="true" className="glitch-flash" />
+                <div aria-hidden="true" className="portrait-grade pointer-events-none absolute inset-0" />
+              </div>
               <figcaption className="flex items-center justify-between border-t border-line px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
-                <span>SIG/002 — Vinayak</span>
+                <span className="caption-swap">
+                  <span className="caption-a">SIG/002 — Vinayak</span>
+                  <span className="caption-b" aria-hidden="true">SIG/001 — codeRED</span>
+                </span>
                 <span className="text-red">20.59° N / 78.96° E</span>
               </figcaption>
             </figure>
