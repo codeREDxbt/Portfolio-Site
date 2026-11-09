@@ -10,13 +10,18 @@ export type Project = {
   liveUrl?: string;
   repoUrl?: string;
   featured: boolean;
+  caseFile?: {
+    challenge: string;
+    decision: string;
+    outcome: string;
+  };
 };
 
 export const profile = {
   name: "Vinayak Vashisth",
   handle: "codeRED",
-  role: "Designer & Developer",
-  title: "Web3 × Full-stack Engineer",
+  role: "Full-stack Engineer",
+  title: "Full-stack Engineer — Web3 · SaaS · Product",
   location: "India / Remote",
   email: "codeREDx07@proton.me",
   availability: "Available for select work",
@@ -44,6 +49,11 @@ export const projects: Project[] = [
     liveUrl: "https://www.veilpayapp.com",
     repoUrl: "https://github.com/codeREDxbt/Veilpay",
     featured: true,
+    caseFile: {
+      challenge: "Multiple chains, one wallet — without leaking addresses across protocols.",
+      decision: "Protocol-specific address isolation with fiat on/off-ramps built in.",
+      outcome: "Live in production.",
+    },
   },
   {
     id: "paytrack",
@@ -58,6 +68,11 @@ export const projects: Project[] = [
     liveUrl: "https://paytrackx.vercel.app",
     repoUrl: "https://github.com/codeREDxbt/PayTrack",
     featured: true,
+    caseFile: {
+      challenge: "Attendance, overtime, and payroll data trapped in spreadsheets.",
+      decision: "One operational dashboard with clear state and fast reads.",
+      outcome: "Live in production.",
+    },
   },
   {
     id: "stellarpulse",
@@ -72,6 +87,11 @@ export const projects: Project[] = [
     liveUrl: "https://stellarpulse-xi.vercel.app/",
     repoUrl: "https://github.com/codeREDxbt/StellarPulse",
     featured: true,
+    caseFile: {
+      challenge: "Stellar network data is raw, fast, and unreadable.",
+      decision: "Real-time explorer with analytics, search, and dense visualizations.",
+      outcome: "Live in production.",
+    },
   },
   {
     id: "blockademia",
@@ -86,6 +106,11 @@ export const projects: Project[] = [
     liveUrl: "https://blockademia.live",
     repoUrl: "https://github.com/codeREDxbt/blockademia-platform",
     featured: true,
+    caseFile: {
+      challenge: "Web3 education with no verifiable proof of progress.",
+      decision: "On-chain certification with progress tracked end to end.",
+      outcome: "Live in production.",
+    },
   },
   {
     id: "medichainai",
@@ -136,7 +161,7 @@ export const narrative = [
   {
     number: "01",
     title: "Intro",
-    body: "Full-stack engineer with a design eye, focused on Web3 products that feel usable from day one.",
+    body: "Full-stack engineer with a design eye, focused on products that feel usable from day one — Web3, SaaS, and everything between.",
   },
   {
     number: "02",

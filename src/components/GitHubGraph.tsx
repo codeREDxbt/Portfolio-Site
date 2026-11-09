@@ -14,7 +14,7 @@ type ContributionResponse = {
   weeks?: ContributionDay[][];
 };
 
-const colors = ["#292524", "#274536", "#35694B", "#4B9B6A", "#67C792"];
+const colors = ["var(--line)", "#274536", "#35694B", "#4B9B6A", "#67C792"];
 
 function fallbackWeeks(): ContributionDay[][] {
   return Array.from({ length: 52 }, (_, week) =>

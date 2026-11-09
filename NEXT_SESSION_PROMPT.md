@@ -1,158 +1,76 @@
-# Next Session Prompt — codeRED Portfolio Wow-Factor Pass
+# Follow-up Prompt — codeRED Portfolio: fix motion/menu, then hero + dock + trail exploration
 
 Use this prompt at the start of the next session.
 
 ---
 
-We are continuing a portfolio overhaul for Vinayak Vashisth / codeRED. The project is at:
+We are continuing the codeRED portfolio for Vinayak Vashisth at:
 
 ```text
 D:\Portfolio-Site-main\Portfolio-Site-main
 ```
 
-The first complete redesign has already been designed in FigCraft and implemented. I loved the first draft. Do not restart from scratch. Build on top of the existing direction and make it feel more distinctive, premium, memorable, and personal.
+Do not restart from scratch. A LOT is already built and loved. Fix what's broken first, then explore options where marked.
 
-## Current state
+## Current state (what exists now)
 
-- Stack: Next.js 16, React 19, TypeScript 6, Tailwind CSS 4, Motion, Lenis, Three.js.
-- Design direction: **Red Signal Editorial**.
-- Main design file: `design/codered-red-signal.figcraft`.
-- Design exports: `design/exports/`.
-- Plan: `DESIGN_PLAN.md`.
-- Progress tracker: `PROGRESS.md`.
-- Current implementation: `src/`.
-- Legacy reference: `legacy/static-site/`.
-- Preview command: `npm run dev` or `npm run build && npm start`.
-- FigCraft live mode: `powershell -NoProfile -ExecutionPolicy Bypass -File .\design\start-figcraft-live.ps1`.
-- MCP config for FigCraft is in the outer workspace at `D:\Portfolio-Site-main\.mcp.json`.
+- Stack: Next.js 16, React 19, TypeScript 6, Tailwind 4, Motion, Lenis, Three.js.
+- Design: "Red Signal Editorial" — dark `#0c0a09` / ivory `#f7f2e8` themes, red `#e5484d`, tokens in `src/app/globals.css`, theme toggle with circular View Transition, no-flash init in `layout.tsx`.
+- Boot: `PageLoader.tsx` — signal-acquisition sequence (counter, masked wordmark, status lines) → wordmark docks into the header logo → `codered:release` + `codered:dock` events → `SignalScene` answers with intro ramp + one hot pulse ring.
+- Hero: "Nameplate" — `Vinayak Vashisth.` as H1, static red role line, portrait plate (`/brand/photo.jpg`) with caption, "In this edition" project index, meta rail (Role/Based/Status/Contact email), full-bleed `SignalScene` field (wave terrain + grid + streaks + orbiters + origin glow).
+- Works: sticky stacked deck with case-file dossier cards (`challenge/decision/outcome` in `portfolio.ts`), hover cursor chip + parallax, sticky heading with hover-secret radar pill.
+- Journey ("Trace / Signal log"): sticky slot-machine odometer year + entries from real project data.
+- Menu: bottom-center dock pill (`DockNav`) → full-screen "lamp" menu (`SiteMenu`) — warm glow + filament flicker stagger; inert + focus management.
+- Footer: curtain reveal (fixed behind page, `--footer-h` measured), red hairline sweep, mega wordmark w/ per-letter hover, ticker (desktop), direct-line CTA, IST clock, visitor count.
+- Audit wave DONE: contrast tokens, Lenis focus-chasing, deck offsets (12.25rem/10rem), footer mobile shrink, modal scroll/focus fixes, API hardening. Reports: `D:\Portfolio-Site-main\audit\*.md`.
+- Tooling: CDP probe scripts at `D:\Portfolio-Site-main\*.mjs` (real headless Edge verification), Lighthouse via `CHROME_PATH` + npx, concept specs at `D:\Portfolio-Site-main\concepts\`.
 
-## Goal for this pass
+## FIRST — fix what's broken (do not redesign before these are fixed + probe-verified)
 
-Push the portfolio from “excellent first draft” to “memorable design-engineer identity piece”.
+1. **Scroll animation is not working right.**
+   Investigate the Lenis ↔ Motion interaction end to end: deck scale/dim, Journey odometer tracking, hero scroll fade, anchor handler, footer reveal. Suspects: Lenis lerp vs `useScroll` measurements after content height changes; audit's deck offset bump pushing pin points; Lenis yanking programmatic scrolls; IO thresholds vs Lenis velocity. Reproduce at 390/768/1440 with the CDP probes, fix, re-probe until sticky/scroll behavior is smooth and deterministic.
 
-The site should feel like codeRED, not like a polished clone of shaahid.in. Keep the restraint and editorial quality, but add stronger personal authorship, signature interactions, and more cinematic detail.
+2. **Menu open/close is not working right.**
+   Reproduce with `D:\Portfolio-Site-main\menu-probe.mjs` + manual: dock pill → SiteMenu. Check: pill label sync, AnimatePresence exit completeness, z-order (menu z-40 vs dock z-50), inert application/removal, Escape path, focus in/out, body overflow lock, double handlers between DockNav and SiteMenu. Fix and re-probe.
 
-## What to improve
+## THEN — hero needs real options (user is not satisfied yet)
 
-### 1. Identity and voice
+The nameplate layout may stay or go — the dissatisfaction is the overall vibe/background. Prototype 2–3 directions and pick the strongest:
 
-- Make the site feel recognizably codeRED within the first five seconds.
-- Improve the hero copy so it sounds specific to Vinayak, not generic.
-- Use the red signal motif as a coherent identity system across hero, projects, menu, footer, OG image, and micro-interactions.
-- Explore a stronger verbal identity: terse, technical, confident, product-minded.
-- Avoid generic phrases like “I build cool stuff” or template portfolio copy.
+- **A. Retune the field** — keep the terrain but make it decisively better: stronger origin glow, denser instrument grid, more legible pointer ripple, better balance around the portrait plate.
+- **B. Portrait-forward** — field goes quiet/subdued; the portrait gets the treatment (red duotone/grade, caption furniture, plate annotations); type stays nameplate.
+- **C. Pure typographic hero** — kill the WebGL; giant name with the signal living INSIDE the type (blend/mask/shimmer), grain + one signal line. Fastest, boldest.
+- **D. New background entirely** — shader-only flowing ribbons/beams (no points), or a slow signal map. Keep GPU budget identical or lower.
 
-### 2. Hero wow factor
+Whichever wins: keep the 30-second test (name/role/work/contact on the fold), keep `data-booting` choreography, keep reduced-motion + coarse fallbacks.
 
-- Prototype 2–3 stronger hero concepts in FigCraft before coding.
-- Improve the Three.js signal scene: make it more sculptural, alive, and intentional.
-- Consider particle braids, orbital chains, signal pulses, red wireframe geometry, shader distortion, or a subtle identity mark formed from points.
-- Add pointer-reactive depth without making the site feel gimmicky.
-- Maintain static and reduced-motion fallbacks.
-- Keep the hero content readable and fast on mobile.
+## Dock overhaul — options to evaluate
 
-### 3. Motion choreography
+Current: bottom-center pill → full-screen lamp menu. Evaluate:
 
-- Create a more deliberate motion system: entry timing, section reveals, menu transitions, project transitions, hover states, and scroll-linked moments.
-- Use Motion for UI/layout transitions.
-- Use Anime.js only where timeline choreography is clearly better than Motion.
-- Use Lenis only where it improves feel without breaking native behavior.
-- Add reduced-motion alternatives for every animation.
-- Avoid constant particle spawning or scroll listeners that cause reflow.
+- **A. Keep + polish** — magnetic pill, pill→overlay shared-layout morph (Motion layoutId), lamp items land with filament flicker (exists).
+- **B. Command palette (⌘K)** — the menu becomes an engineer's command menu: fuzzy-find sections/projects/actions ("book a call", "copy npx", theme toggle). Very codeRED. Keep pill as visual trigger + ⌘K hotkey.
+- **C. Minimal top bar** — inline links on desktop, overlay only on mobile; dock removed.
+- **D. Side rail** — fixed left rail with mono labels + lamp glow on open.
 
-### 4. Project storytelling
+## Trail ("Trace / Signal log") — needs to be unique
 
-The user specifically loved the Works section at `shaahid.in`. Preserve and strengthen the new media-first Works direction: sticky editorial heading, project-specific imagery, structured metadata, and the red pixel-grid “View project” CTA.
+Current: sticky odometer + entry rows. Evaluate:
 
-- Make each featured project feel like a mini case study, not just a card.
-- Add project-specific visual treatments and metadata.
-- Consider expandable project rows, modal case studies, or dedicated routes if justified.
-- Show process, role, stack, decisions, and outcomes where real information exists.
-- Do not invent fake metrics. If impact numbers are unknown, use qualitative outcomes.
-- Keep Veilpay, PayTrack, StellarPulse, and Blockademia as the primary featured set unless a better order emerges.
-
-### 5. Design details
-
-- Improve typography hierarchy and letter spacing.
-- Add tasteful annotations, coordinate marks, captions, or engineering details.
-- Use hairlines, masks, and asymmetric spacing for editorial quality.
-- Improve hover states and active states.
-- Add a more polished booking modal interaction.
-- Make the mobile experience feel designed, not just responsive.
-
-### 6. Technical excellence
-
-- Keep the initial homepage fast.
-- Dynamic-import or lazy-load heavy visuals.
-- Keep Three.js isolated and dispose GPU resources correctly.
-- Maintain strong accessibility: focus states, semantic HTML, keyboard support, reduced motion.
-- Keep API behavior and security intact.
-- Run lint, typecheck, tests, and a production build before finishing.
-- Update `PROGRESS.md` before the session ends.
-
-## Available resources
-
-Use the local skill library at `X:\skills`. Search it first and load only relevant skills.
-
-Potentially useful skills:
-
-- `interactive-portfolio`
-- `high-end-visual-design`
-- `design-spells`
-- `anti-slop-design`
-- `ui-motion`
-- `fixing-motion-performance`
-- `frontend-lighthouse`
-- `browser-testing-with-devtools`
-- `threejs-skills`
-- `threejs-shaders`
-- `threejs-postprocessing`
-- `threejs-interaction`
-- `animejs-animation`
-- `vercel-react-view-transitions`
-
-External libraries/resources available or worth considering:
-
-- Motion
-- Anime.js
-- Three.js
-- postprocessing
-- Lottie if there is a real vector animation use case
-- Remotion only if producing a launch/social video, not required for the site
-- FigCraft MCP for design iteration
-
-Do not add every library. Use only what materially improves the experience.
-
-## Required workflow
-
-1. Read `DESIGN_PLAN.md`, `PROGRESS.md`, and inspect the current site.
-2. Audit the first draft for generic or weak moments.
-3. Create or update FigCraft boards before major visual coding.
-4. Prototype the strongest 2–3 improvements.
-5. Implement the selected direction.
-6. Validate with `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build`.
-7. Check the production preview locally.
-8. Update `PROGRESS.md`.
-9. Commit the work with a clear message.
+- **A. Terminal log** — entries render like a signal log being typed (mono, cursor, timestamps); scroll reveals each line.
+- **B. Constellation map** — milestones as nodes on a faint signal grid, connected by drawn lines; scroll pans the constellation.
+- **C. Horizontal scrub** — the year scrubs a horizontal timeline rail with event markers (ties into the instrument language).
+- **D. Keep odometer, add expansion** — each entry expands to show the project inline when active.
 
 ## Constraints
 
-- Do not remove the current project without preserving it in Git.
-- Do not break the API routes or booking flow.
-- Do not sacrifice accessibility for visuals.
-- Do not make the site slow just to add effects.
-- Do not produce generic AI slop.
-- Do not copy proprietary assets or text from the reference site.
-- Do not take screenshots if the active agent has no vision capability; use FigCraft document inspection, DOM checks, browser tooling, and exported files instead.
+- Do not break: API routes, booking flow, theme system, reduced-motion paths, mobile.
+- Keep the boot loader + dock handshake intact unless a hero option explicitly replaces it.
+- Validate everything: `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`, plus CDP probes + Lighthouse.
+- No invented metrics or fake content. Real data only (`src/data/portfolio.ts`).
+- Update `PROGRESS.md` before the session ends. Commit with a clear message.
 
 ## Expected outcome
 
-A stronger second-draft portfolio that feels:
+A site where scroll + menu are provably smooth, the hero finally feels like *his* portfolio, and the dock + trail carry signatures nobody else's portfolio has.
 
-- More personal to Vinayak/codeRED
-- More cinematic and memorable
-- More refined in typography and motion
-- More credible as a design engineer portfolio
-- Still fast, accessible, and production-ready
-
-Start by reviewing the current site and proposing the highest-impact upgrades, then proceed autonomously through design and implementation.

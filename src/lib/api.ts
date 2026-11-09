@@ -46,13 +46,15 @@ export function apiError(status: number, message: string, details?: unknown) {
   return apiJson({ status: "error", statusCode: status, message, details }, { status });
 }
 
-const allowedOrigins = new Set([
-  "https://coderedxbt.dev",
-  "https://www.coderedxbt.dev",
-  "https://coderedxbt.vercel.app",
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
-]);
+const allowedOrigins = new Set(
+  [
+    "https://coderedxbt.dev",
+    "https://www.coderedxbt.dev",
+    "https://coderedxbt.vercel.app",
+    // localhost origins only exist for local development
+    ...(process.env.NODE_ENV !== "production" ? ["http://localhost:3000", "http://127.0.0.1:3000"] : []),
+  ],
+);
 
 export function applyCors(request: Request, response: NextResponse) {
   const origin = request.headers.get("origin");

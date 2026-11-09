@@ -2,7 +2,7 @@
 
 ## Current status
 
-**Status:** Design and implementation complete locally. Ready for review and deployment.
+**Status:** Interaction-repair pass + second design wave complete locally. Scroll/menu are probe-verified deterministic at 390/768/1440; hero, dock, works, and trail carry the new "signal instrument" signatures. Ready for review and deployment.
 
 The project has been rebuilt from the legacy static site into a FigCraft-designed Next.js application using the **Red Signal Editorial** direction.
 
@@ -150,6 +150,40 @@ A Next 16 production preview was started at `http://localhost:3000` and validate
 ```
 
 The local branch is currently ahead of `origin/main`; changes have not been pushed or deployed publicly.
+
+## Session 2 — interaction repairs + signature redesigns
+
+### Repairs (probe-verified first, before any redesign)
+
+- **Scroll manager** (`src/lib/scroll.ts`): shared Lenis registry, counted page-scroll locks for overlays, content-resize re-measurement, and one `navigateToElement` path for anchor focus+scroll. Fixed the Lenis↔focus race where anchor clicks were yanked by the focus-chase handler (focus is suppressed for the anchor's own target, then the tween starts after overlay unlock).
+- **Focus-chase hardening:** never scrolls for elements inside `position: fixed` UI (dock pill, header, dialogs) — this was the "menu click glitches a scroll" bug (0 → 650px jump on first click, verified via CDP trace).
+- **DockNav hit target:** hide/reveal is opacity-only — the pill never moves between press and release, so the first click can't be swallowed mid-animation.
+- **Menu modal correctness:** portaled dialog, full background inert, Tab trap, Escape, focus returns to the dock trigger; menu-owned links navigate deterministically after close.
+- **Journey tracking:** `useScroll` offsets corrected to `start center → end center`; entries progress evenly (probe: 0 → 2 → 4 → 5 across the list).
+
+### Redesigns (user-selected)
+
+- **Hero — "Station":** nameplate layout kept; the old point-terrain is replaced by `three/RibbonField.tsx` — five additive 3D light ribbons (a few hundred vertices vs 10.8k points) that bend toward the pointer and flare on `codered:retune`/`codered:dock`. The eyebrow is a channel readout (`CH 01 · Full-stack Engineer`) that detunes into glyph static and locks onto the next role facet every ~4.2s (`ChannelReadout.tsx`), armed only after boot dock; reduced motion gets static text.
+- **Dock — ⌘K command palette:** `CommandMenu.tsx` replaces the lamp menu. Fuzzy-find sections, all six projects (deep links), and actions (Book a call → opens booking modal, Copy npx, Copy email, Toggle theme, Resume). Full modal semantics: focus trap, inert background, scroll lock, focus restore. `DockNav` adds ⌘K/Ctrl+K.
+- **Works — LOCK-ON tuner:** `WorkTuner.tsx` + `TunerStation.tsx` replace the stacked deck. Sticky receiver stage, frequency ruler with spring needle (clickable station nodes seek via Lenis), HUD with live MHz + signal bars, per-station detune curve (tune-in/hold/detune), title decode, acquisition brackets, and dead-air static (`NoiseCanvas`, 12fps 2D noise) that the cursor wipes clear via a radial mask. Mobile/coarse/reduced → plain editorial list (`TunerStationListItem`).
+- **Trail — Constellation:** `Journey.tsx` renders milestones as nodes on a faint SVG instrument grid; connectors draw with scroll progress (`pathLength`), the map pans against the entry list, and the active node locks red with a ping. Odometer removed.
+
+### Removed
+
+- `SiteMenu.tsx`, `WorkStack.tsx`, `StackCard.tsx`, `three/SignalScene.tsx`, `HeroSignalLine.tsx`, `.stack-card` CSS, signal-type scan CSS.
+
+### Validation (this session)
+
+```text
+npm run lint       PASS
+npm run typecheck  PASS
+npm test           PASS — 3 tests
+npm run build      PASS
+```
+
+CDP probes (real headless Edge): `final-check.mjs` at 390/768/1440 — boot clear, one H1, anchor tween + target focus at 96px, tuner station transitions (Veilpay → StellarPulse), trail progression (0 → 4 → 5), footer reveal, palette open/Escape/Enter-navigate all pass. `motion-probe2.mjs` — reduced-motion and coarse-pointer paths verified (no canvas, no Three chunk, static hero). `hero-probe.mjs` — retune cycles and ribbon canvas alive.
+
+Lighthouse (headless Edge): **accessibility 1.0, best-practices 1.0, SEO 1.0**, performance 0.68 — LCP 4.8s is dominated by the deliberate ~1.8s boot sequence (the LCP nameplate animates in after the curtain lifts) plus software-GL lab conditions; FCP 0.9s, CLS 0, TBT 520ms. Acceptable for a portfolio with a signature boot; revisit only if real-user RUM says otherwise.
 
 ## Pending
 

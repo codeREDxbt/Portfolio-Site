@@ -1,0 +1,174 @@
+"use client";
+
+import {
+  motion,
+  useTransform,
+  useMotionTemplate,
+  type MotionValue,
+} from "motion/react";
+import type { Project } from "@/data/portfolio";
+import { ProjectMedia } from "./ProjectMedia";
+import { useDecode } from "@/lib/use-decode";
+
+function liveHost(url?: string) {
+  if (!url) return null;
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * One station on the LOCK-ON receiver. Visibility is a pure function of
+ * detune: noise hangs on during tune-in, collapses at the lock point, holds
+ * clean, then detunes out.
+ */
+export function TunerStation({
+  project,
+  index,
+  total,
+  progress,
+  active,
+  reduced,
+}: {
+  project: Project;
+  index: number;
+  total: number;
+  progress: MotionValue<number>;
+  active: boolean;
+  reduced: boolean;
+}) {
+  const start = index / total;
+  const end = (index + 1) / total;
+
+  const local = useTransform(progress, [start, end], [0, 1]);
+  const detune = useTransform(local, (t) => {
+    if (t < 0.3) return Math.pow(1 - t / 0.3, 2.2);
+    if (t > 0.7) return Math.pow((t - 0.7) / 0.3, 1.6);
+    return 0;
+  });
+
+  const blur = useTransform(detune, [0, 1], [0, 16]);
+  const filter = useMotionTemplate`blur(${blur}px)`;
+  const opacity = useTransform(detune, [0, 1], [1, 0]);
+  const scale = useTransform(detune, [0, 1], [1, 1.05]);
+  const y = useTransform(detune, [0, 1], [0, -24]);
+
+  const decodedTitle = useDecode(project.title, active, reduced);
+  const host = liveHost(project.liveUrl);
+
+  return (
+    <motion.article
+      aria-hidden={!active}
+      className="absolute inset-0 grid content-center gap-6 lg:grid-cols-[1.25fr_1fr] lg:gap-10"
+      style={reduced ? undefined : { opacity, scale, y, filter, pointerEvents: active ? "auto" : "none" }}
+    >
+      <div className="tuner-screen relative overflow-hidden rounded-xl border border-line bg-surface">
+        <ProjectMedia project={project} />
+        {(["tl", "tr", "bl", "br"] as const).map((corner) => (
+          <motion.span
+            key={corner}
+            aria-hidden="true"
+            className={`pointer-events-none absolute h-5 w-5 border-red ${
+              corner === "tl" ? "left-3 top-3 border-l-2 border-t-2" : ""
+            }${corner === "tr" ? "right-3 top-3 border-r-2 border-t-2" : ""}${
+              corner === "bl" ? "bottom-3 left-3 border-b-2 border-l-2" : ""
+            }${corner === "br" ? "bottom-3 right-3 border-b-2 border-r-2" : ""}`}
+            initial={false}
+            animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          />
+        ))}
+      </div>
+
+      <div className="flex min-w-0 flex-col justify-center">
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-dim">
+          [ {project.number} · {project.year} · {project.role} ]
+        </p>
+        <h3 className="mt-3 text-3xl font-medium tracking-[-0.04em] text-foreground md:text-5xl">
+          <span className="sr-only">{project.title}</span>
+          <span aria-hidden="true">{decodedTitle}</span>
+        </h3>
+
+        {project.caseFile ? (
+          <dl className="mt-6 border-t border-line">
+            {(
+              [
+                ["Challenge", project.caseFile.challenge],
+                ["Decision", project.caseFile.decision],
+                ["Outcome", project.caseFile.outcome],
+              ] as const
+            ).map(([label, value]) => (
+              <div key={label} className="grid grid-cols-[96px_1fr] gap-4 border-b border-line py-3">
+                <dt className="font-mono text-[9px] uppercase tracking-[0.24em] text-dim">{label}</dt>
+                <dd className="text-sm leading-6 text-muted">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+
+        <div className="mt-6 flex flex-wrap items-center gap-4">
+          {project.liveUrl ? (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={active ? 0 : -1}
+              className="rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"
+            >
+              Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
+            </a>
+          ) : null}
+          {host ? (
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-dim">{host}</span>
+          ) : null}
+        </div>
+      </div>
+    </motion.article>
+  );
+}
+
+/** Plain editorial block for the list fallback (mobile / reduced motion). */
+export function TunerStationListItem({ project }: { project: Project }) {
+  return (
+    <article className="grid gap-6 border-b border-line py-10">
+      <div className="overflow-hidden rounded-xl border border-line bg-surface">
+        <ProjectMedia project={project} />
+      </div>
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-dim">
+          [ {project.number} · {project.year} · {project.role} ]
+        </p>
+        <h3 className="mt-3 text-3xl font-medium tracking-[-0.04em]">{project.title}</h3>
+        {project.caseFile ? (
+          <dl className="mt-6 border-t border-line">
+            {(
+              [
+                ["Challenge", project.caseFile.challenge],
+                ["Decision", project.caseFile.decision],
+                ["Outcome", project.caseFile.outcome],
+              ] as const
+            ).map(([label, value]) => (
+              <div key={label} className="grid grid-cols-[96px_1fr] gap-4 border-b border-line py-3">
+                <dt className="font-mono text-[9px] uppercase tracking-[0.24em] text-dim">{label}</dt>
+                <dd className="text-sm leading-6 text-muted">{value}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+        {project.liveUrl ? (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-6 inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background"
+          >
+            Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
+          </a>
+        ) : null}
+      </div>
+    </article>
+  );
+}
+

@@ -1,23 +1,45 @@
 @import "tailwindcss";
 
-@theme {
-  --color-background: #0c0a09;
-  --color-surface: #171513;
-  --color-surface-strong: #211d1a;
-  --color-foreground: #f5f2ed;
-  --color-muted: #a6a09b;
-  --color-dim: #6f6963;
-  --color-line: #292524;
-  --color-red: #e5484d;
-  --color-green: #67c792;
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-dim: var(--dim);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-green: var(--green);
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root {
+  --background: #0c0a09;
+  --surface: #171513;
+  --surface-strong: #211d1a;
+  --foreground: #f5f2ed;
+  --muted: #a6a09b;
+  --dim: #8d867c;
+  --line: #292524;
+  --red: #e5484d;
+  --green: #67c792;
   color-scheme: dark;
-  background: #0c0a09;
+  background: var(--background);
+}
+
+[data-theme="light"] {
+  --background: #f7f2e8;
+  --surface: #efe9da;
+  --surface-strong: #e6dfcc;
+  --foreground: #17130f;
+  --muted: #59524a;
+  --dim: #6e675c;
+  --line: #dcd4c2;
+  --red: #c2252b;
+  --green: #2e9e66;
+  color-scheme: light;
 }
 
 html {
@@ -29,10 +51,10 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background:
-    radial-gradient(circle at 76% 16%, rgba(229, 72, 77, 0.09), transparent 28rem),
-    radial-gradient(circle at 8% 64%, rgba(103, 199, 146, 0.035), transparent 24rem),
-    #0c0a09;
-  color: #f5f2ed;
+    radial-gradient(circle at 76% 16%, color-mix(in oklab, var(--red) 9%, transparent), transparent 28rem),
+    radial-gradient(circle at 8% 64%, color-mix(in oklab, var(--green) 4%, transparent), transparent 24rem),
+    var(--background);
+  color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   text-rendering: optimizeLegibility;
 }
@@ -53,7 +75,7 @@ body::before {
 }
 
 :focus-visible {
-  outline: 2px solid #e5484d;
+  outline: 2px solid var(--red);
   outline-offset: 4px;
 }
 
@@ -64,8 +86,8 @@ body::before {
   z-index: 100;
   transform: translateY(-150%);
   border-radius: 999px;
-  background: #f5f2ed;
-  color: #0c0a09;
+  background: var(--foreground);
+  color: var(--background);
   padding: 0.75rem 1rem;
   transition: transform 180ms var(--ease-out-expo);
 }
@@ -102,25 +124,6 @@ body::before {
   animation: fade-in-up 800ms var(--ease-out-expo) both;
 }
 
-.project-media img {
-  transition: transform 800ms var(--ease-out-expo), filter 800ms var(--ease-out-expo);
-}
-
-.project-card:hover .project-media img {
-  transform: scale(1.025);
-  filter: saturate(1.08);
-}
-
-.project-card .project-rule {
-  transform-origin: left center;
-  transition: transform 700ms var(--ease-out-expo), background 700ms var(--ease-out-expo);
-}
-
-.project-card:hover .project-rule {
-  transform: scaleX(1.02);
-  background: #e5484d;
-}
-
 .project-view {
   opacity: 0;
   transform: translateY(8px);
@@ -146,7 +149,7 @@ body::before {
   width: 4px;
   height: 4px;
   border-radius: 1px;
-  background: #e5484d;
+  background: var(--red);
   opacity: 0.25;
   animation: pixelgrid-wave 760ms ease-in-out infinite;
 }
@@ -189,6 +192,260 @@ body::before {
   }
 }
 
+.signal-arc {
+  transform-box: view-box;
+  transform-origin: center;
+  animation: signal-rotate 7s linear infinite;
+}
+
+.signal-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: signal-ping 2.6s var(--ease-out-expo) infinite;
+}
+
+.signal-ping-delay {
+  animation-delay: 1.3s;
+}
+
+@keyframes signal-rotate {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes signal-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  60%,
+  100% {
+    transform: scale(3.4);
+    opacity: 0;
+  }
+}
+
+/* Footer motion sleeps until the curtain reveal (it's behind the page). */
+footer[data-revealed="false"] .marquee-track,
+footer[data-revealed="false"] .signal-dot::after {
+  animation-play-state: paused;
+}
+
+/* Pulsing red dot after the footer wordmark. */
+.signal-dot {
+  position: relative;
+  display: inline-block;
+  width: 0.14em;
+  height: 0.14em;
+  margin-left: 0.08em;
+  border-radius: 999px;
+  background: var(--red);
+}
+
+.signal-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--red);
+  opacity: 0;
+  animation: dot-ping 2.6s var(--ease-out-expo) infinite;
+}
+
+@keyframes dot-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  70%,
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+/* While the boot loader runs, hold the hero's entrance animations so they
+   play as the curtain lifts instead of finishing behind it. */
+html[data-booting] .hero-line > span,
+html[data-booting] .fade-in-up,
+html[data-booting] .portrait-plate,
+html[data-booting] .meta-rule {
+  animation-play-state: paused;
+}
+
+/* portrait plate: bottom-up press wipe on entrance */
+.portrait-plate {
+  clip-path: inset(100% 0 0 0);
+  animation: plate-wipe 950ms var(--ease-out-expo) 300ms both;
+}
+
+@keyframes plate-wipe {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* meta rail hairline draws across */
+.meta-rule {
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: line-grow 700ms var(--ease-out-expo) 1250ms both;
+}
+
+/* footer mega wordmark: per-letter hover lift */
+.wl {
+  display: inline-block;
+  transition:
+    color 300ms var(--ease-out-expo),
+    transform 450ms var(--ease-out-expo);
+}
+
+.wl:hover {
+  color: var(--red);
+  transform: translateY(-0.05em);
+}
+
+/* footer mono ticker */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Type-led hero: quiet paper field, red signal inside the name, one line. */
+.hero-vignette {
+  background:
+    radial-gradient(circle at 82% 22%, color-mix(in oklab, var(--red) 7%, transparent), transparent 24rem),
+    linear-gradient(to bottom, transparent 58%, color-mix(in oklab, var(--background) 92%, transparent) 100%);
+}
+
+/* LOCK-ON receiver screen: faint scanlines over the tuned media. */
+.tuner-screen::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 2px 3px
+  );
+}
+
+/* Channel readout LED — steady when locked, chatters during retune. */
+.channel-led {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--red);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--red) 65%, transparent);
+}
+
+.channel-led-tuning {
+  animation: led-chatter 90ms steps(2, jump-none) infinite;
+}
+
+@keyframes led-chatter {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.portrait-image {
+  filter: grayscale(0.34) contrast(1.08) saturate(0.9);
+}
+
+.portrait-grade {
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--red) 12%, transparent), transparent 42%),
+    linear-gradient(to top, color-mix(in oklab, var(--background) 28%, transparent), transparent 44%);
+  mix-blend-mode: multiply;
+}
+
+/* Theme toggle: circular reveal driven from JS; kill the default crossfade. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Menu lamp: warm signal glow + filament warm-up flicker per item. */
+.lamp-glow {
+  background: radial-gradient(
+    ellipse 60% 55% at 32% 52%,
+    color-mix(in oklab, var(--red) 13%, transparent),
+    transparent 70%
+  );
+}
+
+@keyframes filament {
+  0% {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  20% {
+    opacity: 0.8;
+  }
+  32% {
+    opacity: 0.3;
+  }
+  48% {
+    opacity: 0.95;
+  }
+  62% {
+    opacity: 0.55;
+  }
+  78% {
+    opacity: 1;
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* Sun/moon morph icon. */
+.theme-icon {
+  display: inline-grid;
+  place-items: center;
+}
+
+.theme-icon svg {
+  grid-area: 1 / 1;
+  transition:
+    transform 480ms var(--ease-out-expo),
+    opacity 300ms var(--ease-out-expo);
+}
+
+.theme-icon .icon-sun {
+  opacity: 0;
+  transform: rotate(100deg) scale(0.4);
+}
+
+.theme-icon .icon-moon {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+[data-theme="light"] .theme-icon .icon-sun {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+[data-theme="light"] .theme-icon .icon-moon {
+  opacity: 0;
+  transform: rotate(-100deg) scale(0.4);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -201,6 +458,11 @@ body::before {
 
   .hero-line > span {
     transform: none;
+    animation: none;
+  }
+
+  .signal-arc,
+  .signal-ping {
     animation: none;
   }
 }

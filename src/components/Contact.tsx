@@ -1,12 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { profile } from "@/data/portfolio";
 import { BookingModal } from "./BookingModal";
 import { Reveal } from "./Reveal";
 
 export function Contact() {
   const [bookingOpen, setBookingOpen] = useState(false);
+
+  // command palette "Book a call" action
+  useEffect(() => {
+    const open = () => setBookingOpen(true);
+    window.addEventListener("codered:booking:open", open);
+    return () => window.removeEventListener("codered:booking:open", open);
+  }, []);
 
   return (
     <section id="contact" className="border-t border-line px-6 py-24 md:px-16 md:py-32 lg:px-24">
@@ -22,7 +29,7 @@ export function Contact() {
         <Reveal delay={0.08}>
           <div>
             <p className="text-base leading-8 text-muted">
-              Tell me about the product, the problem, and where it is stuck. I’ll bring product thinking, interface polish, and engineering depth.
+              Tell me about the product, the problem, and where it is stuck. Contracts, backends, interfaces — I build all of it.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <button
