@@ -191,6 +191,49 @@ CDP probes (real headless Edge): `final-check.mjs` at 390/768/1440 — boot clea
 
 Lighthouse (headless Edge): **accessibility 1.0, best-practices 1.0, SEO 1.0**, performance 0.68 — LCP 4.8s is dominated by the deliberate ~1.8s boot sequence (the LCP nameplate animates in after the curtain lifts) plus software-GL lab conditions; FCP 0.9s, CLS 0, TBT 520ms. Acceptable for a portfolio with a signature boot; revisit only if real-user RUM says otherwise.
 
+## Session 3 — roster overhaul + tuner preview fix
+
+### Content & roster (`src/data/portfolio.ts`)
+
+- Featured four are now **Veilpay, FreelancePay, Avisky, VaultPass**; PayTrack and StellarPulse move to the archive (StellarPulse keeps its "$30 USD" award note).
+- New optional `award` field on `Project` (e.g. "$250 USD — Stellar Journey to Mastery", "Client project").
+- Archive rows (`Projects.tsx`): prefer `liveUrl` over repo, render award pills, and expand on hover/focus (grid-rows 0fr→1fr accordion revealing description + stack).
+
+### Assets & art
+
+- Featured covers regenerated at **1600×686 (2.332:1)** to match the tuner's 21/9 screen 1:1 — zero `object-cover` crop. New art for Avisky (node-graph radar), FreelancePay (Soroban escrow code + milestone rail), VaultPass (ZK membership gate); Veilpay re-rendered.
+- Hero glitch plate: the codeRED mark now bleeds ~28% past the plate edges (`scale-[1.28]`, padding removed) — cropped by the frame for the glitch-poster look.
+- SiteNav wordmark: grotesque with the red accent half (matches the boot wordmark).
+
+### Fix — dead space in tuner preview boxes
+
+The station was a side-by-side grid: the `.tuner-screen` frame stretched to the dossier column's height (grid `align: stretch`) while the image stayed width-locked at 21/9, leaving a ~164px empty band under the cover (most visible in light theme). The station is now **one centered lockup**: the screen's width derives from the viewport height (`min(100%, calc(38vh*21/9))`) so the 2.33:1 cover always fills the frame edge-to-edge, and the dossier band below (meta + host, decoded title + award pill, 3-column case file, Open feed CTA) aligns to the screen's exact width. Probe-verified: screen 798×342 vs media 796×340 (1px border), zero dead space; stage raised to 68vh.
+
+- `ProjectMedia` gained a `fill` prop (fills its parent instead of owning an aspect ratio); list/card usages unchanged.
+- Journey constellation node spacing now adapts to the roster size (`60 + i*520/(n-1)`) so the map always fills its 640-wide frame.
+
+### Build pipeline — production builds now use webpack
+
+Turbopack build (Next 16.4.5) **deterministically fails to emit the dynamically-imported `RibbonField` chunk**: the prerendered HTML references it, the file is never written to `.next/static/chunks` → runtime `ChunkLoadError` → hydration stalls (no tuner, no dock pill). Reproduced across three clean builds (`.next` deleted, config variations). `npm run build` now runs `next build --webpack`; dev stays on Turbopack. Revisit after a Next upgrade.
+
+### Probe tooling hardening (`D:\Portfolio-Site-main\*.mjs`, not committed)
+
+- Hydration-aware waits (boot cleared + `#work` + dock pill mounted) with a `documentElement`-null guard during navigation.
+- Mobile runs now emulate `pointer: coarse` / `hover: none` (headless reports `pointer: fine` by default, which needlessly spins up software WebGL at 390px).
+- Page errors + eval exceptions are surfaced to stderr (silent `undefined` results masqueraded as layout bugs before).
+- Trail assertion is roster-aware: parses the rendered `NN / MM` counter and verifies the final node activates on the real user path (scroll to page bottom).
+
+### Validation (this session)
+
+```text
+npm run lint       PASS
+npm run typecheck  PASS (in build)
+npm test           PASS — 3 tests
+npm run build      PASS (webpack)
+```
+
+`final-check.mjs` at 390/768/1440 — **ALL GREEN**: boot clear, one H1, anchor tween + target focus at 96px, tuner station transitions with distinct readings, trail progression + final node at page bottom (7/8), footer reveal, menu open/Escape/navigate. Tuner geometry probe: no dead band, covers served at 2.332. Screenshots verified in both themes.
+
 ## Pending
 
 ### Review

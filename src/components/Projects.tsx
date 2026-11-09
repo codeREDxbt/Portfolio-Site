@@ -35,17 +35,38 @@ export function Projects() {
               {archive.map((project) => (
                 <a
                   key={project.id}
-                  href={project.repoUrl}
+                  href={project.liveUrl ?? project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group grid gap-3 py-6 transition-colors md:grid-cols-[60px_1fr_1.5fr_100px] md:items-center"
+                  className="group block overflow-hidden"
                 >
-                  <span className="font-mono text-xs text-dim">{project.number}</span>
-                  <span className="text-xl font-medium tracking-[-0.03em] transition-colors group-hover:text-red">
-                    {project.title}
+                  {/* collapsed row */}
+                  <span className="grid gap-3 py-6 transition-colors md:grid-cols-[60px_1fr_auto_100px] md:items-center">
+                    <span className="font-mono text-xs text-dim">{project.number}</span>
+                    <span className="text-xl font-medium tracking-[-0.03em] transition-colors group-hover:text-red">
+                      {project.title}
+                    </span>
+                    {project.award ? (
+                      <span className="w-fit rounded-full border border-red/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-red">
+                        {project.award}
+                      </span>
+                    ) : null}
+                    <span className="font-mono text-xs text-dim md:text-right">{project.year} ↗</span>
                   </span>
-                  <span className="text-sm text-muted">{project.description}</span>
-                  <span className="font-mono text-xs text-dim md:text-right">{project.year} ↗</span>
+
+                  {/* hover expansion — grid-rows 0fr→1fr accordion */}
+                  <span className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:grid-rows-[1fr] group-focus-visible:grid-rows-[1fr]">
+                    <span className="overflow-hidden">
+                      <span className="flex flex-wrap items-baseline gap-x-8 gap-y-2 pb-6 md:pl-[60px]">
+                        <span className="max-w-[52ch] text-sm leading-6 text-muted">
+                          {project.description}
+                        </span>
+                        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-dim">
+                          {project.stack.join(" / ")}
+                        </span>
+                      </span>
+                    </span>
+                  </span>
                 </a>
               ))}
             </div>

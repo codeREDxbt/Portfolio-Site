@@ -21,10 +21,11 @@ const entries = [
     .map((project) => ({ year: project.year, title: project.title, body: project.description })),
 ];
 
-// deterministic node placement — a fixed constellation, not random per load
+// deterministic node placement — spacing adapts to the entry count so the
+// constellation always fills the 640-wide map, regardless of roster size
 const NODES = entries.map((entry, i) => ({
   ...entry,
-  x: 70 + i * 92 + (i % 2) * 46,
+  x: 60 + (i * 520) / Math.max(entries.length - 1, 1) + (i % 2) * 30,
   y: 210 + Math.sin(i * 1.7) * 110 + (i % 3) * 24,
 }));
 

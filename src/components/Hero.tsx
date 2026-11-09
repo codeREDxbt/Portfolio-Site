@@ -75,7 +75,7 @@ export function Hero() {
                     alt=""
                     fill
                     sizes="(min-width: 1024px) 33vw, 100vw"
-                    className="object-contain p-6"
+                    className="object-contain scale-[1.28]"
                   />
                 </div>
                 <div aria-hidden="true" className="glitch-flash" />

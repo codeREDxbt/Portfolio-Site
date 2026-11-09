@@ -10,6 +10,7 @@ export type Project = {
   liveUrl?: string;
   repoUrl?: string;
   featured: boolean;
+  award?: string;
   caseFile?: {
     challenge: string;
     decision: string;
@@ -57,65 +58,94 @@ export const projects: Project[] = [
     },
   },
   {
-    id: "paytrack",
+    id: "freelancepay",
     number: "02",
+    title: "FreelancePay",
+    description:
+      "Trustless milestone escrow on Stellar — ship code, get paid, no trust required.",
+    role: "Design + Development",
+    year: "2025",
+    stack: ["Next.js", "React", "Tailwind CSS", "Soroban", "Stellar"],
+    image: "/images/projects/cover-freelancepay.png",
+    liveUrl: "https://freelancepayxbt.vercel.app",
+    repoUrl: "https://github.com/codeREDxbt",
+    featured: true,
+    award: "$250 USD — Stellar Journey to Mastery",
+    caseFile: {
+      challenge: "Freelance payments run on trust — or platforms with heavy fees.",
+      decision: "Milestone escrows as deterministic Soroban contracts on Stellar.",
+      outcome: "Won $250 USD in Stellar's Journey to Mastery.",
+    },
+  },
+  {
+    id: "avisky",
+    number: "03",
+    title: "Avisky",
+    description:
+      "AviQ — an AI-powered aviation learning platform with mock-test series and analytics.",
+    role: "Design + Development",
+    year: "2026",
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "AI"],
+    image: "/images/projects/cover-avisky.png",
+    liveUrl: "https://avisky.in",
+    featured: true,
+    award: "Client project",
+    caseFile: {
+      challenge: "An aviation academy needed a premium digital training portal.",
+      decision: "Cinematic platform — test series, telemetry analytics, AI assistant.",
+      outcome: "Client project, live in production.",
+    },
+  },
+  {
+    id: "vaultpass",
+    number: "04",
+    title: "VaultPass",
+    description:
+      "Privacy-first access control — prove membership without revealing the credential, on Midnight.",
+    role: "Design + Development",
+    year: "2025",
+    stack: ["Next.js", "TypeScript", "Midnight", "ZK proofs"],
+    image: "/images/projects/cover-vaultpass.png",
+    liveUrl: "https://vaultpassxbt.vercel.app",
+    repoUrl: "https://github.com/codeREDxbt",
+    featured: true,
+    award: "$30 USD",
+    caseFile: {
+      challenge: "Gates need proof of membership without exposing identity.",
+      decision: "Zero-knowledge eligibility proofs on Midnight's preview network.",
+      outcome: "Won $30 USD.",
+    },
+  },
+  {
+    id: "paytrack",
+    number: "05",
     title: "PayTrack",
     description:
       "Employee attendance, overtime, and payroll management shaped into a clear operational dashboard.",
     role: "Design + Development",
     year: "2025",
     stack: ["React", "Vite", "Firebase", "Tailwind CSS"],
-    image: "/images/projects/cover-paytrack.png",
     liveUrl: "https://paytrackx.vercel.app",
     repoUrl: "https://github.com/codeREDxbt/PayTrack",
-    featured: true,
-    caseFile: {
-      challenge: "Attendance, overtime, and payroll data trapped in spreadsheets.",
-      decision: "One operational dashboard with clear state and fast reads.",
-      outcome: "Live in production.",
-    },
+    featured: false,
   },
   {
     id: "stellarpulse",
-    number: "03",
+    number: "06",
     title: "StellarPulse",
     description:
       "A real-time Stellar network explorer with analytics, search, and data-rich visualizations.",
     role: "Development",
     year: "2025",
     stack: ["React", "TypeScript", "Node.js", "Stellar"],
-    image: "/images/projects/cover-stellarpulse.png",
     liveUrl: "https://stellarpulse-xi.vercel.app/",
     repoUrl: "https://github.com/codeREDxbt/StellarPulse",
-    featured: true,
-    caseFile: {
-      challenge: "Stellar network data is raw, fast, and unreadable.",
-      decision: "Real-time explorer with analytics, search, and dense visualizations.",
-      outcome: "Live in production.",
-    },
-  },
-  {
-    id: "blockademia",
-    number: "04",
-    title: "Blockademia",
-    description:
-      "A decentralized learning platform for Web3 education, progress, and verifiable certification.",
-    role: "Design + Development",
-    year: "2025",
-    stack: ["Solidity", "React", "Node.js", "Web3.js"],
-    image: "/images/projects/cover-blockademia.png",
-    liveUrl: "https://blockademia.live",
-    repoUrl: "https://github.com/codeREDxbt/blockademia-platform",
-    featured: true,
-    caseFile: {
-      challenge: "Web3 education with no verifiable proof of progress.",
-      decision: "On-chain certification with progress tracked end to end.",
-      outcome: "Live in production.",
-    },
+    featured: false,
+    award: "$30 USD",
   },
   {
     id: "medichainai",
-    number: "05",
+    number: "07",
     title: "MediChainAI",
     description: "AI-assisted decentralized medical records and diagnostics.",
     role: "Development",
@@ -127,7 +157,7 @@ export const projects: Project[] = [
   },
   {
     id: "aptos-lms",
-    number: "06",
+    number: "08",
     title: "Aptos LMS",
     description: "No-code course creation with Move smart contracts on Aptos.",
     role: "Development",

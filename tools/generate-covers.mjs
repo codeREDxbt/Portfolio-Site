@@ -1,15 +1,9 @@
-// Asset pipeline — designed covers for featured projects + a knocked-out,
-// re-graded codeRED mark for the hero glitch plate.
-//
-// Covers: SVG artboards (1600×900, site tokens, shared frame/grain/folio)
-// rasterized to PNG with sharp (librsvg). Deterministic — same output every run.
-//
-// Mark: pixel-level chroma knockout of the white backdrop + watermark grays,
-// hot grade on the reds, warm ink on the blacks, transparent PNG out.
-//
+// Asset pipeline — designed covers for featured projects + the knocked-out,
+// re-graded codeRED mark. Each cover speaks the project's own design language
+// (accent, geometry, mood) inside one shared editorial frame. Dense, full-bleed
+// compositions — no dead space. sharp (librsvg) rasterizes 1600×900 PNGs.
 // Run: node tools/generate-covers.mjs
 import sharp from 'sharp';
-import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -25,15 +19,17 @@ const T = {
   muted: '#a6a09b',
   dim: '#8d867c',
   line: '#292524',
-  red: '#e5484d',
-  hot: '#ff6b70',
 };
 
 const MONO = 'Consolas, ui-monospace, monospace';
 const SANS = 'Arial, sans-serif';
+const SERIF = 'Georgia, serif';
 
-/* Shared frame: hairline grid, grain, registration ticks, folio microcopy. */
-function frame(id, folio) {
+/* Shared frame: hairline grid, grain, registration ticks, folio in the
+   project's accent, and a scrim so the lockup stays legible over dense art. */
+/* Covers render at 21:9 (1600×686) — the exact tuner-screen aspect, so
+   object-cover never crops the composition. */
+function frame(id, folio, accent) {
   return `
   <defs>
     <pattern id="grid-${id}" width="56" height="56" patternUnits="userSpaceOnUse">
@@ -43,171 +39,185 @@ function frame(id, folio) {
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" result="n"/>
       <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.045 0"/>
     </filter>
+    <linearGradient id="scrim-${id}" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="${T.bg}" stop-opacity="0.92"/>
+      <stop offset="0.55" stop-color="${T.bg}" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="${T.bg}" stop-opacity="0"/>
+    </linearGradient>
   </defs>
-  <rect width="1600" height="900" fill="${T.bg}"/>
-  <rect width="1600" height="900" fill="url(#grid-${id})" opacity="0.5"/>
+  <rect width="1600" height="686" fill="${T.bg}"/>
+  <rect width="1600" height="686" fill="url(#grid-${id})" opacity="0.5"/>
   <g stroke="${T.dim}" stroke-width="1.5" fill="none" opacity="0.85">
-    <path d="M44 70V44H70M1530 44H1556V70M44 830V856H70M1530 856H1556V830"/>
+    <path d="M44 70V44H70M1530 44H1556V70M44 616V642H70M1530 642H1556V616"/>
   </g>
   <text x="70" y="86" font-family="${MONO}" font-size="19" letter-spacing="5" fill="${T.dim}">CODERED / COVER ${id}</text>
-  <text x="1530" y="86" text-anchor="end" font-family="${MONO}" font-size="19" letter-spacing="5" fill="${T.red}">${folio}</text>`;
+  <text x="1530" y="86" text-anchor="end" font-family="${MONO}" font-size="19" letter-spacing="5" fill="${accent}">${folio}</text>`;
 }
 
-/* Title lockup, bottom-left: mono role line over a heavy grotesque title. */
-function lockup(title, role, year) {
+function lockup(id, title, role, year, accent) {
   return `
-  <text x="70" y="716" font-family="${MONO}" font-size="21" letter-spacing="6" fill="${T.dim}">${role} · ${year}</text>
-  <text x="66" y="800" font-family="${SANS}" font-size="96" font-weight="800" letter-spacing="-3" fill="${T.ink}">${title}<tspan fill="${T.red}">.</tspan></text>
-  <rect x="70" y="826" width="120" height="2" fill="${T.red}"/>`;
+  <rect x="0" y="400" width="940" height="286" fill="url(#scrim-${id})"/>
+  <text x="70" y="506" font-family="${MONO}" font-size="21" letter-spacing="6" fill="${T.muted}">${role} · ${year}</text>
+  <text x="66" y="610" font-family="${SANS}" font-size="96" font-weight="800" letter-spacing="-4" fill="${T.ink}">${title}<tspan fill="${accent}">.</tspan></text>
+  <rect x="70" y="634" width="150" height="3" fill="${accent}"/>`;
 }
 
-/* ── Veilpay: multi-chain wallet → orbit system, chain nodes, ramp line ── */
+/* ── Veilpay — amber-gold vault: shield core, 7+ chain orbits, stealth fan ── */
 function artVeilpay() {
-  const cx = 1010;
-  const cy = 400;
-  const nodes = [
-    { a: -0.35, r: 120, label: '0x7F…A21' },
-    { a: 0.9, r: 200, label: '0x3C…88F' },
-    { a: 2.4, r: 200, label: '0xB1…0D4' },
-    { a: 3.6, r: 290, label: '0x9E…77B' },
-  ];
-  const nodeSvg = nodes
-    .map((n) => {
-      const x = cx + Math.cos(n.a) * n.r;
-      const y = cy + Math.sin(n.a) * n.r;
-      return `
-      <line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${T.line}" stroke-width="1"/>
-      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="${T.bg}" stroke="${T.muted}" stroke-width="2"/>
-      <text x="${(x + 18).toFixed(1)}" y="${(y + 5).toFixed(1)}" font-family="${MONO}" font-size="15" fill="${T.dim}">${n.label}</text>`;
-    })
-    .join('');
-  return `
-    <g fill="none" stroke="${T.red}" stroke-opacity="0.28">
-      <circle cx="${cx}" cy="${cy}" r="120"/>
-      <circle cx="${cx}" cy="${cy}" r="200" stroke-opacity="0.2"/>
-      <circle cx="${cx}" cy="${cy}" r="290" stroke-opacity="0.14"/>
-    </g>
-    <path d="M360 640 L ${cx - 26} ${cy + 26}" stroke="${T.red}" stroke-width="2" fill="none"/>
-    <path d="M348 622 L360 640 L342 644 Z" fill="${T.red}"/>
-    ${nodeSvg}
-    <circle cx="${cx}" cy="${cy}" r="34" fill="none" stroke="${T.red}" stroke-width="2"/>
-    <circle cx="${cx}" cy="${cy}" r="12" fill="${T.hot}"/>
-    <circle cx="${cx}" cy="${cy}" r="52" fill="none" stroke="${T.red}" stroke-opacity="0.3" stroke-dasharray="6 10"/>
-    <text x="${cx}" y="${cy + 96}" text-anchor="middle" font-family="${MONO}" font-size="16" letter-spacing="4" fill="${T.dim}">FIAT RAMP ↔ CHAINS</text>`;
-}
-
-/* ── PayTrack: payroll ops → timesheet bars, clock dial, overtime readout ── */
-function artPaytrack() {
-  const rows = [
-    ['MON', 300, false],
-    ['TUE', 300, false],
-    ['WED', 380, true],
-    ['THU', 300, false],
-    ['FRI', 340, true],
-  ];
-  const sheet = rows
-    .map(([day, w, ot], i) => {
-      const y = 240 + i * 64;
-      return `
-      <text x="760" y="${y + 20}" font-family="${MONO}" font-size="17" fill="${T.dim}">${day}</text>
-      <rect x="830" y="${y}" width="300" height="22" fill="${T.strong}"/>
-      <rect x="830" y="${y}" width="${w - 140}" height="22" fill="${T.muted}" opacity="0.55"/>
-      ${ot ? `<rect x="${830 + w - 280}" y="${y}" width="120" height="22" fill="${T.red}"/>` : ''}`;
-    })
-    .join('');
-
-  const ticks = Array.from({ length: 12 }, (_, i) => {
-    const a = (i / 12) * Math.PI * 2;
-    const x1 = 1300 + Math.cos(a) * 88;
-    const y1 = 380 + Math.sin(a) * 88;
-    const x2 = 1300 + Math.cos(a) * 100;
-    const y2 = 380 + Math.sin(a) * 100;
-    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${T.muted}" stroke-width="2"/>`;
-  }).join('');
-
-  return `
-    ${sheet}
-    <g>
-      <circle cx="1300" cy="380" r="112" fill="none" stroke="${T.line}" stroke-width="2"/>
-      <circle cx="1300" cy="380" r="112" fill="none" stroke="${T.red}" stroke-opacity="0.5" stroke-width="2" stroke-dasharray="520 184" transform="rotate(-90 1300 380)"/>
-      ${ticks}
-      <line x1="1300" y1="380" x2="1300" y2="312" stroke="${T.ink}" stroke-width="3" stroke-linecap="round"/>
-      <line x1="1300" y1="380" x2="1352" y2="412" stroke="${T.red}" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="1300" cy="380" r="7" fill="${T.red}"/>
-      <text x="1300" y="540" text-anchor="middle" font-family="${MONO}" font-size="17" letter-spacing="3" fill="${T.dim}">OVERTIME +6.5H</text>
-    </g>
-    <text x="760" y="590" font-family="${MONO}" font-size="17" letter-spacing="3" fill="${T.dim}">WEEK 42 — PUNCH LOG</text>`;
-}
-
-
-/* ── StellarPulse: network explorer → node graph, pulse sweep, ledger ticks ── */
-function artStellarpulse() {
-  // deterministic scatter (seeded LCG) — same graph every render
-  let seed = 42;
-  const rand = () => {
-    seed = (seed * 1664525 + 1013904223) % 4294967296;
-    return seed / 4294967296;
-  };
-  const pts = Array.from({ length: 26 }, () => ({
-    x: 700 + rand() * 720,
-    y: 170 + rand() * 420,
-  }));
-  const edges = [];
-  for (let i = 0; i < pts.length; i += 1) {
-    for (let j = i + 1; j < pts.length; j += 1) {
-      const d = Math.hypot(pts[i].x - pts[j].x, pts[i].y - pts[j].y);
-      if (d < 150) edges.push([pts[i], pts[j]]);
-    }
-  }
-  const edgeSvg = edges
-    .map(([a, b]) => `<line x1="${a.x.toFixed(1)}" y1="${a.y.toFixed(1)}" x2="${b.x.toFixed(1)}" y2="${b.y.toFixed(1)}" stroke="${T.line}" stroke-width="1"/>`)
-    .join('');
-  const nodeSvg = pts
-    .map((p, i) => {
-      const hot = i % 8 === 0;
-      return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${hot ? 7 : 4}" fill="${hot ? T.hot : T.muted}" ${hot ? '' : 'opacity="0.7"'}/>`;
-    })
-    .join('');
-  const pulse = '700,470 780,470 800,430 830,510 826,470 900,470 920,400 946,500 962,470 1060,470 1080,436 1100,470 1220,470 1242,410 1266,492 1284,470 1420,470';
-  return `
-    ${edgeSvg}
-    ${nodeSvg}
-    <polyline points="${pulse}" fill="none" stroke="${T.red}" stroke-width="2.5" stroke-linejoin="round"/>
-    <text x="700" y="150" font-family="${MONO}" font-size="17" letter-spacing="3" fill="${T.dim}">LIVE LEDGER STREAM — STELLAR</text>
-    <text x="1420" y="600" text-anchor="end" font-family="${MONO}" font-size="15" fill="${T.dim}">+ LEDGER 84,221,908</text>`;
-}
-
-/* ── Blockademia: on-chain learning → certificate seal + module chain ── */
-function artBlockademia() {
-  const modules = ['MOD 01', 'MOD 02', 'MOD 03', 'MOD 04'];
-  const chain = modules
+  const accent = '#d4a94e';
+  const hot = '#f0c869';
+  const cx = 1120;
+  const cy = 330;
+  const chains = ['ETH', 'SOL', 'XLM', 'XMR', 'ZEC', 'BASE', 'MID'];
+  const nodes = chains
     .map((label, i) => {
-      const x = 720 + i * 200;
-      const y = 520 - i * 84;
-      const link =
-        i < modules.length - 1
-          ? `<line x1="${x + 150}" y1="${y}" x2="${x + 200}" y2="${y - 84}" stroke="${T.red}" stroke-width="2" stroke-dasharray="4 6"/>`
-          : '';
+      const a = -0.5 + (i / chains.length) * Math.PI * 2;
+      const r = i % 2 === 0 ? 300 : 210;
+      const x = cx + Math.cos(a) * r;
+      const y = cy + Math.sin(a) * r;
       return `
-      <g>
-        <rect x="${x}" y="${y}" width="150" height="64" rx="8" fill="${T.surface}" stroke="${T.line}"/>
-        <rect x="${x}" y="${y}" width="6" height="64" fill="${i === 3 ? T.red : T.dim}"/>
-        <text x="${x + 22}" y="${y + 40}" font-family="${MONO}" font-size="18" letter-spacing="2" fill="${T.muted}">${label}</text>
-      </g>
-      ${link}`;
+      <line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="${accent}" stroke-opacity="0.25"/>
+      <circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="10" fill="${T.bg}" stroke="${accent}" stroke-width="2"/>
+      <text x="${(x + 16).toFixed(1)}" y="${(y + 5).toFixed(1)}" font-family="${MONO}" font-size="16" letter-spacing="2" fill="${T.muted}">${label}</text>`;
     })
     .join('');
-
   return `
-    <g transform="translate(1240 300)">
-      <circle r="120" fill="none" stroke="${T.line}" stroke-width="2"/>
-      <circle r="88" fill="none" stroke="${T.red}" stroke-width="2" stroke-opacity="0.6"/>
-      <circle r="80" fill="none" stroke="${T.dim}" stroke-width="1" stroke-dasharray="3 6"/>
-      <path d="M-26 2 L-8 20 L30 -20" fill="none" stroke="${T.red}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M-30 78 L-46 116 L-16 96 L0 122 L16 96 L46 116 L30 78" fill="${T.red}" opacity="0.85"/>
+    <g fill="none" stroke="${accent}">
+      <circle cx="${cx}" cy="${cy}" r="140" stroke-opacity="0.5"/>
+      <circle cx="${cx}" cy="${cy}" r="210" stroke-opacity="0.3"/>
+      <circle cx="${cx}" cy="${cy}" r="300" stroke-opacity="0.18"/>
+      <circle cx="${cx}" cy="${cy}" r="420" stroke-opacity="0.1"/>
+      <circle cx="${cx}" cy="${cy}" r="560" stroke-opacity="0.06"/>
     </g>
-    ${chain}
-    <text x="720" y="620" font-family="${MONO}" font-size="17" letter-spacing="3" fill="${T.dim}">VERIFIED ON-CHAIN CERTIFICATION</text>`;
+    ${nodes}
+    <path d="M${cx} ${cy - 78} L${cx + 62} ${cy - 46} V${cy + 22} C${cx + 62} ${cy + 66} ${cx + 30} ${cy + 92} ${cx} ${cy + 108} C${cx - 30} ${cy + 92} ${cx - 62} ${cy + 66} ${cx - 62} ${cy + 22} V${cy - 46} Z"
+      fill="${T.surface}" stroke="${accent}" stroke-width="2.5"/>
+    <circle cx="${cx}" cy="${cy - 6}" r="14" fill="none" stroke="${hot}" stroke-width="3"/>
+    <rect x="${cx - 4}" y="${cy + 6}" width="8" height="34" rx="4" fill="${hot}"/>
+    <text x="${cx}" y="${cy + 130}" text-anchor="middle" font-family="${MONO}" font-size="16" letter-spacing="4" fill="${T.dim}">ZK PROOFS · STEALTH ADDRESSES</text>
+    <text x="700" y="190" font-family="${SERIF}" font-style="italic" font-size="44" fill="${accent}">private by default.</text>
+    <g font-family="${MONO}" font-size="15" fill="${T.dim}">
+      <text x="380" y="505">0x7F3…A21F</text>
+      <path d="M540 500 L760 435 M540 500 L760 500 M540 500 L760 565" stroke="${accent}" stroke-opacity="0.5" stroke-width="1.5" fill="none"/>
+      <text x="780" y="440" fill="${accent}">0x1A…9C0E ★</text>
+      <text x="780" y="505" fill="${accent}">0xB2…77D4 ★</text>
+      <text x="780" y="570" fill="${accent}">0x8E…31B9 ★</text>
+      <text x="700" y="600" font-size="13" letter-spacing="2" fill="${T.dim}">ONE-TIME STEALTH ADDRESSES</text>
+    </g>`;
+}
+
+
+/* ── FreelancePay — teal escrow terminal: contract code + receipt + milestones ── */
+function artFreelancepay() {
+  const accent = '#2dd4bf';
+  const hot = '#5eead4';
+  const codeLines = [
+    ['// milestone escrow — soroban', T.dim],
+    ['let escrow = Escrow::new(env);', T.ink],
+    ['escrow.fund(5_000_USDC);', accent],
+    ['ship(code).then(release);', hot],
+    ['// no trust req. zero fees.', T.dim],
+  ];
+  const code = codeLines
+    .map(([line, color], i) => `<text x="700" y="${250 + i * 38}" font-family="${MONO}" font-size="21" fill="${color}">${line}</text>`)
+    .join('');
+  const milestones = ['CONNECT', 'FUND', 'SHIP', 'RELEASE']
+    .map((label, i) => {
+      const x = 700 + i * 200;
+      return `
+      <circle cx="${x}" cy="540" r="10" fill="${i < 4 ? accent : T.line}"/>
+      ${i < 3 ? `<line x1="${x + 10}" y1="540" x2="${x + 190}" y2="540" stroke="${accent}" stroke-width="2" stroke-opacity="0.5"/>` : ''}
+      <text x="${x}" y="578" text-anchor="middle" font-family="${MONO}" font-size="14" letter-spacing="2" fill="${T.dim}">${label}</text>`;
+    })
+    .join('');
+  return `
+    <rect x="660" y="170" width="640" height="300" rx="12" fill="${T.surface}" stroke="${T.line}"/>
+    <rect x="660" y="170" width="640" height="38" rx="12" fill="${T.strong}"/>
+    <circle cx="686" cy="189" r="6" fill="${accent}"/>
+    <circle cx="708" cy="189" r="6" fill="${T.dim}"/>
+    <circle cx="730" cy="189" r="6" fill="${T.dim}"/>
+    <text x="756" y="195" font-family="${MONO}" font-size="15" fill="${T.dim}">escrow.rs</text>
+    ${code}
+    <rect x="1150" y="360" width="330" height="110" rx="10" fill="${T.bg}" stroke="${accent}" stroke-opacity="0.6"/>
+    <text x="1170" y="392" font-family="${MONO}" font-size="15" fill="${T.dim}">RECEIPT // ESCROW_FUNDED</text>
+    <text x="1170" y="425" font-family="${MONO}" font-size="19" fill="${hot}">5,000.00 USDC</text>
+    <text x="1170" y="452" font-family="${MONO}" font-size="13" fill="${T.dim}">Tx 0x8f…39a1 · STELLAR</text>
+    ${milestones}
+    <text x="700" y="130" font-family="${MONO}" font-size="17" letter-spacing="4" fill="${T.dim}">TRUSTLESS MILESTONE ESCROW</text>`;
+}
+
+
+
+/* ── VaultPass — electric-blue ZK gate: vault rings, redacted witness, proof ── */
+function artVaultpass() {
+  const accent = '#3b5bff';
+  const hot = '#6b8bff';
+  const rows = [
+    ['valid_proof', 'true', true],
+    ['credential', '██████████', false],
+    ['identity', '██████████', false],
+  ];
+  const proofRows = rows
+    .map(([k, v, ok], i) => `
+      <text x="700" y="${390 + i * 38}" font-family="${MONO}" font-size="20" fill="${T.dim}">${k}:</text>
+      <text x="940" y="${390 + i * 38}" font-family="${MONO}" font-size="20" fill="${ok ? hot : T.strong}">${v}</text>`)
+    .join('');
+  return `
+    <g fill="none" stroke="${accent}">
+      <circle cx="1150" cy="300" r="90" stroke-opacity="0.9" stroke-width="2"/>
+      <circle cx="1150" cy="300" r="150" stroke-opacity="0.4"/>
+      <circle cx="1150" cy="300" r="230" stroke-opacity="0.2"/>
+      <circle cx="1150" cy="300" r="330" stroke-opacity="0.1"/>
+      <circle cx="1150" cy="300" r="450" stroke-opacity="0.06"/>
+    </g>
+    <g transform="translate(1150 300)">
+      <rect x="-34" y="-20" width="68" height="56" rx="8" fill="${T.surface}" stroke="${accent}" stroke-width="2.5"/>
+      <path d="M-18 -20 v-14 a18 18 0 0 1 36 0 v-14" fill="none" stroke="${accent}" stroke-width="2.5"/>
+      <circle cy="6" r="8" fill="${hot}"/>
+      <rect x="-3" y="10" width="6" height="14" rx="3" fill="${hot}"/>
+    </g>
+    <path d="M700 320 C 860 300, 960 300, 1040 300" fill="none" stroke="${accent}" stroke-width="2" stroke-dasharray="8 8"/>
+    <path d="M1016 308 L1044 320 L1016 332 Z" fill="${accent}"/>
+    <text x="700" y="280" font-family="${MONO}" font-size="16" letter-spacing="3" fill="${T.dim}">PRIVATE WITNESS IN</text>
+    ${proofRows}
+    <text x="700" y="530" font-family="${MONO}" font-size="15" letter-spacing="3" fill="${T.dim}">MIDNIGHT · ZERO-KNOWLEDGE MEMBERSHIP</text>`;
+}
+
+/* ── Avisky — indigo aviation: trajectory arc, waypoints, telemetry strip ── */
+function artAvisky() {
+  const accent = '#4f46e5';
+  const hot = '#818cf8';
+  // great-arc trajectory across the canvas with waypoints
+  const waypoints = [
+    [640, 430], [800, 370], [980, 320], [1160, 280], [1330, 250], [1470, 230],
+  ];
+  const dots = waypoints
+    .map(([x, y], i) => `
+      <circle cx="${x}" cy="${y}" r="7" fill="${i === waypoints.length - 1 ? hot : T.bg}" stroke="${accent}" stroke-width="2"/>
+      <text x="${x}" y="${y - 18}" text-anchor="middle" font-family="${MONO}" font-size="13" fill="${T.dim}">WPT 0${i + 1}</text>`)
+    .join('');
+  const telemetry = [
+    ['ALT', '34,000 FT'], ['HDG', '072°'], ['GS', '448 KT'], ['CADETS', '5.2K'],
+  ]
+    .map(([k, v], i) => {
+      const x = 660 + i * 210;
+      return `
+      <rect x="${x}" y="500" width="180" height="64" rx="8" fill="${T.surface}" stroke="${T.line}"/>
+      <text x="${x + 18}" y="526" font-family="${MONO}" font-size="13" letter-spacing="2" fill="${T.dim}">${k}</text>
+      <text x="${x + 18}" y="554" font-family="${MONO}" font-size="19" fill="${hot}">${v}</text>`;
+    })
+    .join('');
+  return `
+    <path d="M560 480 C 760 380, 1050 290, 1520 220" fill="none" stroke="${accent}" stroke-width="2.5" stroke-dasharray="10 8"/>
+    ${dots}
+    <g transform="translate(1230 240) rotate(-14)">
+      <path d="M0 -46 L34 34 L0 18 L-34 34 Z" fill="${accent}"/>
+      <circle r="90" fill="none" stroke="${accent}" stroke-opacity="0.3"/>
+      <circle r="130" fill="none" stroke="${accent}" stroke-opacity="0.15"/>
+    </g>
+    ${telemetry}
+    <text x="640" y="140" font-family="${MONO}" font-size="17" letter-spacing="4" fill="${T.dim}">AI-POWERED AVIATION LEARNING · TRAJECTORY LIVE</text>
+    <text x="640" y="196" font-family="${SERIF}" font-style="italic" font-size="40" fill="${accent}">Dream to reality.</text>`;
 }
 
 
@@ -226,14 +236,13 @@ async function knockoutMark() {
     const sat = max - min;
 
     if (max > 205 && sat < 28) {
-      data[i + 3] = 0; // white backdrop / watermark → gone
+      data[i + 3] = 0;
       continue;
     }
     if (max > 168 && sat < 26) {
-      data[i + 3] = Math.round(255 * ((205 - max) / 37)); // soft edge roll-off
+      data[i + 3] = Math.round(255 * ((205 - max) / 37));
       continue;
     }
-    // hot grade: push the reds toward signal red
     if (r > g + 40 && r > b + 40) {
       data[i] = Math.min(255, Math.round(r * 1.1 + 16));
       data[i + 1] = Math.max(0, Math.round(g * 0.82));
@@ -249,19 +258,32 @@ async function knockoutMark() {
 }
 
 const COVERS = [
-  { id: 'veilpay', title: 'Veilpay', role: 'MULTI-CHAIN WALLET', year: '2026', folio: 'PAYMENTS', art: artVeilpay },
-  { id: 'paytrack', title: 'PayTrack', role: 'PAYROLL &amp; ATTENDANCE', year: '2025', folio: 'OPERATIONS', art: artPaytrack },
-  { id: 'stellarpulse', title: 'StellarPulse', role: 'NETWORK EXPLORER', year: '2025', folio: 'STELLAR', art: artStellarpulse },
-  { id: 'blockademia', title: 'Blockademia', role: 'DECENTRALIZED LEARNING', year: '2025', folio: 'WEB3 EDU', art: artBlockademia },
+  {
+    id: 'veilpay', title: 'Veilpay', role: 'PRIVATE MULTI-CHAIN WALLET', year: '2026',
+    folio: 'PAYMENTS · ZK', accent: '#d4a94e', art: artVeilpay,
+  },
+  {
+    id: 'freelancepay', title: 'FreelancePay', role: 'MILESTONE ESCROW · STELLAR', year: '2025',
+    folio: '$250 STELLAR AWARD', accent: '#2dd4bf', art: artFreelancepay,
+  },
+  {
+    id: 'avisky', title: 'Avisky', role: 'AI AVIATION LEARNING', year: '2026',
+    folio: 'CLIENT PROJECT', accent: '#4f46e5', art: artAvisky,
+  },
+  {
+    id: 'vaultpass', title: 'VaultPass', role: 'ZK MEMBERSHIP GATE', year: '2025',
+    folio: '$30 AWARD · MIDNIGHT', accent: '#3b5bff', art: artVaultpass,
+  },
 ];
 
 async function main() {
-  for (const cover of COVERS) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
-      ${frame(String(COVERS.indexOf(cover) + 1).padStart(2, '0'), cover.folio)}
+  for (const [index, cover] of COVERS.entries()) {
+    const id = String(index + 1).padStart(2, '0');
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="686" viewBox="0 0 1600 686">
+      ${frame(id, cover.folio, cover.accent)}
       ${cover.art()}
-      ${lockup(cover.title, cover.role, cover.year)}
-      <rect width="1600" height="900" filter="url(#grain-${String(COVERS.indexOf(cover) + 1).padStart(2, '0')})"/>
+      ${lockup(id, cover.title, cover.role, cover.year, cover.accent)}
+      <rect width="1600" height="900" filter="url(#grain-${id})"/>
     </svg>`;
     const out = join(OUT_COVERS, `cover-${cover.id}.png`);
     await sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toFile(out);

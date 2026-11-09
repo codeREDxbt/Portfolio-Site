@@ -22,7 +22,7 @@ function useFinePointer() {
  * subtle pointer parallax. Falls back to a static corner chip on
  * coarse pointers and for reduced-motion users.
  */
-export function ProjectMedia({ project }: { project: Project }) {
+export function ProjectMedia({ project, fill = false }: { project: Project; fill?: boolean }) {
   const href = project.liveUrl ?? project.repoUrl;
   const ref = useRef<HTMLAnchorElement>(null);
   const reduced = useReducedMotion();
@@ -82,7 +82,9 @@ export function ProjectMedia({ project }: { project: Project }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="project-media group/media relative block aspect-[16/10] w-full overflow-hidden bg-surface md:aspect-[21/9]"
+      className={`project-media group/media relative block w-full overflow-hidden bg-surface ${
+        fill ? "h-full" : "aspect-[16/10] md:aspect-[21/9]"
+      }`}
       aria-label={`View ${project.title}`}
       onMouseMove={interactive ? handleMove : undefined}
       onMouseLeave={interactive ? handleLeave : undefined}
@@ -99,7 +101,7 @@ export function ProjectMedia({ project }: { project: Project }) {
             alt={`${project.title} interface preview`}
             fill
             sizes="(min-width: 768px) 44vw, 100vw"
-            className="object-cover object-top"
+            className="object-cover object-center"
           />
         ) : (
           <div className="absolute inset-0 bg-surface">

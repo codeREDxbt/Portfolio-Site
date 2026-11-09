@@ -175,7 +175,7 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
               </span>
             </div>
 
-            <div className="relative h-[62vh]">
+            <div className="relative h-[68vh]">
               {projects.map((project, index) => (
                 <TunerStation
                   key={project.id}
