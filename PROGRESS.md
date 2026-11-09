@@ -136,6 +136,7 @@ Dependencies were upgraded to the latest compatible versions:
 - ESLint 10.14.0
 - Prettier 3.9.10
 - TypeScript 6.0.3
+- sharp 0.35.x (dev-only, asset pipeline)
 
 TypeScript 7.0.2 is available, but the official Next.js ESLint chain currently depends on `typescript-eslint`, which supports TypeScript `<6.1.0`. TypeScript 6.0.3 is therefore the latest fully validated compatible version.
 
@@ -167,6 +168,11 @@ The local branch is currently ahead of `origin/main`; changes have not been push
 - **Dock — lamp menu (kept):** the full-screen lamp menu stays the menu (user preference over a ⌘K palette, which was prototyped and then removed). It now runs on the repaired modal core: portaled dialog, inert background, counted scroll lock, Tab trap, Escape/backdrop close, focus returns to the dock pill, and internal links hand focus to their destination via the shared `navigateToElement` path.
 - **Works — LOCK-ON tuner:** `WorkTuner.tsx` + `TunerStation.tsx` replace the stacked deck. Sticky receiver stage, frequency ruler with spring needle on a **shared percentage scale with the station dots** — inside each hold zone the needle's target snaps to the exact detent so the spring wobbles into the dot and rests at 0px drift (probe-verified on all four stations); clickable nodes seek via Lenis. HUD with live MHz + signal bars, per-station detune curve (tune-in/hold/detune), title decode, acquisition brackets, and dead-air static (`NoiseCanvas`, 12fps 2D noise) that the cursor wipes clear via a radial mask. Mobile/coarse/reduced → plain editorial list (`TunerStationListItem`).
 - **Trail — Constellation:** `Journey.tsx` renders milestones as nodes on a faint SVG instrument grid; connectors draw with scroll progress (`pathLength`), the map pans against the entry list, and the active node locks red with a ping. Odometer removed.
+
+### Asset pipeline (`tools/generate-covers.mjs`, sharp)
+
+- **Designed covers for all four featured projects** — one coherent system (hairline grid, grain, registration ticks, folio microcopy, heavy grotesque lockup), per-project geometry from each product's domain: Veilpay = chain-orbit system + fiat ramp, PayTrack = punch-log bars + clock dial + red overtime, StellarPulse = seeded node graph + pulse sweep + ledger ticks, Blockademia = module chain + certificate seal. Rasterized 1600×900 PNGs via sharp/librsvg; deterministic re-runs.
+- **codeRED mark knockout:** the hero glitch plate no longer blend-modes the white-backed logo — the mark is now a true transparent asset (`public/brand/codered-mark.png`): pixel-level chroma knockout of the white backdrop and watermark grays (69% of pixels knocked out), reds hot-graded, blacks warmed to the site ink. The glitch layer just adds a signal drop-shadow glow.
 
 ### Removed
 

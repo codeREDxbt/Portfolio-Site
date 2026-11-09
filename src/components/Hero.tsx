@@ -71,11 +71,11 @@ export function Hero() {
                 </div>
                 <div className="glitch-layer glitch-logo" aria-hidden="true">
                   <Image
-                    src="/brand/codeRED-logo.png"
+                    src="/brand/codered-mark.png"
                     alt=""
                     fill
                     sizes="(min-width: 1024px) 33vw, 100vw"
-                    className="object-cover"
+                    className="object-contain p-6"
                   />
                 </div>
                 <div aria-hidden="true" className="glitch-flash" />

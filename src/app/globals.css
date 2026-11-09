@@ -397,11 +397,9 @@ html[data-booting] .caption-b {
   animation: glitch-logo 8s linear infinite;
 }
 
-/* multiply drops the logo's white backdrop on both themes — the mark reads
-   like an embossed signal emblem */
+/* the mark is a knocked-out transparent asset — it just needs a signal glow */
 .glitch-logo img {
-  mix-blend-mode: multiply;
-  filter: brightness(1.55) contrast(1.15) saturate(1.2);
+  filter: drop-shadow(0 0 22px color-mix(in oklab, var(--red) 30%, transparent)) saturate(1.05);
 }
 
 @keyframes glitch-photo {
