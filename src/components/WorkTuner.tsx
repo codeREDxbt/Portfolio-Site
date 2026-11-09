@@ -66,8 +66,23 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
     setStation((current) => (current === next ? current : next));
   });
 
-  const needle = useSpring(scrollYProgress, { stiffness: 180, damping: 22, mass: 0.6 });
-  const needleTop = useTransform(needle, [0, 1], ["0%", "97%"]);
+  // Needle: follows the scroll through transitions, but inside a station's
+  // hold zone the target snaps to the exact detent — the spring overshoots
+  // and wobbles INTO the dot, then rests pixel-perfectly on it.
+  const needleTarget = useTransform(scrollYProgress, (p) => {
+    const scaled = p * total;
+    const segment = Math.min(total - 1, Math.floor(scaled));
+    const phase = scaled - segment;
+    if (phase >= 0.25 && phase <= 0.8) return (segment + 0.5) / total;
+    return p;
+  });
+  const needle = useSpring(needleTarget, { stiffness: 180, damping: 22, mass: 0.6 });
+
+  // Ruler geometry — one shared scale: station i's detent sits at
+  // (i + 0.5) / total of the band, needle rides the identity scale.
+  const bandStart = 0.5 / total;
+  const pct = (fraction: number) => `${(fraction * 100).toFixed(3)}%`;
+  const needleTop = useTransform(needle, [0, 1], ["0%", "100%"]);
 
   const freq = useTransform(scrollYProgress, (p) => (88 + p * 20).toFixed(1));
   const signal = useTransform(scrollYProgress, (p) => {
@@ -110,12 +125,16 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
     <div ref={runwayRef} style={{ height: `${total * 120}vh` }} className="relative">
       <div className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden">
         <div className="mx-auto grid w-full max-w-7xl grid-cols-[40px_1fr] gap-6 px-6 md:px-16 lg:grid-cols-[56px_1fr] lg:gap-10 lg:px-24">
-          {/* frequency ruler */}
-          <div className="relative flex flex-col justify-between py-6">
-            <div className="absolute left-1/2 top-6 bottom-6 w-px bg-line" aria-hidden="true" />
+          {/* frequency ruler — dots, track, and needle share one scale */}
+          <div className="relative">
+            <div
+              aria-hidden="true"
+              className="absolute left-1/2 w-px -translate-x-1/2 bg-line"
+              style={{ top: pct(bandStart), bottom: pct(bandStart) }}
+            />
             <motion.span
               aria-hidden="true"
-              className="absolute left-1/2 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-red bg-background shadow-[0_0_12px_var(--red)]"
+              className="absolute left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-red bg-background shadow-[0_0_12px_var(--red)]"
               style={{ top: needleTop }}
             />
             {projects.map((project, index) => (
@@ -124,7 +143,8 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
                 type="button"
                 onClick={() => seek(index)}
                 aria-label={`Tune to ${project.title}`}
-                className="group relative z-10 flex h-10 items-center justify-center"
+                className="group absolute left-1/2 z-10 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
+                style={{ top: pct((index + 0.5) / total) }}
               >
                 <span
                   className={`h-2.5 w-2.5 rounded-full border transition-colors ${

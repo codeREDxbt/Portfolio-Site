@@ -1,16 +1,15 @@
 'use client';
 
 import { motion, useMotionValueEvent, useReducedMotion, useScroll } from 'motion/react';
-import { useCallback, useEffect, useState } from 'react';
-import { CommandMenu } from './CommandMenu';
+import { useCallback, useState } from 'react';
+import { SiteMenu } from './SiteMenu';
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 /**
- * Floating dock pill at bottom-center — the visible trigger for the ⌘K
- * command palette. Hides on scroll down (opacity only, so its hit target
- * never moves), returns on scroll up, and steps aside while the palette owns
- * focus.
+ * Floating dock pill at bottom-center — the trigger for the full-screen
+ * SiteMenu. Hides on scroll down (opacity only, so its hit target never
+ * moves), returns on scroll up, and steps aside while the menu owns focus.
  */
 export function DockNav() {
   const [open, setOpen] = useState(false);
@@ -25,21 +24,9 @@ export function DockNav() {
     setHidden(latest > previous && latest > 160);
   });
 
-  // ⌘K / Ctrl+K — the engineer's shortcut
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault();
-        setOpen((value) => !value);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, []);
-
   return (
     <>
-      <CommandMenu open={open} onClose={closeMenu} />
+      <SiteMenu open={open} onClose={closeMenu} />
       <div className="pointer-events-none fixed inset-x-0 bottom-5 z-50 flex justify-center">
         <motion.div
           className="pointer-events-auto"
@@ -50,15 +37,12 @@ export function DockNav() {
           <button
             type="button"
             aria-expanded={open}
-            aria-controls="command-menu"
+            aria-controls="site-menu"
             onClick={() => setOpen((value) => !value)}
             className="flex items-center gap-2.5 rounded-full border border-line bg-background/80 px-5 py-3 font-mono text-xs uppercase tracking-[0.18em] text-foreground backdrop-blur-md transition-colors hover:border-red"
           >
             <span className="signal-dot" style={{ width: 7, height: 7 }} aria-hidden="true" />
             {open ? 'Close' : 'Menu'}
-            <kbd className="hidden rounded border border-line px-1.5 py-0.5 text-[9px] normal-case tracking-normal text-dim sm:inline">
-              ⌘K
-            </kbd>
           </button>
         </motion.div>
       </div>

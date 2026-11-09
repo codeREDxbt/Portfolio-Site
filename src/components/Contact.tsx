@@ -1,19 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { profile } from "@/data/portfolio";
 import { BookingModal } from "./BookingModal";
 import { Reveal } from "./Reveal";
 
 export function Contact() {
   const [bookingOpen, setBookingOpen] = useState(false);
-
-  // command palette "Book a call" action
-  useEffect(() => {
-    const open = () => setBookingOpen(true);
-    window.addEventListener("codered:booking:open", open);
-    return () => window.removeEventListener("codered:booking:open", open);
-  }, []);
 
   return (
     <section id="contact" className="border-t border-line px-6 py-24 md:px-16 md:py-32 lg:px-24">

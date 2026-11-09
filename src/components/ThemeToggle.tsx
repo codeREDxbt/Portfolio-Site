@@ -1,10 +1,9 @@
 "use client";
 
 import { flushSync } from "react-dom";
-import { useCallback, useEffect, useSyncExternalStore, type MouseEvent } from "react";
+import { useCallback, useSyncExternalStore, type MouseEvent } from "react";
 
 const THEME_EVENT = "codered:theme";
-const THEME_TOGGLE_EVENT = "codered:theme-toggle";
 const STORAGE_KEY = "codered-theme";
 
 type ViewTransitionStarter = (callback: () => void) => { ready: Promise<void> };
@@ -70,16 +69,6 @@ export function ThemeToggle() {
   }, []);
 
   const toggle = (event: MouseEvent<HTMLButtonElement>) => toggleAt(event.clientX, event.clientY, next);
-
-  // command palette path — reveal radiates from viewport center
-  useEffect(() => {
-    const onToggle = () => {
-      const current = document.documentElement.dataset.theme === "light" ? "light" : "dark";
-      toggleAt(window.innerWidth / 2, window.innerHeight / 2, current === "dark" ? "light" : "dark");
-    };
-    window.addEventListener(THEME_TOGGLE_EVENT, onToggle);
-    return () => window.removeEventListener(THEME_TOGGLE_EVENT, onToggle);
-  }, [toggleAt]);
 
   return (
     <button
