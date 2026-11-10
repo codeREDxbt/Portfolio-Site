@@ -1,17 +1,17 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import type { Metadata } from "next";
-import { profile, projects } from "@/data/portfolio";
-import { SmoothScroll } from "@/components/SmoothScroll";
-import { SiteNav } from "@/components/SiteNav";
-import { ProjectMedia } from "@/components/ProjectMedia";
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import { profile, projects } from '@/data/portfolio';
+import { SmoothScroll } from '@/components/SmoothScroll';
+import { SiteNav } from '@/components/SiteNav';
+import { ProjectMedia } from '@/components/ProjectMedia';
 
 const featured = projects.filter((p) => p.featured && p.caseStudy);
 
 function liveHost(url?: string) {
   if (!url) return null;
   try {
-    return new URL(url).hostname.replace(/^www\./, "");
+    return new URL(url).hostname.replace(/^www\./, '');
   } catch {
     return null;
   }
@@ -43,11 +43,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function CaseStudyPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const project = featured.find((p) => p.id === slug);
   if (!project || !project.caseStudy) notFound();
@@ -58,9 +54,9 @@ export default async function CaseStudyPage({
   const host = liveHost(project.liveUrl);
 
   const chapters = [
-    ["01", "Challenge", study.challenge],
-    ["02", "Decision", study.decision],
-    ["03", "Outcome", study.outcome],
+    ['01', 'Challenge', study.challenge],
+    ['02', 'Decision', study.decision],
+    ['03', 'Outcome', study.outcome],
   ] as const;
 
   return (
@@ -73,7 +69,7 @@ export default async function CaseStudyPage({
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-red">
-                Case file · {project.number}/{String(featured.length).padStart(2, "0")}
+                Case file · {project.number}/{String(featured.length).padStart(2, '0')}
               </p>
               {project.award ? (
                 <span className="rounded-full border border-red/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-red">
@@ -92,8 +88,8 @@ export default async function CaseStudyPage({
                 [ {project.number} · {project.year} · {project.role} ]
               </p>
               <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.22em] text-dim">
-                {project.stack.join(" / ")}
-                {host ? ` · ${host}` : ""}
+                {project.stack.join(' / ')}
+                {host ? ` · ${host}` : ''}
               </p>
             </div>
             <div className="fade-in-up mt-8 flex flex-wrap items-center gap-3">
@@ -114,7 +110,8 @@ export default async function CaseStudyPage({
                   rel="noopener noreferrer"
                   className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
                 >
-                  Source ↗ <span className="sr-only">: {project.title} repository (opens in new tab)</span>
+                  Source ↗{' '}
+                  <span className="sr-only">: {project.title} repository (opens in new tab)</span>
                 </a>
               ) : null}
               <Link
@@ -137,15 +134,15 @@ export default async function CaseStudyPage({
                 linked={false}
                 sizes="(min-width: 1200px) 1152px, 100vw"
               />
-              {(["tl", "tr", "bl", "br"] as const).map((corner) => (
+              {(['tl', 'tr', 'bl', 'br'] as const).map((corner) => (
                 <span
                   key={corner}
                   aria-hidden="true"
                   className={`pointer-events-none absolute z-10 h-5 w-5 border-red ${
-                    corner === "tl" ? "left-3 top-3 border-l-2 border-t-2" : ""
-                  }${corner === "tr" ? "right-3 top-3 border-r-2 border-t-2" : ""}${
-                    corner === "bl" ? "bottom-3 left-3 border-b-2 border-l-2" : ""
-                  }${corner === "br" ? "bottom-3 right-3 border-b-2 border-r-2" : ""}`}
+                    corner === 'tl' ? 'left-3 top-3 border-l-2 border-t-2' : ''
+                  }${corner === 'tr' ? 'right-3 top-3 border-r-2 border-t-2' : ''}${
+                    corner === 'bl' ? 'bottom-3 left-3 border-b-2 border-l-2' : ''
+                  }${corner === 'br' ? 'bottom-3 right-3 border-b-2 border-r-2' : ''}`}
                 />
               ))}
             </div>
@@ -205,7 +202,10 @@ export default async function CaseStudyPage({
         </section>
 
         {/* Next transmission */}
-        <section id="next-transmission" className="scroll-mt-28 border-t border-line px-6 py-20 md:px-16 md:py-28">
+        <section
+          id="next-transmission"
+          className="scroll-mt-28 border-t border-line px-6 py-20 md:px-16 md:py-28"
+        >
           <div className="mx-auto max-w-5xl">
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-dim">
               Next transmission

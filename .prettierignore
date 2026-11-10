@@ -4,3 +4,4 @@ coverage/
 *.jpg
 *.jpeg
 *.pdf
+next-env.d.ts

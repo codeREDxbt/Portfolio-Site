@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export function VisitorCount() {
   const [count, setCount] = useState<number | null>(null);
@@ -9,9 +9,9 @@ export function VisitorCount() {
     let cancelled = false;
     async function load() {
       try {
-        const response = await fetch("/api/visitor-increment", { method: "POST" });
+        const response = await fetch('/api/visitor-increment', { method: 'POST' });
         const data = await response.json();
-        if (!cancelled && typeof data.count === "number") setCount(data.count);
+        if (!cancelled && typeof data.count === 'number') setCount(data.count);
       } catch {
         // Visitor count is decorative; fail quietly.
       }
@@ -22,5 +22,5 @@ export function VisitorCount() {
     };
   }, []);
 
-  return <span>{count ? count.toLocaleString() : "…"}</span>;
+  return <span>{count ? count.toLocaleString() : '…'}</span>;
 }

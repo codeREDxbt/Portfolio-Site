@@ -217,7 +217,9 @@ export function Footer() {
               <span className="font-mono text-xs text-muted">
                 <VisitorCount /> visits
               </span>
-              <span className="text-muted">© {new Date().getFullYear()} {profile.handle}</span>
+              <span className="text-muted">
+                © {new Date().getFullYear()} {profile.handle}
+              </span>
             </motion.div>
           </div>
 

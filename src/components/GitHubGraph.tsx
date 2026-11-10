@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from 'react';
 
 type ContributionDay = {
   date: string;
@@ -9,12 +9,12 @@ type ContributionDay = {
 };
 
 type ContributionResponse = {
-  status: "success" | "error";
+  status: 'success' | 'error';
   total?: number;
   weeks?: ContributionDay[][];
 };
 
-const colors = ["var(--line)", "#274536", "#35694B", "#4B9B6A", "#67C792"];
+const colors = ['var(--line)', '#274536', '#35694B', '#4B9B6A', '#67C792'];
 
 function fallbackWeeks(): ContributionDay[][] {
   return Array.from({ length: 52 }, (_, week) =>
@@ -25,7 +25,7 @@ function fallbackWeeks(): ContributionDay[][] {
         count: value < 4 ? 0 : value,
         level: value < 4 ? 0 : value < 6 ? 1 : value < 8 ? 2 : 3,
       };
-    }),
+    })
   );
 }
 
@@ -39,9 +39,9 @@ export function GitHubGraph() {
 
     async function load() {
       try {
-        const response = await fetch("/api/github-contributions?username=codeREDxbt");
+        const response = await fetch('/api/github-contributions?username=codeREDxbt');
         const data = (await response.json()) as ContributionResponse;
-        if (!cancelled && data.status === "success" && data.weeks) {
+        if (!cancelled && data.status === 'success' && data.weeks) {
           setWeeks(data.weeks);
           setTotal(data.total ?? null);
         }
@@ -59,8 +59,13 @@ export function GitHubGraph() {
   }, []);
 
   const label = useMemo(
-    () => (total ? `${total.toLocaleString()} contributions in the last year` : loading ? "Loading contributions…" : "Contribution activity"),
-    [loading, total],
+    () =>
+      total
+        ? `${total.toLocaleString()} contributions in the last year`
+        : loading
+          ? 'Loading contributions…'
+          : 'Contribution activity',
+    [loading, total]
   );
 
   return (
@@ -80,7 +85,11 @@ export function GitHubGraph() {
         </a>
       </div>
       <div className="mt-8 overflow-x-auto pb-2">
-        <div className="grid min-w-[760px] grid-cols-[repeat(52,minmax(0,1fr))] gap-[4px]" role="img" aria-label={label}>
+        <div
+          className="grid min-w-[760px] grid-cols-[repeat(52,minmax(0,1fr))] gap-[4px]"
+          role="img"
+          aria-label={label}
+        >
           {weeks.map((week) =>
             week.map((day) => (
               <span
@@ -89,7 +98,7 @@ export function GitHubGraph() {
                 className="aspect-square rounded-[3px]"
                 style={{ backgroundColor: colors[Math.min(day.level, colors.length - 1)] }}
               />
-            )),
+            ))
           )}
         </div>
       </div>

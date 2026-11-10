@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   motion,
@@ -9,21 +9,21 @@ import {
   useScroll,
   useSpring,
   useTransform,
-} from "motion/react";
-import { useRef, useState, useSyncExternalStore } from "react";
-import type { Project } from "@/data/portfolio";
-import { scrollToOffset } from "@/lib/scroll";
-import { NoiseCanvas } from "./NoiseCanvas";
-import { TunerStation, TunerStationListItem } from "./TunerStation";
+} from 'motion/react';
+import { useRef, useState, useSyncExternalStore } from 'react';
+import type { Project } from '@/data/portfolio';
+import { scrollToOffset } from '@/lib/scroll';
+import { NoiseCanvas } from './NoiseCanvas';
+import { TunerStation, TunerStationListItem } from './TunerStation';
 
 function useFinePointer() {
   return useSyncExternalStore(
     (onStoreChange) => {
-      const query = window.matchMedia("(pointer: fine)");
-      query.addEventListener("change", onStoreChange);
-      return () => query.removeEventListener("change", onStoreChange);
+      const query = window.matchMedia('(pointer: fine)');
+      query.addEventListener('change', onStoreChange);
+      return () => query.removeEventListener('change', onStoreChange);
     },
-    () => window.matchMedia("(pointer: fine)").matches,
+    () => window.matchMedia('(pointer: fine)').matches,
     () => false
   );
 }
@@ -31,11 +31,11 @@ function useFinePointer() {
 function useWideViewport() {
   return useSyncExternalStore(
     (onStoreChange) => {
-      const query = window.matchMedia("(min-width: 1024px)");
-      query.addEventListener("change", onStoreChange);
-      return () => query.removeEventListener("change", onStoreChange);
+      const query = window.matchMedia('(min-width: 1024px)');
+      query.addEventListener('change', onStoreChange);
+      return () => query.removeEventListener('change', onStoreChange);
     },
-    () => window.matchMedia("(min-width: 1024px)").matches,
+    () => window.matchMedia('(min-width: 1024px)').matches,
     () => true
   );
 }
@@ -58,10 +58,10 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
 
   const { scrollYProgress } = useScroll({
     target: runwayRef,
-    offset: ["start start", "end end"],
+    offset: ['start start', 'end end'],
   });
 
-  useMotionValueEvent(scrollYProgress, "change", (p) => {
+  useMotionValueEvent(scrollYProgress, 'change', (p) => {
     const next = Math.min(total - 1, Math.max(0, Math.floor(p * total)));
     setStation((current) => (current === next ? current : next));
   });
@@ -82,7 +82,7 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
   // (i + 0.5) / total of the band, needle rides the identity scale.
   const bandStart = 0.5 / total;
   const pct = (fraction: number) => `${(fraction * 100).toFixed(3)}%`;
-  const needleTop = useTransform(needle, [0, 1], ["0%", "100%"]);
+  const needleTop = useTransform(needle, [0, 1], ['0%', '100%']);
 
   const freq = useTransform(scrollYProgress, (p) => (88 + p * 20).toFixed(1));
   const signal = useTransform(scrollYProgress, (p) => {
@@ -94,7 +94,7 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
   });
   const signalBars = useTransform(signal, (value) => {
     const filled = Math.round(value * 10);
-    return "▓".repeat(filled) + "░".repeat(10 - filled);
+    return '▓'.repeat(filled) + '░'.repeat(10 - filled);
   });
 
   const deadAir = useTransform(signal, (value) => 1 - value);
@@ -149,8 +149,8 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
                 <span
                   className={`h-2.5 w-2.5 rounded-full border transition-colors ${
                     index === station
-                      ? "border-red bg-red"
-                      : "border-dim bg-background group-hover:border-red"
+                      ? 'border-red bg-red'
+                      : 'border-dim bg-background group-hover:border-red'
                   }`}
                 />
               </button>
@@ -207,4 +207,3 @@ export function WorkTuner({ projects }: { projects: Project[] }) {
     </div>
   );
 }
-

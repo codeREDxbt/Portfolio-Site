@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
-import { motion, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
-import { profile } from "@/data/portfolio";
-import { BookingModal } from "./BookingModal";
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, useMotionValue, useMotionValueEvent, useScroll } from 'motion/react';
+import { profile } from '@/data/portfolio';
+import { BookingModal } from './BookingModal';
 
 /** true on the client after hydration, false on the server — portal guard. */
 const useMounted = () =>
@@ -41,7 +41,7 @@ export function Contact() {
     const el = sectionRef.current;
     if (!el) return;
     const sync = () =>
-      document.documentElement.style.setProperty("--contact-h", `${el.offsetHeight}px`);
+      document.documentElement.style.setProperty('--contact-h', `${el.offsetHeight}px`);
     sync();
     const observer = new ResizeObserver(sync);
     observer.observe(el);
@@ -49,7 +49,7 @@ export function Contact() {
   }, []);
 
   useEffect(() => {
-    const spacer = document.querySelector("[data-contact-spacer]");
+    const spacer = document.querySelector('[data-contact-spacer]');
     if (!spacer) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -67,7 +67,7 @@ export function Contact() {
   // the lift window: while the footer's scroll room passes through the
   // viewport, this layer slides up by exactly the footer's height
   useEffect(() => {
-    const spacer = document.querySelector<HTMLElement>("[data-footer-spacer]");
+    const spacer = document.querySelector<HTMLElement>('[data-footer-spacer]');
     if (!spacer) return;
     const measure = () => {
       liftWindow.current = {
@@ -78,14 +78,14 @@ export function Contact() {
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(spacer);
-    window.addEventListener("resize", measure);
+    window.addEventListener('resize', measure);
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", measure);
+      window.removeEventListener('resize', measure);
     };
   }, []);
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
+  useMotionValueEvent(scrollY, 'change', (latest) => {
     const { start, length } = liftWindow.current;
     if (length <= 0) return;
     const progress = Math.min(Math.max((latest - start) / length, 0), 1);
@@ -93,9 +93,7 @@ export function Contact() {
   });
 
   const panel = `motion-safe:transition-all motion-safe:duration-700 ${
-    revealed
-      ? "opacity-100 motion-safe:translate-y-0"
-      : "opacity-0 motion-safe:translate-y-6"
+    revealed ? 'opacity-100 motion-safe:translate-y-0' : 'opacity-0 motion-safe:translate-y-6'
   }`;
 
   return (
@@ -109,7 +107,7 @@ export function Contact() {
       <div
         inert={!revealed}
         className={`mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1fr_420px] lg:items-end ${
-          revealed ? "pointer-events-auto" : ""
+          revealed ? 'pointer-events-auto' : ''
         }`}
       >
         <div className={panel}>

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import dynamic from "next/dynamic";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useEffect, useState } from "react";
+import dynamic from 'next/dynamic';
+import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import { useEffect, useState } from 'react';
 
 function SignalFallback() {
   return (
@@ -15,7 +15,7 @@ function SignalFallback() {
   );
 }
 
-const RibbonField = dynamic(() => import("./three/RibbonField"), {
+const RibbonField = dynamic(() => import('./three/RibbonField'), {
   ssr: false,
   loading: SignalFallback,
 });
@@ -29,8 +29,8 @@ export function HeroVisual() {
   const y = useTransform(scrollY, [0, 600], [0, 80]);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
     if (reducedMotion || coarse) return;
 
     const timer = window.setTimeout(() => setEnabled(true), 250);

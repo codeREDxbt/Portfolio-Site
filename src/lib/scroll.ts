@@ -1,8 +1,8 @@
-import type Lenis from "lenis";
+import type Lenis from 'lenis';
 
 let lenis: Lenis | null = null;
 let lockCount = 0;
-let previousBodyOverflow = "";
+let previousBodyOverflow = '';
 let focusSuppressedFor: HTMLElement | null = null;
 
 export function registerLenis(instance: Lenis) {
@@ -15,7 +15,7 @@ export function registerLenis(instance: Lenis) {
 export function refreshScrollMeasurements() {
   lenis?.resize();
   requestAnimationFrame(() => {
-    window.dispatchEvent(new Event("scroll", { bubbles: false }));
+    window.dispatchEvent(new Event('scroll', { bubbles: false }));
   });
 }
 
@@ -28,8 +28,8 @@ export function scrollToTarget(target: HTMLElement) {
     return;
   }
 
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  target.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
 }
 
 export function shouldSkipFocusScroll(target: HTMLElement) {
@@ -44,13 +44,13 @@ export function scrollToOffset(y: number) {
     });
     return;
   }
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  window.scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
 }
 
 export function navigateToElement(target: HTMLElement, hash: string) {
-  history.pushState(null, "", hash);
-  target.setAttribute("tabindex", "-1");
+  history.pushState(null, '', hash);
+  target.setAttribute('tabindex', '-1');
 
   // The focus-in repair handler must not turn this focus move into an
   // immediate competing scroll while the smooth tween is running.
@@ -74,7 +74,7 @@ export function lockPageScroll() {
 
   if (lockCount === 1) {
     previousBodyOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     lenis?.stop();
   }
 

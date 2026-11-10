@@ -1,7 +1,7 @@
-import { projects } from "@/data/portfolio";
-import { Reveal } from "./Reveal";
-import { SignalMark } from "./SignalMark";
-import { WorkTuner } from "./WorkTuner";
+import { projects } from '@/data/portfolio';
+import { Reveal } from './Reveal';
+import { SignalMark } from './SignalMark';
+import { WorkTuner } from './WorkTuner';
 
 export function Projects() {
   const featured = projects.filter((project) => project.featured);
@@ -14,12 +14,15 @@ export function Projects() {
           <header className="pointer-events-none mb-10 border-b border-line py-6">
             <Reveal>
               <h2 className="group pointer-events-auto mx-auto flex w-fit cursor-default flex-wrap items-center justify-center gap-x-5 gap-y-4 text-center">
-                <span className="text-5xl font-medium tracking-[-0.06em] text-foreground md:text-7xl">Featured</span>
+                <span className="text-5xl font-medium tracking-[-0.06em] text-foreground md:text-7xl">
+                  Featured
+                </span>
                 <span className="-mx-5 w-0 overflow-hidden opacity-0 transition-[width,margin,opacity] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:mx-0 group-hover:w-28 group-hover:opacity-100 md:group-hover:w-44">
                   <SignalMark className="h-16 w-28 md:h-24 md:w-44" />
                 </span>
                 <span className="text-5xl font-medium tracking-[-0.06em] text-foreground md:text-7xl">
-                  Work <span className="text-dim">({String(featured.length).padStart(2, "0")})</span>
+                  Work{' '}
+                  <span className="text-dim">({String(featured.length).padStart(2, '0')})</span>
                 </span>
               </h2>
             </Reveal>
@@ -51,7 +54,9 @@ export function Projects() {
                         {project.award}
                       </span>
                     ) : null}
-                    <span className="font-mono text-xs text-dim md:text-right">{project.year} ↗</span>
+                    <span className="font-mono text-xs text-dim md:text-right">
+                      {project.year} ↗
+                    </span>
                   </span>
 
                   {/* hover expansion — grid-rows 0fr→1fr accordion */}
@@ -62,7 +67,7 @@ export function Projects() {
                           {project.description}
                         </span>
                         <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-dim">
-                          {project.stack.join(" / ")}
+                          {project.stack.join(' / ')}
                         </span>
                       </span>
                     </span>

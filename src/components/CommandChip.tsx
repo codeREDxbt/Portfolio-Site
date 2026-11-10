@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { profile } from "@/data/portfolio";
+import { useState } from 'react';
+import { profile } from '@/data/portfolio';
 
 export function CommandChip() {
   const [copied, setCopied] = useState(false);
@@ -23,7 +23,7 @@ export function CommandChip() {
       aria-label={`Copy ${profile.command}`}
       className="rounded-full border border-line bg-surface px-4 py-3 font-mono text-xs text-muted transition-colors hover:border-red hover:text-foreground"
     >
-      {copied ? "Copied ✓" : `$ ${profile.command}`}
+      {copied ? 'Copied ✓' : `$ ${profile.command}`}
     </button>
   );
 }

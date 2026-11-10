@@ -1,9 +1,12 @@
-import { narrative } from "@/data/portfolio";
-import { Reveal } from "./Reveal";
+import { narrative } from '@/data/portfolio';
+import { Reveal } from './Reveal';
 
 export function Narrative() {
   return (
-    <section aria-label="Introduction and approach" className="border-t border-line px-6 py-24 md:px-16 lg:px-24">
+    <section
+      aria-label="Introduction and approach"
+      className="border-t border-line px-6 py-24 md:px-16 lg:px-24"
+    >
       <div className="mx-auto grid max-w-7xl gap-14 md:grid-cols-3">
         {narrative.map((item, index) => (
           <Reveal key={item.number} delay={index * 0.08}>

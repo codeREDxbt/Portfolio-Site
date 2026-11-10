@@ -72,5 +72,4 @@ Current: sticky odometer + entry rows. Evaluate:
 
 ## Expected outcome
 
-A site where scroll + menu are provably smooth, the hero finally feels like *his* portfolio, and the dock + trail carry signatures nobody else's portfolio has.
-
+A site where scroll + menu are provably smooth, the hero finally feels like _his_ portfolio, and the dock + trail carry signatures nobody else's portfolio has.

@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useReducedMotion } from "motion/react";
-import { profile } from "@/data/portfolio";
+import { useEffect, useState } from 'react';
+import { useReducedMotion } from 'motion/react';
+import { profile } from '@/data/portfolio';
 
 /**
  * "Station retune" — the hero eyebrow is a receiver readout. It holds on a
@@ -10,17 +10,17 @@ import { profile } from "@/data/portfolio";
  * Each lock fires `codered:retune` so the ribbon field answers with a pulse.
  * Screen readers always get the static role; shuffle glyphs are aria-hidden.
  */
-const CHANNELS = ["Full-stack Engineer", "Web3 Systems", "SaaS Products", "Product Interfaces"];
-const GLYPHS = "█▓▒░<>/\\|+=·";
+const CHANNELS = ['Full-stack Engineer', 'Web3 Systems', 'SaaS Products', 'Product Interfaces'];
+const GLYPHS = '█▓▒░<>/\\|+=·';
 
 function detune(text: string) {
   return text
-    .split("")
+    .split('')
     .map((char) => {
-      if (char === " " || char === "-") return char;
+      if (char === ' ' || char === '-') return char;
       return Math.random() < 0.4 ? GLYPHS[Math.floor(Math.random() * GLYPHS.length)] : char;
     })
-    .join("");
+    .join('');
 }
 
 export function ChannelReadout() {
@@ -45,7 +45,7 @@ export function ChannelReadout() {
         setIndex(next);
         setDisplay(CHANNELS[next]);
         setTuning(false);
-        window.dispatchEvent(new Event("codered:retune"));
+        window.dispatchEvent(new Event('codered:retune'));
       }, 190);
     };
 
@@ -56,8 +56,8 @@ export function ChannelReadout() {
     };
 
     // Hold the first channel until the boot wordmark has docked.
-    if (document.documentElement.hasAttribute("data-booting")) {
-      window.addEventListener("codered:dock", start, { once: true });
+    if (document.documentElement.hasAttribute('data-booting')) {
+      window.addEventListener('codered:dock', start, { once: true });
     } else {
       start();
     }
@@ -65,7 +65,7 @@ export function ChannelReadout() {
     return () => {
       window.clearInterval(interval);
       window.clearTimeout(tuneTimer);
-      window.removeEventListener("codered:dock", start);
+      window.removeEventListener('codered:dock', start);
     };
   }, [reduced]);
 
@@ -73,10 +73,10 @@ export function ChannelReadout() {
     <p className="fade-in-up font-mono text-[11px] uppercase tracking-[0.22em] text-red [animation-delay:150ms]">
       <span className="sr-only">{profile.title}</span>
       <span aria-hidden="true" className="inline-flex items-center gap-2.5" data-tuning={tuning}>
-        <span className={`channel-led ${tuning ? "channel-led-tuning" : ""}`} />
+        <span className={`channel-led ${tuning ? 'channel-led-tuning' : ''}`} />
         <span className="text-dim">CH 0{index + 1}</span>
         <span className="text-dim">·</span>
-        <span className={tuning ? "text-dim" : "text-red"}>{display}</span>
+        <span className={tuning ? 'text-dim' : 'text-red'}>{display}</span>
       </span>
     </p>
   );

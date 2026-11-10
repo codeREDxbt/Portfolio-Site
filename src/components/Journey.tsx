@@ -61,8 +61,7 @@ function pseudo(index: number, salt: number) {
   return value - Math.floor(value);
 }
 
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 // Node placement: time flows left → right with even spacing; the y-wave and
 // jitter keep it a constellation rather than a ruler, and everything adapts
@@ -93,8 +92,7 @@ const LINKS = NODES.slice(0, -1).map((node, i) => ({
 
 const veilpayIndex = entries.findIndex((entry) => entry.id === 'veilpay');
 const nowIndex = entries.length - 1;
-const THREAD_PATH =
-  veilpayIndex >= 0 ? arcPath(NODES[veilpayIndex], NODES[nowIndex], -120) : null;
+const THREAD_PATH = veilpayIndex >= 0 ? arcPath(NODES[veilpayIndex], NODES[nowIndex], -120) : null;
 
 // Era ruler along the bottom — ticks pinned to real nodes, labels honest.
 const ERA_TICKS = [
@@ -227,14 +225,27 @@ export function Journey() {
               >
                 <defs>
                   <pattern id="trace-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M40 0H0V40" fill="none" stroke="var(--line)" strokeOpacity="0.35" strokeWidth="0.5" />
+                    <path
+                      d="M40 0H0V40"
+                      fill="none"
+                      stroke="var(--line)"
+                      strokeOpacity="0.35"
+                      strokeWidth="0.5"
+                    />
                   </pattern>
                 </defs>
                 <rect width="640" height="400" fill="url(#trace-grid)" />
 
                 {/* star field */}
                 {STARS.map((star, i) => (
-                  <circle key={`star-${i}`} cx={star.x} cy={star.y} r={star.r} fill="var(--dim)" opacity={star.o}>
+                  <circle
+                    key={`star-${i}`}
+                    cx={star.x}
+                    cy={star.y}
+                    r={star.r}
+                    fill="var(--dim)"
+                    opacity={star.o}
+                  >
                     {star.twinkle && !reduced ? (
                       <animate
                         attributeName="opacity"
@@ -287,7 +298,12 @@ export function Journey() {
                     />
                     {!reduced ? (
                       <circle r="2" fill="var(--red)" opacity="0.8">
-                        <animateMotion dur="7s" begin="-2s" repeatCount="indefinite" path={THREAD_PATH} />
+                        <animateMotion
+                          dur="7s"
+                          begin="-2s"
+                          repeatCount="indefinite"
+                          path={THREAD_PATH}
+                        />
                       </circle>
                     ) : null}
                   </motion.g>
@@ -331,11 +347,28 @@ export function Journey() {
                       {isActive ? (
                         <>
                           <circle cx={node.x} cy={node.y} r="14" fill="var(--red)" opacity="0.12" />
-                          <circle cx={node.x} cy={node.y} r="14" fill="none" stroke="var(--red)" strokeOpacity="0.35">
+                          <circle
+                            cx={node.x}
+                            cy={node.y}
+                            r="14"
+                            fill="none"
+                            stroke="var(--red)"
+                            strokeOpacity="0.35"
+                          >
                             {!reduced ? (
                               <>
-                                <animate attributeName="r" values="10;18;10" dur="2.4s" repeatCount="indefinite" />
-                                <animate attributeName="stroke-opacity" values="0.35;0.05;0.35" dur="2.4s" repeatCount="indefinite" />
+                                <animate
+                                  attributeName="r"
+                                  values="10;18;10"
+                                  dur="2.4s"
+                                  repeatCount="indefinite"
+                                />
+                                <animate
+                                  attributeName="stroke-opacity"
+                                  values="0.35;0.05;0.35"
+                                  dur="2.4s"
+                                  repeatCount="indefinite"
+                                />
                               </>
                             ) : null}
                           </circle>
@@ -414,7 +447,10 @@ export function Journey() {
                       </text>
                       {isActive || isHot ? (
                         <text
-                          x={node.x + (labelAnchor === 'end' ? 10 : labelAnchor === 'start' ? -10 : 0)}
+                          x={
+                            node.x +
+                            (labelAnchor === 'end' ? 10 : labelAnchor === 'start' ? -10 : 0)
+                          }
                           y={node.y + (node.y > 270 ? -34 : 26)}
                           textAnchor={labelAnchor}
                           fontSize="12"

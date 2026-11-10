@@ -240,7 +240,7 @@ npm run build      PASS (webpack)
 
 - New optional `caseStudy` on `Project`: `{ lede, challenge[], decision[], outcome[] }` — the tuner keeps the one-line `caseFile`; the page carries paragraphs.
 - Drafted for the featured four, grounded in public sources (veilpayapp.com, the public Veilpay monorepo README, freelancepayxbt.vercel.app, avisky.in, vaultpassxbt.vercel.app) — **no invented metrics**; only facts already public (chains, protocols, feature names, real awards). **Copy is drafted-for-review: read it before pushing.**
-- Grounding corrections worth knowing: Veilpay is an Expo/React Native mobile wallet + Express/Prisma/Postgres/Redis merchant backend with Circom/snarkjs circuits and EIP-5564 stealth addresses (the site's `stack` field stayed as-is); VaultPass runs on Midnight *preview* with Lace/1AM wallets; AviQ's "20 tests / 1,000 MCQs" is the product's own content spec, not an impact metric.
+- Grounding corrections worth knowing: Veilpay is an Expo/React Native mobile wallet + Express/Prisma/Postgres/Redis merchant backend with Circom/snarkjs circuits and EIP-5564 stealth addresses (the site's `stack` field stayed as-is); VaultPass runs on Midnight _preview_ with Lace/1AM wallets; AviQ's "20 tests / 1,000 MCQs" is the product's own content spec, not an impact metric.
 
 ### Route (`src/app/work/[slug]/page.tsx` — first dynamic route)
 
@@ -275,7 +275,7 @@ Ops note: `next start` caches prerendered HTML in memory at boot — **always re
 
 ### Fix — hero grid overflowed its padding on mobile (user report: "image not centered")
 
-The hero's 12-column grid carried a fixed `gap-x-8` at all widths: 11 gaps × 32px = 352px of gaps inside a ~327px content column, so the 12 `1fr` tracks clamped to zero and every `col-span-12` row became **352px wide — ~25px past the right padding** (plate measured x25→375 in a 375px clientWidth; it should be 24→351). The mark inside was centered; the *plate* wasn't. Fix: `gap-x-8` → `lg:gap-x-8` (the gaps only matter at lg, where col-8 + col-4 coexist). Verified at 390px: plate 24→351, symmetric 24px gutters. Checked the other grids — `grid-cols-2/1` with a single small gap are unaffected (the failure needs gap-total > content).
+The hero's 12-column grid carried a fixed `gap-x-8` at all widths: 11 gaps × 32px = 352px of gaps inside a ~327px content column, so the 12 `1fr` tracks clamped to zero and every `col-span-12` row became **352px wide — ~25px past the right padding** (plate measured x25→375 in a 375px clientWidth; it should be 24→351). The mark inside was centered; the _plate_ wasn't. Fix: `gap-x-8` → `lg:gap-x-8` (the gaps only matter at lg, where col-8 + col-4 coexist). Verified at 390px: plate 24→351, symmetric 24px gutters. Checked the other grids — `grid-cols-2/1` with a single small gap are unaffected (the failure needs gap-total > content).
 
 ## Session 5 — true chronology + constellation upgrade (Journey)
 

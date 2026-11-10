@@ -398,10 +398,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                       </span>
                     </button>
                     {message ? (
-                      <p
-                        className="mt-4 text-sm text-red"
-                        role="status"
-                      >
+                      <p className="mt-4 text-sm text-red" role="status">
                         {message}
                       </p>
                     ) : null}

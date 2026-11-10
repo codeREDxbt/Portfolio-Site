@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
-import { useRef, useSyncExternalStore, type MouseEvent } from "react";
-import type { Project } from "@/data/portfolio";
+import Image from 'next/image';
+import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
+import { useRef, useSyncExternalStore, type MouseEvent } from 'react';
+import type { Project } from '@/data/portfolio';
 
 function useFinePointer() {
   return useSyncExternalStore(
     (onStoreChange) => {
-      const query = window.matchMedia("(pointer: fine)");
-      query.addEventListener("change", onStoreChange);
-      return () => query.removeEventListener("change", onStoreChange);
+      const query = window.matchMedia('(pointer: fine)');
+      query.addEventListener('change', onStoreChange);
+      return () => query.removeEventListener('change', onStoreChange);
     },
-    () => window.matchMedia("(pointer: fine)").matches,
-    () => false,
+    () => window.matchMedia('(pointer: fine)').matches,
+    () => false
   );
 }
 
@@ -26,7 +26,7 @@ export function ProjectMedia({
   project,
   fill = false,
   linked = true,
-  sizes = "(min-width: 768px) 44vw, 100vw",
+  sizes = '(min-width: 768px) 44vw, 100vw',
 }: {
   project: Project;
   fill?: boolean;
@@ -91,7 +91,7 @@ export function ProjectMedia({
   // 2.33:1 edge-to-edge (lockup bleeds to the corners), so any 16:10 crop
   // slices the artwork. Only the list fallback uses this path.
   const frame = `project-media relative block w-full overflow-hidden bg-surface ${
-    fill ? "h-full" : "aspect-[21/9]"
+    fill ? 'h-full' : 'aspect-[21/9]'
   }`;
 
   const media = (

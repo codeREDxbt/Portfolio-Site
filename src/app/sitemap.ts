@@ -1,5 +1,5 @@
-import type { MetadataRoute } from "next";
-import { profile, projects } from "@/data/portfolio";
+import type { MetadataRoute } from 'next';
+import { profile, projects } from '@/data/portfolio';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const caseStudies: MetadataRoute.Sitemap = projects
@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     .map((p) => ({
       url: `${profile.siteUrl}/work/${p.id}`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
+      changeFrequency: 'weekly',
       priority: 0.7,
     }));
 
@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: profile.siteUrl,
       lastModified: new Date(),
-      changeFrequency: "monthly",
+      changeFrequency: 'monthly',
       priority: 1,
     },
     ...caseStudies,

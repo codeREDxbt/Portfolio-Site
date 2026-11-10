@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useRef } from "react";
-import * as THREE from "three";
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
 
 /**
  * "Signal Ribbons" — the hero's 3D instrument: five additive light ribbons
@@ -74,15 +74,15 @@ const SEGMENTS = 220;
 const SPAN = 22;
 
 function makeGlowTexture() {
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = 128;
   canvas.height = 128;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext('2d');
   if (ctx) {
     const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
-    gradient.addColorStop(0, "rgba(229,72,77,0.85)");
-    gradient.addColorStop(0.4, "rgba(229,72,77,0.25)");
-    gradient.addColorStop(1, "rgba(229,72,77,0)");
+    gradient.addColorStop(0, 'rgba(229,72,77,0.85)');
+    gradient.addColorStop(0.4, 'rgba(229,72,77,0.25)');
+    gradient.addColorStop(1, 'rgba(229,72,77,0)');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 128, 128);
   }
@@ -98,7 +98,11 @@ export default function RibbonField() {
 
     let renderer: THREE.WebGLRenderer;
     try {
-      renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, powerPreference: "default" });
+      renderer = new THREE.WebGLRenderer({
+        antialias: false,
+        alpha: true,
+        powerPreference: 'default',
+      });
     } catch {
       return;
     }
@@ -127,7 +131,7 @@ export default function RibbonField() {
         positions[i * 3 + 2] = config.z;
       }
       const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 
       const uniforms: Record<string, THREE.IUniform> = {
         uTime: { value: 0 },
@@ -167,7 +171,6 @@ export default function RibbonField() {
     glow.scale.set(3.4, 3.4, 1);
     scene.add(glow);
 
-
     let visible = true;
     let pulseStart = -1;
     let pointerX = 0;
@@ -202,7 +205,7 @@ export default function RibbonField() {
     intersectionObserver.observe(mount);
 
     const applyTheme = () => {
-      lightTheme = document.documentElement.dataset.theme === "light";
+      lightTheme = document.documentElement.dataset.theme === 'light';
       uniformsList.forEach((uniforms, index) => {
         const seed = RIBBONS[index].seed;
         (uniforms.uColor.value as THREE.Color)
@@ -212,12 +215,15 @@ export default function RibbonField() {
       });
     };
     const themeObserver = new MutationObserver(applyTheme);
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
     applyTheme();
 
-    window.addEventListener("codered:dock", firePulse);
-    window.addEventListener("codered:retune", firePulse);
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener('codered:dock', firePulse);
+    window.addEventListener('codered:retune', firePulse);
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
 
     renderer.setAnimationLoop(() => {
       if (!visible) return;
@@ -242,9 +248,9 @@ export default function RibbonField() {
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       themeObserver.disconnect();
-      window.removeEventListener("codered:dock", firePulse);
-      window.removeEventListener("codered:retune", firePulse);
-      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener('codered:dock', firePulse);
+      window.removeEventListener('codered:retune', firePulse);
+      window.removeEventListener('pointermove', onPointerMove);
       renderer.setAnimationLoop(null);
       for (const ribbon of ribbons) {
         ribbon.geometry.dispose();
@@ -260,4 +266,3 @@ export default function RibbonField() {
 
   return <div ref={mountRef} className="absolute inset-0" aria-hidden="true" />;
 }
-

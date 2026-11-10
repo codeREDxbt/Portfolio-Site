@@ -1,4 +1,4 @@
-import { apiError, apiJson, applyCors, corsPreflight, getClientIp, rateLimit } from "@/lib/api";
+import { apiError, apiJson, applyCors, corsPreflight, getClientIp, rateLimit } from '@/lib/api';
 
 const WINDOW_MS = 60 * 60 * 1000;
 const LIMIT = 5;
@@ -12,13 +12,14 @@ type BookingPayload = {
 
 function validateBooking(data: BookingPayload) {
   const errors: string[] = [];
-  const name = typeof data.name === "string" ? data.name.trim() : "";
-  const email = typeof data.email === "string" ? data.email.trim().toLowerCase() : "";
-  const date = typeof data.date === "string" ? data.date : "";
-  const time = typeof data.time === "string" ? data.time : "";
+  const name = typeof data.name === 'string' ? data.name.trim() : '';
+  const email = typeof data.email === 'string' ? data.email.trim().toLowerCase() : '';
+  const date = typeof data.date === 'string' ? data.date : '';
+  const time = typeof data.time === 'string' ? data.time : '';
 
-  if (name.length < 2 || name.length > 100) errors.push("Name must be 2-100 characters");
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) errors.push("Invalid email address");
+  if (name.length < 2 || name.length > 100) errors.push('Name must be 2-100 characters');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254)
+    errors.push('Invalid email address');
 
   // strict shape + real-calendar check (rejects 2026-02-30-style rollovers) + 90-day horizon
   const dateValid =
@@ -29,11 +30,11 @@ function validateBooking(data: BookingPayload) {
     })();
   const today = new Date().toISOString().slice(0, 10);
   const horizon = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
-  if (!dateValid) errors.push("Invalid date format");
-  else if (date < today) errors.push("Cannot book dates in the past");
-  else if (date > horizon) errors.push("Bookings open up to 90 days ahead");
+  if (!dateValid) errors.push('Invalid date format');
+  else if (date < today) errors.push('Cannot book dates in the past');
+  else if (date > horizon) errors.push('Bookings open up to 90 days ahead');
 
-  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) errors.push("Invalid time format");
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) errors.push('Invalid time format');
 
   return { errors, name, email, date, time };
 }
@@ -43,13 +44,13 @@ async function notifyDiscord(booking: { name: string; email: string; date: strin
   if (!webhook) return;
 
   await fetch(webhook, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     signal: AbortSignal.timeout(8000),
     body: JSON.stringify({
       // never let booking fields ping the channel (@everyone) or inject markdown
       allowed_mentions: { parse: [] },
-      content: `📅 New booking request\nName: ${booking.name.replace(/[@#`]/g, "")}\nEmail: ${booking.email}\nDate: ${booking.date}\nTime: ${booking.time}`,
+      content: `📅 New booking request\nName: ${booking.name.replace(/[@#`]/g, '')}\nEmail: ${booking.email}\nDate: ${booking.date}\nTime: ${booking.time}`,
     }),
   });
 }
@@ -61,11 +62,14 @@ export async function POST(request: Request) {
   if (!limit.allowed) {
     const response = applyCors(
       request,
-      apiError(429, "Too many booking submissions. Please try again in an hour.", {
+      apiError(429, 'Too many booking submissions. Please try again in an hour.', {
         retryAfter: new Date(limit.resetTime).toISOString(),
-      }),
+      })
     );
-    response.headers.set("Retry-After", String(Math.max(1, Math.ceil((limit.resetTime - Date.now()) / 1000))));
+    response.headers.set(
+      'Retry-After',
+      String(Math.max(1, Math.ceil((limit.resetTime - Date.now()) / 1000)))
+    );
     return response;
   }
 
@@ -74,7 +78,7 @@ export async function POST(request: Request) {
     const booking = validateBooking(payload);
 
     if (booking.errors.length) {
-      return applyCors(request, apiError(400, "Validation failed", booking.errors));
+      return applyCors(request, apiError(400, 'Validation failed', booking.errors));
     }
 
     try {
@@ -86,13 +90,13 @@ export async function POST(request: Request) {
     return applyCors(
       request,
       apiJson({
-        status: "success",
-        message: "Booking confirmed! I will reach out shortly.",
+        status: 'success',
+        message: 'Booking confirmed! I will reach out shortly.',
         booking: { date: booking.date, time: booking.time },
-      }),
+      })
     );
   } catch {
-    return applyCors(request, apiError(400, "Invalid JSON body"));
+    return applyCors(request, apiError(400, 'Invalid JSON body'));
   }
 }
 
@@ -101,5 +105,5 @@ export function OPTIONS(request: Request) {
 }
 
 export function GET(request: Request) {
-  return applyCors(request, apiError(405, "Method not allowed"));
+  return applyCors(request, apiError(405, 'Method not allowed'));
 }

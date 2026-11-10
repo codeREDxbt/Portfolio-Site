@@ -106,7 +106,6 @@ function artVeilpay() {
     </g>`;
 }
 
-
 /* ── FreelancePay — teal escrow terminal: contract code + receipt + milestones ── */
 function artFreelancepay() {
   const accent = '#2dd4bf';
@@ -119,7 +118,10 @@ function artFreelancepay() {
     ['// no trust req. zero fees.', T.dim],
   ];
   const code = codeLines
-    .map(([line, color], i) => `<text x="700" y="${250 + i * 38}" font-family="${MONO}" font-size="21" fill="${color}">${line}</text>`)
+    .map(
+      ([line, color], i) =>
+        `<text x="700" y="${250 + i * 38}" font-family="${MONO}" font-size="21" fill="${color}">${line}</text>`
+    )
     .join('');
   const milestones = ['CONNECT', 'FUND', 'SHIP', 'RELEASE']
     .map((label, i) => {
@@ -146,8 +148,6 @@ function artFreelancepay() {
     <text x="700" y="130" font-family="${MONO}" font-size="17" letter-spacing="4" fill="${T.dim}">TRUSTLESS MILESTONE ESCROW</text>`;
 }
 
-
-
 /* ── VaultPass — electric-blue ZK gate: vault rings, redacted witness, proof ── */
 function artVaultpass() {
   const accent = '#3b5bff';
@@ -158,9 +158,11 @@ function artVaultpass() {
     ['identity', '██████████', false],
   ];
   const proofRows = rows
-    .map(([k, v, ok], i) => `
+    .map(
+      ([k, v, ok], i) => `
       <text x="700" y="${390 + i * 38}" font-family="${MONO}" font-size="20" fill="${T.dim}">${k}:</text>
-      <text x="940" y="${390 + i * 38}" font-family="${MONO}" font-size="20" fill="${ok ? hot : T.strong}">${v}</text>`)
+      <text x="940" y="${390 + i * 38}" font-family="${MONO}" font-size="20" fill="${ok ? hot : T.strong}">${v}</text>`
+    )
     .join('');
   return `
     <g fill="none" stroke="${accent}">
@@ -189,15 +191,25 @@ function artAvisky() {
   const hot = '#818cf8';
   // great-arc trajectory across the canvas with waypoints
   const waypoints = [
-    [640, 430], [800, 370], [980, 320], [1160, 280], [1330, 250], [1470, 230],
+    [640, 430],
+    [800, 370],
+    [980, 320],
+    [1160, 280],
+    [1330, 250],
+    [1470, 230],
   ];
   const dots = waypoints
-    .map(([x, y], i) => `
+    .map(
+      ([x, y], i) => `
       <circle cx="${x}" cy="${y}" r="7" fill="${i === waypoints.length - 1 ? hot : T.bg}" stroke="${accent}" stroke-width="2"/>
-      <text x="${x}" y="${y - 18}" text-anchor="middle" font-family="${MONO}" font-size="13" fill="${T.dim}">WPT 0${i + 1}</text>`)
+      <text x="${x}" y="${y - 18}" text-anchor="middle" font-family="${MONO}" font-size="13" fill="${T.dim}">WPT 0${i + 1}</text>`
+    )
     .join('');
   const telemetry = [
-    ['ALT', '34,000 FT'], ['HDG', '072°'], ['GS', '448 KT'], ['CADETS', '5.2K'],
+    ['ALT', '34,000 FT'],
+    ['HDG', '072°'],
+    ['GS', '448 KT'],
+    ['CADETS', '5.2K'],
   ]
     .map(([k, v], i) => {
       const x = 660 + i * 210;
@@ -219,7 +231,6 @@ function artAvisky() {
     <text x="640" y="140" font-family="${MONO}" font-size="17" letter-spacing="4" fill="${T.dim}">AI-POWERED AVIATION LEARNING · TRAJECTORY LIVE</text>
     <text x="640" y="196" font-family="${SERIF}" font-style="italic" font-size="40" fill="${accent}">Dream to reality.</text>`;
 }
-
 
 /* ── Logo knockout: white backdrop + watermark grays → transparent; ── */
 /* ── reds hot-graded, blacks warmed to the site's ink ── */
@@ -259,20 +270,40 @@ async function knockoutMark() {
 
 const COVERS = [
   {
-    id: 'veilpay', title: 'Veilpay', role: 'PRIVATE MULTI-CHAIN WALLET', year: '2026',
-    folio: 'PAYMENTS · ZK', accent: '#d4a94e', art: artVeilpay,
+    id: 'veilpay',
+    title: 'Veilpay',
+    role: 'PRIVATE MULTI-CHAIN WALLET',
+    year: '2026',
+    folio: 'PAYMENTS · ZK',
+    accent: '#d4a94e',
+    art: artVeilpay,
   },
   {
-    id: 'freelancepay', title: 'FreelancePay', role: 'MILESTONE ESCROW · STELLAR', year: '2025',
-    folio: '$250 STELLAR AWARD', accent: '#2dd4bf', art: artFreelancepay,
+    id: 'freelancepay',
+    title: 'FreelancePay',
+    role: 'MILESTONE ESCROW · STELLAR',
+    year: '2025',
+    folio: '$250 STELLAR AWARD',
+    accent: '#2dd4bf',
+    art: artFreelancepay,
   },
   {
-    id: 'avisky', title: 'Avisky', role: 'AI AVIATION LEARNING', year: '2026',
-    folio: 'CLIENT PROJECT', accent: '#4f46e5', art: artAvisky,
+    id: 'avisky',
+    title: 'Avisky',
+    role: 'AI AVIATION LEARNING',
+    year: '2026',
+    folio: 'CLIENT PROJECT',
+    accent: '#4f46e5',
+    art: artAvisky,
   },
   {
-    id: 'vaultpass', title: 'VaultPass', role: 'ZK MEMBERSHIP GATE', year: '2025',
-    folio: '$30 AWARD · MIDNIGHT', accent: '#3b5bff', art: artVaultpass,
+    id: 'vaultpass',
+    title: 'VaultPass',
+    role: 'ZK MEMBERSHIP GATE',
+    year: '2025',
+    folio: '$30 AWARD · MIDNIGHT',
+    accent: '#3b5bff',
+    art: artVaultpass,
   },
 ];
 
@@ -298,4 +329,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

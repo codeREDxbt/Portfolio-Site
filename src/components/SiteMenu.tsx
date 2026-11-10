@@ -52,7 +52,9 @@ export function SiteMenu({ open, onClose }: { open: boolean; onClose: () => void
     );
     siblings.forEach((element) => element.setAttribute('inert', ''));
 
-    const focusFrame = requestAnimationFrame(() => firstLinkRef.current?.focus({ preventScroll: true }));
+    const focusFrame = requestAnimationFrame(() =>
+      firstLinkRef.current?.focus({ preventScroll: true })
+    );
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
@@ -86,7 +88,9 @@ export function SiteMenu({ open, onClose }: { open: boolean; onClose: () => void
   // focus returns to the dock pill after a dismiss (not after choosing a link)
   useEffect(() => {
     if (wasOpenRef.current && !open && restoreOnClose) {
-      document.querySelector<HTMLElement>('[aria-controls="site-menu"]')?.focus({ preventScroll: true });
+      document
+        .querySelector<HTMLElement>('[aria-controls="site-menu"]')
+        ?.focus({ preventScroll: true });
     }
     wasOpenRef.current = open;
   }, [open, restoreOnClose]);
@@ -163,10 +167,15 @@ export function SiteMenu({ open, onClose }: { open: boolean; onClose: () => void
                       style={
                         reduced
                           ? undefined
-                          : { animation: 'filament 620ms ease-out both', animationDelay: `${140 + index * 90}ms` }
+                          : {
+                              animation: 'filament 620ms ease-out both',
+                              animationDelay: `${140 + index * 90}ms`,
+                            }
                       }
                     >
-                      <span className="font-mono text-xs tracking-normal text-dim">0{index + 1}</span>
+                      <span className="font-mono text-xs tracking-normal text-dim">
+                        0{index + 1}
+                      </span>
                       <span>{link.label}</span>
                     </a>
                   </li>
@@ -174,18 +183,22 @@ export function SiteMenu({ open, onClose }: { open: boolean; onClose: () => void
               </ul>
             </nav>
 
-
             <aside
               className="mt-12 border-t border-line pt-8 lg:mt-0 lg:border-t-0 lg:pt-0 lg:self-center"
               style={
                 reduced
                   ? undefined
-                  : { animation: 'filament 620ms ease-out both', animationDelay: `${140 + links.length * 90 + 60}ms` }
+                  : {
+                      animation: 'filament 620ms ease-out both',
+                      animationDelay: `${140 + links.length * 90 + 60}ms`,
+                    }
               }
             >
               <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-1 lg:gap-10">
                 <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">Status</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
+                    Status
+                  </p>
                   <p className="mt-2 flex items-center gap-2 text-sm text-foreground">
                     <span className="h-2 w-2 rounded-full bg-green" />
                     {profile.availability}
@@ -193,12 +206,17 @@ export function SiteMenu({ open, onClose }: { open: boolean; onClose: () => void
                 </div>
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">Email</p>
-                  <a className="mt-2 block break-all text-sm text-foreground" href={`mailto:${profile.email}`}>
+                  <a
+                    className="mt-2 block break-all text-sm text-foreground"
+                    href={`mailto:${profile.email}`}
+                  >
                     {profile.email}
                   </a>
                 </div>
                 <div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">Elsewhere</p>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
+                    Elsewhere
+                  </p>
                   <div className="mt-2 flex gap-4 text-sm text-muted">
                     {socials.map((social) => (
                       <a
@@ -222,4 +240,3 @@ export function SiteMenu({ open, onClose }: { open: boolean; onClose: () => void
     document.body
   );
 }
-

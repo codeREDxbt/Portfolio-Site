@@ -1,8 +1,13 @@
-"use client";
+'use client';
 
-import Lenis from "lenis";
-import { useEffect } from "react";
-import { navigateToElement, refreshScrollMeasurements, registerLenis, shouldSkipFocusScroll } from "@/lib/scroll";
+import Lenis from 'lenis';
+import { useEffect } from 'react';
+import {
+  navigateToElement,
+  refreshScrollMeasurements,
+  registerLenis,
+  shouldSkipFocusScroll,
+} from '@/lib/scroll';
 
 function isMostlyVisible(element: HTMLElement) {
   const rect = element.getBoundingClientRect();
@@ -17,7 +22,7 @@ function isMostlyVisible(element: HTMLElement) {
 function isInsideFixedUi(element: HTMLElement) {
   let node: HTMLElement | null = element;
   while (node) {
-    if (getComputedStyle(node).position === "fixed") return true;
+    if (getComputedStyle(node).position === 'fixed') return true;
     node = node.parentElement;
   }
   return false;
@@ -25,8 +30,8 @@ function isInsideFixedUi(element: HTMLElement) {
 
 export function SmoothScroll() {
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
 
     let lenis: Lenis | null = null;
     let unregisterLenis: (() => void) | null = null;
@@ -48,20 +53,29 @@ export function SmoothScroll() {
     resizeObserver.observe(document.body);
 
     const onRelease = () => scheduleMeasurementRefresh();
-    window.addEventListener("codered:release", onRelease);
+    window.addEventListener('codered:release', onRelease);
     document.fonts?.ready.then(scheduleMeasurementRefresh).catch(() => {});
 
     // Anchor clicks always move focus to the target. The focus-chasing
     // handler below deliberately skips this one focus call; otherwise it
     // interrupts the Lenis tween with a second immediate scroll.
     const onClick = (event: MouseEvent) => {
-      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
         return;
       }
 
-      const link = (event.target as HTMLElement).closest?.("a[href^='#']") as HTMLAnchorElement | null;
+      const link = (event.target as HTMLElement).closest?.(
+        "a[href^='#']"
+      ) as HTMLAnchorElement | null;
       if (!link || link.target) return;
-      const hash = link.getAttribute("href");
+      const hash = link.getAttribute('href');
       if (!hash || hash.length < 2) return;
 
       const id = decodeURIComponent(hash.slice(1));
@@ -71,7 +85,7 @@ export function SmoothScroll() {
       event.preventDefault();
       navigateToElement(target, hash);
     };
-    document.addEventListener("click", onClick);
+    document.addEventListener('click', onClick);
 
     // Keep keyboard focus on screen without fighting anchor tweens. Native
     // tab scrolling syncs Lenis; this only catches focus that remains hidden.
@@ -90,7 +104,7 @@ export function SmoothScroll() {
         allowNestedScroll: true,
       });
       unregisterLenis = registerLenis(lenis);
-      document.addEventListener("focusin", onFocusIn);
+      document.addEventListener('focusin', onFocusIn);
 
       const raf = (time: number) => {
         lenis?.raf(time);
@@ -100,9 +114,9 @@ export function SmoothScroll() {
     }
 
     return () => {
-      document.removeEventListener("click", onClick);
-      document.removeEventListener("focusin", onFocusIn);
-      window.removeEventListener("codered:release", onRelease);
+      document.removeEventListener('click', onClick);
+      document.removeEventListener('focusin', onFocusIn);
+      window.removeEventListener('codered:release', onRelease);
       resizeObserver.disconnect();
       cancelAnimationFrame(resizeFrame);
       if (frame) cancelAnimationFrame(frame);

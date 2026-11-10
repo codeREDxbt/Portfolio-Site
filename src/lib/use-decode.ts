@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-const GLYPHS = "█▓▒░◢◣/\\|+·";
+const GLYPHS = '█▓▒░◢◣/\\|+·';
 
 /**
  * Left-to-right decode reveal: while `play` is true, characters resolve
@@ -24,13 +24,13 @@ export function useDecode(text: string, play: boolean, reduced: boolean) {
       index += 1;
       setDisplay(
         text
-          .split("")
+          .split('')
           .map((char, position) => {
             if (position < index) return char;
-            if (char === " ") return " ";
+            if (char === ' ') return ' ';
             return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
           })
-          .join("")
+          .join('')
       );
       if (index < text.length) timerRef.current = window.setTimeout(step, 24);
     };

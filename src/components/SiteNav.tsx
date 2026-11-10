@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 import { ThemeToggle } from './ThemeToggle';
 
 /**
@@ -9,7 +9,10 @@ import { ThemeToggle } from './ThemeToggle';
 export function SiteNav() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-6 py-5 md:px-16">
-      <Link href="/#index" className="text-sm font-medium leading-none tracking-[-0.05em] text-foreground">
+      <Link
+        href="/#index"
+        className="text-sm font-medium leading-none tracking-[-0.05em] text-foreground"
+      >
         code<span className="text-red">RED</span>
       </Link>
       <ThemeToggle />

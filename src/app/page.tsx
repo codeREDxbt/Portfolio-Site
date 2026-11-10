@@ -1,14 +1,14 @@
-import { Contact } from "@/components/Contact";
-import { Hero } from "@/components/Hero";
-import { Narrative } from "@/components/Narrative";
-import { Projects } from "@/components/Projects";
-import { SiteNav } from "@/components/SiteNav";
-import { DockNav } from "@/components/DockNav";
-import { StackActivity } from "@/components/StackActivity";
-import { Journey } from "@/components/Journey";
-import { SmoothScroll } from "@/components/SmoothScroll";
-import { PageLoader } from "@/components/PageLoader";
-import { Footer } from "@/components/Footer";
+import { Contact } from '@/components/Contact';
+import { Hero } from '@/components/Hero';
+import { Narrative } from '@/components/Narrative';
+import { Projects } from '@/components/Projects';
+import { SiteNav } from '@/components/SiteNav';
+import { DockNav } from '@/components/DockNav';
+import { StackActivity } from '@/components/StackActivity';
+import { Journey } from '@/components/Journey';
+import { SmoothScroll } from '@/components/SmoothScroll';
+import { PageLoader } from '@/components/PageLoader';
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   return (
@@ -36,10 +36,10 @@ export default function Home() {
         id="contact"
         data-contact-spacer
         className="scroll-mt-0"
-        style={{ height: "var(--contact-h, 0px)" }}
+        style={{ height: 'var(--contact-h, 0px)' }}
       />
       {/* Scroll room for the contact lift that reveals the footer. */}
-      <div data-footer-spacer aria-hidden="true" style={{ height: "var(--footer-h, 0px)" }} />
+      <div data-footer-spacer aria-hidden="true" style={{ height: 'var(--footer-h, 0px)' }} />
       {/* Pinned contact layer (z-10): revealed by the curtain, then lifts off
           the footer. Pinned footer (z-0) sits beneath everything. */}
       <Contact />

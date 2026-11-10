@@ -1,8 +1,8 @@
-import Image from "next/image";
-import { profile, projects } from "@/data/portfolio";
-import { CommandChip } from "./CommandChip";
-import { ChannelReadout } from "./ChannelReadout";
-import { HeroVisual } from "./HeroVisual";
+import Image from 'next/image';
+import { profile, projects } from '@/data/portfolio';
+import { CommandChip } from './CommandChip';
+import { ChannelReadout } from './ChannelReadout';
+import { HeroVisual } from './HeroVisual';
 
 const featured = projects.filter((project) => project.featured);
 
@@ -14,7 +14,10 @@ const featured = projects.filter((project) => project.featured);
  */
 export function Hero() {
   return (
-    <section id="index" className="relative flex flex-col overflow-hidden pb-14 pt-28 lg:min-h-svh lg:pt-32">
+    <section
+      id="index"
+      className="relative flex flex-col overflow-hidden pb-14 pt-28 lg:min-h-svh lg:pt-32"
+    >
       {/* 3D ribbon field behind everything */}
       <HeroVisual />
       <div aria-hidden="true" className="hero-vignette pointer-events-none absolute inset-0" />
@@ -33,12 +36,19 @@ export function Hero() {
             <ChannelReadout />
 
             <h1 className="mt-6 text-[clamp(4rem,10vw,10rem)] font-medium leading-[0.82] tracking-[-0.075em]">
-              <span className="hero-line"><span>Vinayak</span></span>
-              <span className="hero-line"><span>Vashisth<span className="text-red">.</span></span></span>
+              <span className="hero-line">
+                <span>Vinayak</span>
+              </span>
+              <span className="hero-line">
+                <span>
+                  Vashisth<span className="text-red">.</span>
+                </span>
+              </span>
             </h1>
 
             <p className="fade-in-up mt-8 max-w-xl text-lg leading-8 text-muted [animation-delay:400ms]">
-              I build products end to end: backends, interfaces, and everything between. Currently building Veilpay.
+              I build products end to end: backends, interfaces, and everything between. Currently
+              building Veilpay.
             </p>
 
             <div className="fade-in-up mt-10 flex flex-wrap items-center gap-3 [animation-delay:480ms]">
@@ -74,8 +84,12 @@ export function Hero() {
                     className="object-contain scale-[1.28]"
                   />
                 </div>
-                {(["a", "b"] as const).map((slice) => (
-                  <div key={slice} aria-hidden="true" className={`plate-slice plate-slice-${slice}`}>
+                {(['a', 'b'] as const).map((slice) => (
+                  <div
+                    key={slice}
+                    aria-hidden="true"
+                    className={`plate-slice plate-slice-${slice}`}
+                  >
                     <Image
                       src="/brand/codered-mark.png"
                       alt=""
@@ -97,7 +111,9 @@ export function Hero() {
 
         <div className="grid gap-8 border-t border-line pt-7 lg:grid-cols-[1fr_1.2fr] lg:items-end">
           <nav aria-label="Featured projects" className="fade-in-up [animation-delay:600ms]">
-            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-dim">In this edition</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-dim">
+              In this edition
+            </p>
             <ul className="mt-3 grid gap-px overflow-hidden rounded-lg border border-line bg-line sm:grid-cols-2">
               {featured.map((project) => (
                 <li key={project.id} className="bg-background">
@@ -135,7 +151,10 @@ export function Hero() {
             <div>
               <dt className="font-mono text-[10px] uppercase tracking-[0.2em] text-dim">Contact</dt>
               <dd className="mt-2 text-sm">
-                <a href={`mailto:${profile.email}`} className="break-all text-foreground transition-colors hover:text-red">
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="break-all text-foreground transition-colors hover:text-red"
+                >
                   {profile.email}
                 </a>
               </dd>
@@ -146,4 +165,3 @@ export function Hero() {
     </section>
   );
 }
-
