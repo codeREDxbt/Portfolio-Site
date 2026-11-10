@@ -41,19 +41,19 @@ export function Projects() {
                   href={project.liveUrl ?? project.repoUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group block overflow-hidden"
+                  className="group block overflow-hidden [contain:layout]"
                 >
                   {/* collapsed row */}
-                  <span className="grid gap-3 py-6 transition-colors md:grid-cols-[60px_1fr_auto_100px] md:items-center">
+                  <span className="grid gap-3 py-6 transition-colors md:grid-cols-[60px_1fr_100px] md:items-baseline">
                     <span className="font-mono text-xs text-dim">{project.number}</span>
                     <span className="text-xl font-medium tracking-[-0.03em] transition-colors group-hover:text-red">
                       {project.title}
+                      {project.award ? (
+                        <span className="ml-3 font-mono text-[10px] uppercase tracking-[0.14em] text-red/70">
+                          {project.award}
+                        </span>
+                      ) : null}
                     </span>
-                    {project.award ? (
-                      <span className="w-fit rounded-full border border-red/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-red">
-                        {project.award}
-                      </span>
-                    ) : null}
                     <span className="font-mono text-xs text-dim md:text-right">
                       {project.year} ↗
                     </span>
