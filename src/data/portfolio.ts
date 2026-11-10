@@ -57,6 +57,7 @@ export const projects: Project[] = [
     liveUrl: "https://www.veilpayapp.com",
     repoUrl: "https://github.com/codeREDxbt/Veilpay",
     featured: true,
+    award: "Special mention — Stellar Build Station",
     caseFile: {
       challenge: "Multiple chains, one wallet — without leaking addresses across protocols.",
       decision: "Protocol-specific address isolation with fiat on/off-ramps built in.",
@@ -74,7 +75,7 @@ export const projects: Project[] = [
       ],
       outcome: [
         "Live at veilpayapp.com — stealth payments across 7+ chains, with private XLM generally available on Stellar mainnet and Monero, Zcash, and Midnight staged as experimental integrations.",
-        "The public monorepo carries the full stack — mobile app, merchant API, indexer, circuits — and states the external audit as pending rather than claimed. Private by default; honest by design.",
+        "Picked up a special mention at Stellar Build Station. The public monorepo carries the full stack — mobile app, merchant API, indexer, circuits — and states the external audit as pending rather than claimed. Private by default; honest by design.",
       ],
     },
   },

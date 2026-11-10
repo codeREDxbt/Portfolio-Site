@@ -165,7 +165,14 @@ export function TunerStationListItem({ project }: { project: Project }) {
         <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-dim">
           [ {project.number} · {project.year} · {project.role} ]
         </p>
-        <h3 className="mt-3 text-3xl font-medium tracking-[-0.04em]">{project.title}</h3>
+        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+          <h3 className="text-3xl font-medium tracking-[-0.04em]">{project.title}</h3>
+          {project.award ? (
+            <span className="rounded-full border border-red/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-red">
+              {project.award}
+            </span>
+          ) : null}
+        </div>
         {project.caseFile ? (
           <dl className="mt-6 border-t border-line">
             {(

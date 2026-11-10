@@ -263,6 +263,10 @@ Runtime (`next start`): all four slugs 200; `/work/paytrack` (archived) and unkn
 
 User report: at mobile width a stray "pay." fragment overlapped the first project image. Root cause: the list fallback's media frame was `aspect-[16/10]` below `md`, so `object-cover` cropped ~16% off each side of the 2.33:1 designed covers — slicing the bottom-left title lockup down to "…pay." peeking out from the frame edge (verified by hiding `#work img`: fragment gone). Fix: `ProjectMedia`'s non-fill frame is now `aspect-[21/9]` at all widths (the aspect the covers were designed for; only `TunerStationListItem` uses non-fill). Verified at 390px: covers render edge-to-edge, full lockups intact, dossier + CTAs clean.
 
+### Content — Veilpay award (user-provided)
+
+Veilpay received a **special mention at Stellar Build Station** — added as its `award` (it was the only featured project without one). Rendered as the red mono pill next to the title on the desktop tuner station, the case-page kicker, and now the mobile list item too (the list item previously never rendered `award` — parity fix). Also woven into the case-study outcome paragraph.
+
 ### Change — hero plate is logo-only (user request)
 
 The hero no longer uses the personal photo. The glitch plate (photo ⇄ mark swap) is replaced by a static mark plate: `codered-mark.png` bled ~28% past the frame edges with the signal drop-shadow glow (`.plate-mark`), caption fixed at `SIG/001 — CODERED` + coordinates. Removed all glitch machinery from `globals.css` (`glitch-stage/layer/photo/logo/flash`, `caption-swap/a/b`, three 8s keyframe sets, `portrait-image`, `portrait-grade`; `data-booting` + reduced-motion blocks pruned; 708 → 463 lines). `/brand/photo.jpg` is no longer referenced anywhere — the file still exists in `public/` (delete it if it shouldn't ship publicly). Verified dark + light + 390px.
