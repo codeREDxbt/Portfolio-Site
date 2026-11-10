@@ -54,13 +54,13 @@ export function Hero() {
             <div className="fade-in-up mt-10 flex flex-wrap items-center gap-3 [animation-delay:480ms]">
               <a
                 href="#work"
-                className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform duration-300 hover:-translate-y-0.5"
+                className="neu-solid rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform duration-300 hover:-translate-y-0.5"
               >
                 View work
               </a>
               <a
                 href="#contact"
-                className="rounded-full border border-line px-6 py-3 text-sm font-medium text-foreground transition-colors hover:border-red hover:text-red"
+                className="neu rounded-full px-6 py-3 text-sm font-medium text-foreground hover:text-red"
               >
                 Book a call
               </a>

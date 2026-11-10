@@ -89,7 +89,7 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label={`Switch to ${next} theme`}
       aria-pressed={theme === 'light'}
-      className="grid h-11 w-11 place-items-center rounded-full border border-line bg-background/70 text-foreground backdrop-blur-md transition-colors hover:border-red"
+      className="neu grid h-11 w-11 place-items-center rounded-full text-foreground"
     >
       <span className="eclipse-dial" aria-hidden="true">
         <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]">

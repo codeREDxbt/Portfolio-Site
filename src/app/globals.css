@@ -643,6 +643,77 @@ html[data-booting] .plate-flash {
   }
 }
 
+/* ---- Neumorphic controls, red-signal edition ----
+   Extruded pills and dials in the theme's own warmth: paper raises toward
+   the light, ink sinks into shadow. Pressed flips the light: inset. */
+:root {
+  --neu-hi: rgb(245 242 237 / 0.05);
+  --neu-lo: rgb(0 0 0 / 0.6);
+  --neu-bg-a: #1a1714;
+  --neu-bg-b: #100e0c;
+}
+
+[data-theme='light'] {
+  --neu-hi: rgb(255 255 255 / 0.95);
+  --neu-lo: rgb(23 19 15 / 0.14);
+  --neu-bg-a: #fdfaf1;
+  --neu-bg-b: #ece4d2;
+}
+
+.neu {
+  background: linear-gradient(145deg, var(--neu-bg-a), var(--neu-bg-b));
+  box-shadow:
+    -5px -5px 12px var(--neu-hi),
+    8px 8px 20px var(--neu-lo);
+  transition:
+    box-shadow 350ms var(--ease-out-expo),
+    transform 350ms var(--ease-out-expo),
+    color 200ms;
+}
+
+.neu:hover {
+  box-shadow:
+    -6px -6px 14px var(--neu-hi),
+    10px 10px 26px var(--neu-lo),
+    0 0 0 1px color-mix(in oklab, var(--red) 30%, transparent);
+}
+
+.neu:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 5px 5px 12px var(--neu-lo),
+    inset -5px -5px 12px var(--neu-hi);
+}
+
+/* Solid ink pill: the primary action keeps its weight but gains the
+   pillow — top highlight, bottom shade, paired extrusion. */
+.neu-solid {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 -2px 6px rgb(0 0 0 / 0.22),
+    -4px -4px 10px var(--neu-hi),
+    8px 8px 20px var(--neu-lo);
+  transition:
+    box-shadow 350ms var(--ease-out-expo),
+    transform 350ms var(--ease-out-expo);
+}
+
+.neu-solid:hover {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 -2px 6px rgb(0 0 0 / 0.25),
+    -6px -6px 14px var(--neu-hi),
+    12px 12px 28px var(--neu-lo);
+}
+
+.neu-solid:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 2px 8px rgb(0 0 0 / 0.3),
+    -2px -2px 6px var(--neu-hi),
+    4px 4px 12px var(--neu-lo);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .eclipse-dial .dial-occulter,
   .eclipse-dial .dial-rays {

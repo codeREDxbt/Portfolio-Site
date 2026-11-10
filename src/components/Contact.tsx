@@ -127,13 +127,13 @@ export function Contact() {
             <button
               type="button"
               onClick={() => setBookingOpen(true)}
-              className="rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5"
+              className="neu-solid rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-transform hover:-translate-y-0.5"
             >
               Book a call ↗
             </button>
             <a
               href={`mailto:${profile.email}`}
-              className="rounded-full border border-line px-6 py-3 text-sm font-medium transition-colors hover:border-red hover:text-red"
+              className="neu rounded-full px-6 py-3 text-sm font-medium hover:text-red"
             >
               {profile.email}
             </a>
@@ -141,7 +141,7 @@ export function Contact() {
               href={profile.resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-line px-6 py-3 text-sm font-medium transition-colors hover:border-red hover:text-red"
+              className="neu rounded-full px-6 py-3 text-sm font-medium hover:text-red"
             >
               Resume ↗
             </a>

@@ -131,7 +131,7 @@ export function TunerStation({
                   target="_blank"
                   rel="noopener noreferrer"
                   tabIndex={active ? 0 : -1}
-                  className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"
+                  className="neu-solid inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"
                 >
                   Open feed ↗ <span className="sr-only">: {project.title} (opens in new tab)</span>
                 </a>
@@ -140,7 +140,7 @@ export function TunerStation({
                 <Link
                   href={`/work/${project.id}`}
                   tabIndex={active ? 0 : -1}
-                  className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
+                  className="neu inline-flex rounded-full px-5 py-2.5 text-xs font-medium text-foreground"
                 >
                   Read case file → <span className="sr-only">: {project.title}</span>
                 </Link>
@@ -200,7 +200,7 @@ export function TunerStationListItem({ project }: { project: Project }) {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background"
+                className="neu-solid inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background"
               >
                 Open feed ↗ <span className="sr-only">: {project.title} (opens in new tab)</span>
               </a>
@@ -208,7 +208,7 @@ export function TunerStationListItem({ project }: { project: Project }) {
             {project.caseStudy ? (
               <Link
                 href={`/work/${project.id}`}
-                className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
+                className="neu inline-flex rounded-full px-5 py-2.5 text-xs font-medium text-foreground"
               >
                 Read case file → <span className="sr-only">: {project.title}</span>
               </Link>

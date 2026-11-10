@@ -83,7 +83,7 @@ export function DockNav() {
             aria-controls="site-menu"
             onClick={() => setOpen((value) => !value)}
             whileTap={reduced ? undefined : { scale: 0.96, y: 1 }}
-            className="tx-key flex items-center gap-3 rounded-full border border-line bg-background/80 py-3 pl-4 pr-5 font-mono text-xs uppercase tracking-[0.18em] text-foreground backdrop-blur-md transition-colors hover:border-red/60"
+            className="tx-key neu flex items-center gap-3 rounded-full py-3 pl-4 pr-5 font-mono text-xs uppercase tracking-[0.18em] text-foreground"
           >
             <span className="tx-radar" aria-hidden="true">
               <span className="tx-radar-sweep" />
