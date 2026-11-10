@@ -113,6 +113,15 @@ export function SmoothScroll() {
       frame = requestAnimationFrame(raf);
     }
 
+    // Route changes remount this component — land at the top of the new
+    // page. Lenis caches the previous page's scroll depth and would write
+    // it back on its next frame, so go through Lenis itself (immediate),
+    // before its first raf. Hash links keep their own target scroll.
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+      lenis?.scrollTo(0, { immediate: true });
+    }
+
     return () => {
       document.removeEventListener('click', onClick);
       document.removeEventListener('focusin', onFocusIn);

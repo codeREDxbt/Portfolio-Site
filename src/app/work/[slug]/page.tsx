@@ -67,7 +67,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         {/* Case header */}
         <section className="px-6 pt-36 md:px-16 md:pt-44">
           <div className="mx-auto max-w-5xl">
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <div className="fade-in-up flex flex-wrap items-center gap-x-5 gap-y-3">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-red">
                 Case file · {project.number}/{String(featured.length).padStart(2, '0')}
               </p>
@@ -80,10 +80,10 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
             <h1 className="hero-line mt-6 text-5xl font-medium tracking-[-0.05em] md:text-7xl">
               <span>{project.title}.</span>
             </h1>
-            <p className="fade-in-up mt-6 max-w-[65ch] text-base leading-8 text-muted">
+            <p className="fade-in-up mt-6 max-w-[65ch] text-base leading-8 text-muted [animation-delay:200ms]">
               {study.lede}
             </p>
-            <div className="fade-in-up mt-8 border-t border-line pt-4">
+            <div className="fade-in-up mt-8 border-t border-line pt-4 [animation-delay:330ms]">
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-dim">
                 [ {project.number} · {project.year} · {project.role} ]
               </p>
@@ -92,7 +92,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 {host ? ` · ${host}` : ''}
               </p>
             </div>
-            <div className="fade-in-up mt-8 flex flex-wrap items-center gap-3">
+            <div className="fade-in-up mt-8 flex flex-wrap items-center gap-3 [animation-delay:440ms]">
               {project.liveUrl ? (
                 <a
                   href={project.liveUrl}
@@ -125,7 +125,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         </section>
 
         {/* Receiver frame */}
-        <section className="px-6 pt-14 md:px-16 md:pt-20">
+        <section className="fade-in-up px-6 pt-14 [animation-delay:560ms] md:px-16 md:pt-20">
           <div className="mx-auto max-w-6xl">
             <div className="tuner-screen relative aspect-[21/9] w-full overflow-hidden rounded-xl border border-line bg-surface">
               <ProjectMedia
