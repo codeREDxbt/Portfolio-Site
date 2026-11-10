@@ -25,7 +25,10 @@ export function Hero() {
           <span>Signal / 2026</span>
         </div>
 
-        <div className="grid flex-1 grid-cols-12 content-center gap-x-8 gap-y-14 py-12 lg:py-8">
+        {/* gap-x only exists where two columns coexist (lg): on mobile every
+            child is col-span-12, and the 11 fixed gaps would otherwise add
+            352px to the spanned row — pushing it past the right padding */}
+        <div className="grid flex-1 grid-cols-12 content-center gap-y-14 py-12 lg:gap-x-8 lg:py-8">
           <div className="col-span-12 lg:col-span-8">
             <ChannelReadout />
 

@@ -271,7 +271,11 @@ Veilpay received a **special mention at Stellar Build Station** — added as its
 
 The hero no longer uses the personal photo — the plate is the mark alone (`codered-mark.png` bled ~28% past the frame, signal drop-shadow glow, caption fixed at `SIG/001 — CODERED` + coordinates). The original two-image glitch machinery was removed (`glitch-*`, `caption-*`, `portrait-image/grade`), then **restored as a self-glitch per user request**: the mark glitches on itself — two slice copies (`plate-slice-a/-b`, clipped bands translated in opposite directions with a hot-red shift) + scanline (`plate-flash`) + a 4px base jolt (`plate-jolt`) fire a ~250ms burst every 8s. Pure CSS; slices are aria-hidden duplicates; wired into `data-booting` pause and reduced-motion (no burst, slices hidden). `/brand/photo.jpg` is no longer referenced anywhere — the file still exists in `public/` (delete it if it shouldn't ship publicly). Verified via WAAPI freeze-frames (`getAnimations().currentTime` scrub) in dark + light + 390px.
 
-Ops note: `next start` caches prerendered HTML in memory at boot — **always restart the server after a rebuild** (this session briefly served a stale build because of it). Also: `TaskStop` on an `npm run start` task can orphan the `next-server` child — kill by port when it matters.
+Ops note: `next start` caches prerendered HTML in memory at boot — **always restart the server after a rebuild** (this session briefly served a stale build because of it). Also: `TaskStop` on an `npm run start` task can orphan the `next-server` child — kill by port when it matters. And in the IAB: `tab.goto(sameUrl#hash)` is a same-document nav, not a reload — use `tab.reload()` to pick up a new build.
+
+### Fix — hero grid overflowed its padding on mobile (user report: "image not centered")
+
+The hero's 12-column grid carried a fixed `gap-x-8` at all widths: 11 gaps × 32px = 352px of gaps inside a ~327px content column, so the 12 `1fr` tracks clamped to zero and every `col-span-12` row became **352px wide — ~25px past the right padding** (plate measured x25→375 in a 375px clientWidth; it should be 24→351). The mark inside was centered; the *plate* wasn't. Fix: `gap-x-8` → `lg:gap-x-8` (the gaps only matter at lg, where col-8 + col-4 coexist). Verified at 390px: plate 24→351, symmetric 24px gutters. Checked the other grids — `grid-cols-2/1` with a single small gap are unaffected (the failure needs gap-total > content).
 
 ## Pending
 
