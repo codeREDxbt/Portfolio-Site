@@ -53,8 +53,14 @@ export function GitHubGraph() {
     }
 
     load();
+    // an open tab re-syncs when it regains focus, so the graph never sits stale
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
       cancelled = true;
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, []);
 
