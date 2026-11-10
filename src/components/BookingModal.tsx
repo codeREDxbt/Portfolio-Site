@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { profile } from '@/data/portfolio';
 import { lockPageScroll } from '@/lib/scroll';
@@ -16,6 +16,135 @@ const times = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '18:00', '1
 
 function toDateValue(date: Date) {
   return date.toISOString().slice(0, 10);
+}
+
+/**
+ * Picker grids with a sliding selected well. The slide is hand-rolled: one
+ * pill positioned by the selected button's offsets, animated by a plain CSS
+ * transition. Motion's layoutId was tried first, but it re-measures on every
+ * modal render (every keystroke) and visibly bounced ~370px; a CSS transition
+ * only moves when the box values change, so typing never disturbs it.
+ */
+type PillBox = { x: number; y: number; w: number; h: number };
+
+function useSlidingPill(containerRef: RefObject<HTMLDivElement | null>, selectedKey: string) {
+  const [box, setBox] = useState<PillBox | null>(null);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const measure = () => {
+      const selected = container.querySelector<HTMLElement>('[data-selected="true"]');
+      if (selected) {
+        setBox({
+          x: selected.offsetLeft,
+          y: selected.offsetTop,
+          w: selected.offsetWidth,
+          h: selected.offsetHeight,
+        });
+      }
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [containerRef, selectedKey]);
+  return box;
+}
+
+const PILL_EASE = 'cubic-bezier(0.16, 1, 0.3, 1)';
+
+function SlidingPill({
+  box,
+  rounded,
+  reduced,
+}: {
+  box: PillBox | null;
+  rounded: string;
+  reduced: boolean;
+}) {
+  if (!box) return null;
+  return (
+    <span
+      aria-hidden="true"
+      className={`neu-selected pointer-events-none absolute left-0 top-0 ${rounded}`}
+      style={{
+        width: box.w,
+        height: box.h,
+        transform: `translate(${box.x}px, ${box.y}px)`,
+        transition: reduced
+          ? 'none'
+          : `transform 300ms ${PILL_EASE}, width 300ms ${PILL_EASE}, height 300ms ${PILL_EASE}`,
+      }}
+    />
+  );
+}
+
+function DayGrid({
+  days,
+  selectedDay,
+  onSelect,
+  reduced,
+}: {
+  days: Date[];
+  selectedDay: Date;
+  onSelect: (day: Date) => void;
+  reduced: boolean;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pill = useSlidingPill(containerRef, toDateValue(selectedDay));
+  return (
+    <div ref={containerRef} className="relative mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <SlidingPill box={pill} rounded="rounded-2xl" reduced={reduced} />
+      {days.map((day) => {
+        const selected = selectedDay.toDateString() === day.toDateString();
+        return (
+          <button
+            key={day.toISOString()}
+            type="button"
+            data-selected={selected || undefined}
+            onClick={() => onSelect(day)}
+            className={`relative rounded-2xl px-4 py-3 text-left transition-colors ${selected ? 'text-red' : 'neu text-foreground'}`}
+          >
+            <span className="relative z-10 block font-mono text-[10px] uppercase tracking-[0.16em] opacity-70">
+              {day.toLocaleDateString('en', { weekday: 'short' })}
+            </span>
+            <span className="relative z-10 mt-1 block text-sm font-medium">
+              {day.toLocaleDateString('en', { month: 'short', day: 'numeric' })}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function TimeSlots({
+  selectedTime,
+  onSelect,
+  reduced,
+}: {
+  selectedTime: string;
+  onSelect: (time: string) => void;
+  reduced: boolean;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const pill = useSlidingPill(containerRef, selectedTime);
+  return (
+    <div ref={containerRef} className="relative mt-6 grid gap-2">
+      <SlidingPill box={pill} rounded="rounded-xl" reduced={reduced} />
+      {times.map((time) => (
+        <button
+          key={time}
+          type="button"
+          data-selected={selectedTime === time || undefined}
+          onClick={() => onSelect(time)}
+          className={`relative rounded-xl px-4 py-3 text-sm transition-colors ${selectedTime === time ? 'text-red' : 'neu text-muted hover:text-foreground'}`}
+        >
+          <span className="relative z-10">{time}</span>
+        </button>
+      ))}
+    </div>
+  );
 }
 
 export function BookingModal({ open, onClose }: BookingModalProps) {
@@ -293,38 +422,12 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                         <span className="sr-only">Close</span>
                       </button>
                     </div>
-                    <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                      {days.map((day) => {
-                        const selected = selectedDay.toDateString() === day.toDateString();
-                        return (
-                          <button
-                            key={day.toISOString()}
-                            type="button"
-                            onClick={() => setSelectedDay(day)}
-                            className={`relative rounded-2xl px-4 py-3 text-left transition-colors ${selected ? 'text-red' : 'neu text-foreground'}`}
-                          >
-                            {selected ? (
-                              <motion.span
-                                layoutId="day-pill"
-                                aria-hidden="true"
-                                className="neu-selected absolute inset-0 rounded-2xl"
-                                transition={
-                                  reduced
-                                    ? { duration: 0.01 }
-                                    : { type: 'spring', stiffness: 480, damping: 34 }
-                                }
-                              />
-                            ) : null}
-                            <span className="relative z-10 block font-mono text-[10px] uppercase tracking-[0.16em] opacity-70">
-                              {day.toLocaleDateString('en', { weekday: 'short' })}
-                            </span>
-                            <span className="relative z-10 mt-1 block text-sm font-medium">
-                              {day.toLocaleDateString('en', { month: 'short', day: 'numeric' })}
-                            </span>
-                          </button>
-                        );
-                      })}
-                    </div>
+                    <DayGrid
+                      days={days}
+                      selectedDay={selectedDay}
+                      onSelect={setSelectedDay}
+                      reduced={reduced ?? false}
+                    />
 
                     <div className="mt-8 grid gap-4 sm:grid-cols-2">
                       <label className="grid gap-2 text-sm">
@@ -355,30 +458,11 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
 
                   <div>
                     <h3 className="text-xl font-medium">Select a time</h3>
-                    <div className="mt-6 grid gap-2">
-                      {times.map((time) => (
-                        <button
-                          key={time}
-                          type="button"
-                          onClick={() => setSelectedTime(time)}
-                          className={`relative rounded-xl px-4 py-3 text-sm transition-colors ${selectedTime === time ? 'text-red' : 'neu text-muted hover:text-foreground'}`}
-                        >
-                          {selectedTime === time ? (
-                            <motion.span
-                              layoutId="time-pill"
-                              aria-hidden="true"
-                              className="neu-selected absolute inset-0 rounded-xl"
-                              transition={
-                                reduced
-                                  ? { duration: 0.01 }
-                                  : { type: 'spring', stiffness: 480, damping: 34 }
-                              }
-                            />
-                          ) : null}
-                          <span className="relative z-10">{time}</span>
-                        </button>
-                      ))}
-                    </div>
+                    <TimeSlots
+                      selectedTime={selectedTime}
+                      onSelect={setSelectedTime}
+                      reduced={reduced ?? false}
+                    />
                     <button
                       type="submit"
                       disabled={status === 'submitting'}

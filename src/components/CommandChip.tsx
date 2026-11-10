@@ -21,7 +21,8 @@ export function CommandChip() {
       type="button"
       onClick={copy}
       aria-label={`Copy ${profile.command}`}
-      className="rounded-full border border-line bg-surface px-4 py-3 font-mono text-xs text-muted transition-colors hover:border-red hover:text-foreground"
+      aria-pressed={copied}
+      className={`neu rounded-full px-4 py-3 font-mono text-xs transition-colors hover:text-foreground ${copied ? 'text-green' : 'text-muted'}`}
     >
       {copied ? 'Copied ✓' : `$ ${profile.command}`}
     </button>

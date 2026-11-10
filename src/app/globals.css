@@ -697,6 +697,14 @@ html[data-booting] .plate-flash {
     inset -6px -6px 14px var(--neu-hi);
 }
 
+/* latched press (e.g. "Copied ✓") — stays pressed in until it releases */
+.neu[aria-pressed='true'] {
+  box-shadow:
+    inset 6px 6px 14px var(--neu-lo),
+    inset -6px -6px 14px var(--neu-hi),
+    0 0 0 1px color-mix(in oklab, var(--green) 40%, transparent);
+}
+
 /* Solid ink pill: the primary action keeps its weight but gains the
    pillow — top highlight, bottom shade, paired extrusion. */
 .neu-solid {

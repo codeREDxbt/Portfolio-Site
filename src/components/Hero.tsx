@@ -68,7 +68,7 @@ export function Hero() {
           </div>
 
           <div className="col-span-12 flex flex-col gap-8 lg:col-span-4 lg:justify-end">
-            <figure className="portrait-plate relative overflow-hidden rounded-xl border border-line bg-surface">
+            <figure className="portrait-plate neu-frame relative overflow-hidden rounded-xl">
               {/* the mark plate: logo only, bled past the frame edges — it
                   glitches on itself: two slice copies + a scanline fire a
                   short burst every 8s (pure CSS, no listeners) */}
