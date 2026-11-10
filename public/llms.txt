@@ -19,7 +19,7 @@
 
 - Product engineering: React, Next.js, TypeScript, Tailwind CSS, Motion
 - Web3: Solidity, Move, Web3.js, Ethereum, Aptos, Stellar
-- Backend & data: Node.js, Express, PostgreSQL, Firebase, API design
+- Backend & data: Node.js, Rust, Express, PostgreSQL, Firebase, API design
 - Workflow: Git, Figma, Vercel, Security, Performance
 
 ## Contact

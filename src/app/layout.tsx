@@ -84,6 +84,7 @@ const jsonLd = {
         'Next.js',
         'React',
         'TypeScript',
+        'Rust',
         'Web3',
         'Smart contracts',
         'Stellar',

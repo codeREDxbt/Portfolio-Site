@@ -267,7 +267,7 @@ export const stackGroups = [
   },
   {
     title: 'Backend & data',
-    items: ['Node.js', 'Express', 'PostgreSQL', 'Firebase', 'API design'],
+    items: ['Node.js', 'Rust', 'Express', 'PostgreSQL', 'Firebase', 'API design'],
   },
   {
     title: 'Workflow',
