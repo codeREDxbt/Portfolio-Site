@@ -164,7 +164,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
           />
           <motion.div
             data-lenis-prevent
-            className="relative grid max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl border border-line bg-surface md:grid-cols-[280px_1fr]"
+            className="neu-panel relative grid max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl md:grid-cols-[280px_1fr]"
             initial={reduced ? { opacity: 0 } : { opacity: 0, y: 28, scale: 0.97 }}
             animate={reduced ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
             exit={reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.985 }}
@@ -176,7 +176,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                 alt="codeRED logo"
                 width={56}
                 height={56}
-                className="h-14 w-14 rounded-full border border-line object-cover"
+                className="neu h-14 w-14 rounded-full object-cover"
                 priority
               />
               <h2 className="mt-6 text-lg font-medium">{profile.name}</h2>
@@ -267,7 +267,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                   <button
                     type="button"
                     onClick={onClose}
-                    className="mt-8 rounded-full border border-line px-6 py-3 text-sm text-muted transition-colors hover:border-red hover:text-red"
+                    className="neu mt-8 rounded-full px-6 py-3 text-sm text-muted hover:text-red"
                   >
                     Done
                   </button>
@@ -287,9 +287,10 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                         type="button"
                         autoFocus
                         onClick={onClose}
-                        className="text-sm text-muted transition-colors hover:text-foreground"
+                        className="neu grid h-10 w-10 place-items-center rounded-full text-muted hover:text-red"
                       >
-                        Close ×
+                        <span aria-hidden="true">×</span>
+                        <span className="sr-only">Close</span>
                       </button>
                     </div>
                     <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -300,13 +301,13 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                             key={day.toISOString()}
                             type="button"
                             onClick={() => setSelectedDay(day)}
-                            className={`relative rounded-2xl border px-4 py-3 text-left transition-colors ${selected ? 'border-red text-background' : 'border-line bg-background text-foreground hover:border-red'}`}
+                            className={`relative rounded-2xl px-4 py-3 text-left transition-colors ${selected ? 'text-red' : 'neu text-foreground'}`}
                           >
                             {selected ? (
                               <motion.span
                                 layoutId="day-pill"
                                 aria-hidden="true"
-                                className="absolute inset-0 rounded-2xl bg-red"
+                                className="neu-selected absolute inset-0 rounded-2xl"
                                 transition={
                                   reduced
                                     ? { duration: 0.01 }
@@ -331,7 +332,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                         <input
                           value={name}
                           onChange={(event) => setName(event.target.value)}
-                          className="w-full min-w-0 rounded-xl border border-dim bg-background px-4 py-3 text-foreground outline-none transition-colors focus:border-red"
+                          className="neu-well w-full min-w-0 rounded-xl px-4 py-3 text-foreground outline-none"
                           placeholder="Your name"
                           autoComplete="name"
                           required
@@ -342,7 +343,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                         <input
                           value={email}
                           onChange={(event) => setEmail(event.target.value)}
-                          className="w-full min-w-0 rounded-xl border border-dim bg-background px-4 py-3 text-foreground outline-none transition-colors focus:border-red"
+                          className="neu-well w-full min-w-0 rounded-xl px-4 py-3 text-foreground outline-none"
                           placeholder="you@example.com"
                           type="email"
                           autoComplete="email"
@@ -360,13 +361,13 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                           key={time}
                           type="button"
                           onClick={() => setSelectedTime(time)}
-                          className={`relative rounded-xl border px-4 py-3 text-sm transition-colors ${selectedTime === time ? 'border-red text-background' : 'border-line text-muted hover:border-red hover:text-foreground'}`}
+                          className={`relative rounded-xl px-4 py-3 text-sm transition-colors ${selectedTime === time ? 'text-red' : 'neu text-muted hover:text-foreground'}`}
                         >
                           {selectedTime === time ? (
                             <motion.span
                               layoutId="time-pill"
                               aria-hidden="true"
-                              className="absolute inset-0 rounded-xl bg-red"
+                              className="neu-selected absolute inset-0 rounded-xl"
                               transition={
                                 reduced
                                   ? { duration: 0.01 }
@@ -381,7 +382,7 @@ export function BookingModal({ open, onClose }: BookingModalProps) {
                     <button
                       type="submit"
                       disabled={status === 'submitting'}
-                      className="group relative mt-6 w-full overflow-hidden rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-transform duration-300 hover:-translate-y-0.5 disabled:opacity-50"
+                      className="neu-solid group relative mt-6 w-full overflow-hidden rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-transform duration-300 hover:-translate-y-0.5 disabled:opacity-50"
                     >
                       <span
                         aria-hidden="true"
