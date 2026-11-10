@@ -55,10 +55,15 @@ const entries: TrailEntry[] = [
   },
 ];
 
-/** Deterministic pseudo-random in [0, 1) — SSR-safe, no hydration drift. */
+/** Deterministic pseudo-random in [0, 1) — SSR-safe, no hydration drift.
+ *  Integer arithmetic only: Math.sin on large args is implementation-
+ *  approximated and drifts between Node and Chromium (hydration mismatch),
+ *  while imul/XOR/shifts are bit-identical on every engine. */
 function pseudo(index: number, salt: number) {
-  const value = Math.sin(index * 127.1 + salt * 311.7) * 43758.5453;
-  return value - Math.floor(value);
+  let h = (index * 2654435761) ^ (salt * 40503);
+  h = Math.imul(h ^ (h >>> 13), 0x5bd1e995);
+  h ^= h >>> 15;
+  return (h >>> 0) / 4294967296;
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
