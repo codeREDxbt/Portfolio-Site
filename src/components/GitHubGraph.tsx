@@ -69,7 +69,7 @@ export function GitHubGraph() {
   );
 
   return (
-    <div className="rounded-3xl border border-line bg-surface p-6 md:p-8">
+    <div className="neu-frame rounded-3xl p-6 md:p-8">
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
         <div>
           <h3 className="text-xl font-medium tracking-[-0.03em]">GitHub contributions</h3>
@@ -95,7 +95,7 @@ export function GitHubGraph() {
               <span
                 key={day.date}
                 title={`${day.count} contributions on ${day.date}`}
-                className="aspect-square rounded-[3px]"
+                className="neu-cell aspect-square rounded-[3px]"
                 style={{ backgroundColor: colors[Math.min(day.level, colors.length - 1)] }}
               />
             ))

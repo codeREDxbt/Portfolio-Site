@@ -769,6 +769,13 @@ html[data-booting] .plate-flash {
     2px 2px 6px var(--neu-contact);
 }
 
+/* Tiny inset wells — contribution-graph cells read as sockets in the plate. */
+.neu-cell {
+  box-shadow:
+    inset 1px 1px 2px var(--neu-lo),
+    inset -1px -1px 2px var(--neu-hi);
+}
+
 /* Raised surface for dialogs — the panel floats on the dimmed backdrop. */
 .neu-panel {
   background: linear-gradient(
