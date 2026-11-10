@@ -47,8 +47,7 @@ export function Hero() {
             </h1>
 
             <p className="fade-in-up mt-8 max-w-xl text-lg leading-8 text-muted [animation-delay:400ms]">
-              I build products end to end: backends, interfaces, and everything between. Currently
-              building Veilpay.
+              I build products end to end: backends, interfaces, and everything between.
             </p>
 
             <div className="fade-in-up mt-10 flex flex-wrap items-center gap-3 [animation-delay:480ms]">
