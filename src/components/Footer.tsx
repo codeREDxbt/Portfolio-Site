@@ -229,7 +229,10 @@ export function Footer() {
             className="mt-6 flex items-center justify-between border-t border-line pt-5 font-mono text-[10px] uppercase tracking-[0.2em] text-dim md:mt-8 md:pt-6"
           >
             <span>Designed and built by {profile.handle}</span>
-            <a href="#index" className="transition-colors hover:text-red">
+            <a
+              href="#index"
+              className="neu rounded-full px-4 py-2 transition-colors hover:text-red"
+            >
               Back to top ↑
             </a>
           </motion.div>
