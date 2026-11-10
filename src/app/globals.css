@@ -270,7 +270,10 @@ footer[data-revealed="false"] .signal-dot::after {
 html[data-booting] .hero-line > span,
 html[data-booting] .fade-in-up,
 html[data-booting] .portrait-plate,
-html[data-booting] .meta-rule {
+html[data-booting] .meta-rule,
+html[data-booting] .plate-mark,
+html[data-booting] .plate-slice,
+html[data-booting] .plate-flash {
   animation-play-state: paused;
 }
 
@@ -362,6 +365,138 @@ html[data-booting] .meta-rule {
 /* the mark is a knocked-out transparent asset — it just needs a signal glow */
 .plate-mark img {
   filter: drop-shadow(0 0 22px color-mix(in oklab, var(--red) 30%, transparent)) saturate(1.05);
+}
+
+/* The mark glitches on itself: two slice copies + a scanline fire a short
+   burst every 8s. Pure CSS — clip bands + transforms, no JS. */
+.plate-mark {
+  animation: plate-jolt 8s linear infinite;
+}
+
+.plate-slice {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.plate-slice-a {
+  animation: plate-slice-a 8s linear infinite;
+}
+
+.plate-slice-b {
+  animation: plate-slice-b 8s linear infinite;
+}
+
+/* slice copies wear a hot red shift so the burst reads as signal noise */
+.plate-slice img {
+  filter: saturate(2) drop-shadow(0 0 18px color-mix(in oklab, var(--red) 45%, transparent));
+}
+
+.plate-flash {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 40%;
+  height: 2px;
+  pointer-events: none;
+  background: var(--red);
+  box-shadow: 0 0 14px var(--red);
+  opacity: 0;
+  animation: plate-flash 8s linear infinite;
+}
+
+@keyframes plate-jolt {
+  0%,
+  90.9%,
+  91.4%,
+  92.4%,
+  93.4%,
+  94.4%,
+  100% {
+    transform: none;
+  }
+  91.4% {
+    transform: translateX(-4px);
+  }
+  92.9% {
+    transform: translateX(3px);
+  }
+  93.9% {
+    transform: translateX(-2px);
+  }
+}
+
+@keyframes plate-slice-a {
+  0%,
+  90.9%,
+  94.4%,
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+  91.4% {
+    opacity: 1;
+    clip-path: inset(16% 0 60% 0);
+    transform: translateX(-12px);
+  }
+  92.4% {
+    opacity: 1;
+    clip-path: inset(54% 0 22% 0);
+    transform: translateX(10px);
+  }
+  93.4% {
+    opacity: 1;
+    clip-path: inset(72% 0 6% 0);
+    transform: translateX(-7px);
+  }
+}
+
+@keyframes plate-slice-b {
+  0%,
+  91.4%,
+  94.4%,
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 0 0);
+    transform: none;
+  }
+  91.9% {
+    opacity: 0.9;
+    clip-path: inset(64% 0 12% 0);
+    transform: translateX(11px);
+  }
+  92.9% {
+    opacity: 0.9;
+    clip-path: inset(8% 0 68% 0);
+    transform: translateX(-10px);
+  }
+  93.9% {
+    opacity: 0.9;
+    clip-path: inset(38% 0 40% 0);
+    transform: translateX(6px);
+  }
+}
+
+@keyframes plate-flash {
+  0%,
+  90.9%,
+  94.4%,
+  100% {
+    opacity: 0;
+  }
+  91.4% {
+    opacity: 0.9;
+    top: 34%;
+  }
+  92.9% {
+    opacity: 0.6;
+    top: 62%;
+  }
+  93.9% {
+    opacity: 0;
+  }
 }
 
 
@@ -459,5 +594,17 @@ html[data-booting] .meta-rule {
   .signal-arc,
   .signal-ping {
     animation: none;
+  }
+
+  /* mark plate stays calm: no burst, no slices */
+  .plate-mark,
+  .plate-slice,
+  .plate-flash {
+    animation: none !important;
+  }
+
+  .plate-slice,
+  .plate-flash {
+    display: none;
   }
 }

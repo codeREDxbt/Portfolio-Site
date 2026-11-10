@@ -57,7 +57,9 @@ export function Hero() {
 
           <div className="col-span-12 flex flex-col gap-8 lg:col-span-4 lg:justify-end">
             <figure className="portrait-plate relative overflow-hidden rounded-xl border border-line bg-surface">
-              {/* the mark plate: logo only, bled past the frame edges */}
+              {/* the mark plate: logo only, bled past the frame edges — it
+                  glitches on itself: two slice copies + a scanline fire a
+                  short burst every 8s (pure CSS, no listeners) */}
               <div className="relative aspect-[4/3] overflow-hidden bg-surface lg:aspect-[4/5]">
                 <div className="plate-mark absolute inset-0">
                   <Image
@@ -69,6 +71,18 @@ export function Hero() {
                     className="object-contain scale-[1.28]"
                   />
                 </div>
+                {(["a", "b"] as const).map((slice) => (
+                  <div key={slice} aria-hidden="true" className={`plate-slice plate-slice-${slice}`}>
+                    <Image
+                      src="/brand/codered-mark.png"
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 33vw, 100vw"
+                      className="object-contain scale-[1.28]"
+                    />
+                  </div>
+                ))}
+                <div aria-hidden="true" className="plate-flash" />
               </div>
               <figcaption className="flex items-center justify-between border-t border-line px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
                 <span>SIG/001 — codeRED</span>
