@@ -213,7 +213,7 @@ export function Journey() {
         <div className="mt-14 grid gap-12 lg:grid-cols-[1fr_380px]">
           {/* sticky constellation map */}
           <div className="lg:sticky lg:top-28 lg:self-start">
-            <div className="overflow-hidden rounded-2xl border border-line bg-surface/50">
+            <div className="neu-frame overflow-hidden rounded-2xl">
               <div className="flex items-center justify-between border-b border-line px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
                 <span>Signal map</span>
                 <span>

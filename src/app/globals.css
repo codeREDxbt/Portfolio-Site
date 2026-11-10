@@ -757,6 +757,18 @@ html[data-booting] .plate-flash {
     0 0 0 1px color-mix(in oklab, var(--red) 45%, transparent);
 }
 
+/* Static raised frame (signal map, plates) — the extrusion without the
+   interactive press dip. */
+.neu-frame {
+  background: linear-gradient(145deg, var(--neu-bg-a), var(--neu-bg-b));
+  box-shadow:
+    inset 0 1px 1px var(--neu-rim-hi),
+    inset 0 -2px 4px var(--neu-rim-lo),
+    -8px -8px 20px var(--neu-hi),
+    12px 12px 28px var(--neu-lo),
+    2px 2px 6px var(--neu-contact);
+}
+
 /* Raised surface for dialogs — the panel floats on the dimmed backdrop. */
 .neu-panel {
   background: linear-gradient(
