@@ -2,7 +2,7 @@
 
 ## Current status
 
-**Status:** Interaction-repair pass + second design wave complete locally. Scroll/menu are probe-verified deterministic at 390/768/1440; hero, dock, works, and trail carry the new "signal instrument" signatures. Ready for review and deployment.
+**Status:** Case-study pages shipped locally (`/work/[slug]` for the four featured projects, SSG + per-project OG). Everything validated green. **Not yet pushed** — the user holds the push to review the drafted case-study copy first.
 
 The project has been rebuilt from the legacy static site into a FigCraft-designed Next.js application using the **Red Signal Editorial** direction.
 
@@ -234,10 +234,36 @@ npm run build      PASS (webpack)
 
 `final-check.mjs` at 390/768/1440 — **ALL GREEN**: boot clear, one H1, anchor tween + target focus at 96px, tuner station transitions with distinct readings, trail progression + final node at page bottom (7/8), footer reveal, menu open/Escape/navigate. Tuner geometry probe: no dead band, covers served at 2.332. Screenshots verified in both themes.
 
+## Session 4 — case-study pages (`/work/[slug]`)
+
+### Content model (`src/data/portfolio.ts`)
+
+- New optional `caseStudy` on `Project`: `{ lede, challenge[], decision[], outcome[] }` — the tuner keeps the one-line `caseFile`; the page carries paragraphs.
+- Drafted for the featured four, grounded in public sources (veilpayapp.com, the public Veilpay monorepo README, freelancepayxbt.vercel.app, avisky.in, vaultpassxbt.vercel.app) — **no invented metrics**; only facts already public (chains, protocols, feature names, real awards). **Copy is drafted-for-review: read it before pushing.**
+- Grounding corrections worth knowing: Veilpay is an Expo/React Native mobile wallet + Express/Prisma/Postgres/Redis merchant backend with Circom/snarkjs circuits and EIP-5564 stealth addresses (the site's `stack` field stayed as-is); VaultPass runs on Midnight *preview* with Lace/1AM wallets; AviQ's "20 tests / 1,000 MCQs" is the product's own content spec, not an impact metric.
+
+### Route (`src/app/work/[slug]/page.tsx` — first dynamic route)
+
+- SSG via `generateStaticParams` (featured-with-caseStudy only), `dynamicParams = false`, `notFound()` otherwise; first `generateMetadata` in the repo — `{title} — Case File | codeRED`, canonical, per-project OG image (the 1600×686 cover).
+- Page: minimal chrome (SmoothScroll + SiteNav only — no boot, dock, or curtain footer); `[ CASE FILE — NN/04 ]` kicker + award chip, `.hero-line` title, lede, meta rail, CTAs (Open feed / Source / ← Back to works), cover in the `.tuner-screen` frame language with static brackets, three numbered chapters (Challenge/Decision/Outcome) with a sticky "signal path" anchor rail (desktop), "Next transmission" panel wrapping 04→01, thin mono footer.
+- Supporting changes: `SiteNav` brand `#index` → `/#index` (now a `next/link`, works from sub-pages); `ProjectMedia` gained `linked={false}` (plain frame, no outbound anchor/chip) + `sizes` prop; `TunerStation` + `TunerStationListItem` gained a ghost `Read case file →` pill next to Open feed (active-station `tabIndex` gating preserved); `sitemap.ts` lists all four case pages.
+
+### Validation (this session)
+
+```text
+npm run lint       PASS
+npm run typecheck  PASS
+npm test           PASS — 6 tests (new projects.test.ts: unique slugs, complete caseStudy, covers on disk)
+npm run build      PASS (webpack) — /work/[slug] prerendered ● x4
+```
+
+Runtime (`next start`): all four slugs 200; `/work/paytrack` (archived) and unknown slugs 404; one H1, canonical, per-project OG verified in HTML; sitemap lists all routes. Killed a **stale `next start` (PID 3060) left over from the interrupted session** that was holding port 3000 and serving the pre-case-study build. Browser pass (IAB): tuner "Read case file →" navigates to the case page; dark + light themes verified visually at 1440; VaultPass next-transmission wraps to Veilpay; 390px mobile renders clean (rail hidden, CTAs wrap).
+
 ## Pending
 
 ### Review
 
+- **Review the drafted case-study copy in `src/data/portfolio.ts` (Session 4) — this is the current push blocker.**
 - Review the FigCraft boards visually in the open FigCraft app.
 - Review the local site in a browser.
 - Confirm the final project order and copy.
@@ -248,7 +274,7 @@ npm run build      PASS (webpack)
 - Hero scale was adjusted after review so the headline fits standard desktop viewports.
 - Veilpay now links to the live product at `https://www.veilpayapp.com`.
 - Use `NEXT_SESSION_PROMPT.md` for the next identity/wow-factor pass.
-- Add individual case-study pages.
+- ~~Add individual case-study pages.~~ **Done (Session 4).**
 - Add more project impact metrics.
 - Add a designed light mode if desired.
 - Add Playwright/browser-based visual regression tests.

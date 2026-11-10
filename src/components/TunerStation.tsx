@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   motion,
   useTransform,
@@ -123,17 +124,28 @@ export function TunerStation({
             </dl>
           ) : null}
 
-          {project.liveUrl ? (
-            <div className="mt-4">
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                tabIndex={active ? 0 : -1}
-                className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"
-              >
-                Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
-              </a>
+          {project.liveUrl || project.caseStudy ? (
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              {project.liveUrl ? (
+                <a
+                  href={project.liveUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  tabIndex={active ? 0 : -1}
+                  className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"
+                >
+                  Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
+                </a>
+              ) : null}
+              {project.caseStudy ? (
+                <Link
+                  href={`/work/${project.id}`}
+                  tabIndex={active ? 0 : -1}
+                  className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
+                >
+                  Read case file → <span className="sr-only">— {project.title}</span>
+                </Link>
+              ) : null}
             </div>
           ) : null}
         </div>
@@ -170,15 +182,27 @@ export function TunerStationListItem({ project }: { project: Project }) {
             ))}
           </dl>
         ) : null}
-        {project.liveUrl ? (
-          <a
-            href={project.liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background"
-          >
-            Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
-          </a>
+        {project.liveUrl || project.caseStudy ? (
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            {project.liveUrl ? (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background"
+              >
+                Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
+              </a>
+            ) : null}
+            {project.caseStudy ? (
+              <Link
+                href={`/work/${project.id}`}
+                className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
+              >
+                Read case file → <span className="sr-only">— {project.title}</span>
+              </Link>
+            ) : null}
+          </div>
         ) : null}
       </div>
     </article>

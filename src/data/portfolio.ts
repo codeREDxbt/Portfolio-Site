@@ -16,6 +16,12 @@ export type Project = {
     decision: string;
     outcome: string;
   };
+  caseStudy?: {
+    lede: string;
+    challenge: string[];
+    decision: string[];
+    outcome: string[];
+  };
 };
 
 export const profile = {
@@ -56,6 +62,21 @@ export const projects: Project[] = [
       decision: "Protocol-specific address isolation with fiat on/off-ramps built in.",
       outcome: "Live in production.",
     },
+    caseStudy: {
+      lede: "Veilpay is a multi-chain payments wallet built on one premise: privacy is the default, not a mode. Transparent chains — Ethereum, Solana, Base — sit next to privacy rails like Stellar, Monero, Zcash, and Midnight behind a single interface, shipped as an Expo mobile app backed by a merchant-ready API.",
+      challenge: [
+        "Public ledgers make every payment a broadcast: sender, receiver, and amount are visible to anyone who looks, and reusing one address across protocols lets observers stitch a person's whole financial graph together.",
+        "The hard part is spanning chains that agree on nothing — different signature schemes, different privacy primitives, different finality — while keeping signing keys on the device and the experience consumer-grade.",
+      ],
+      decision: [
+        "Protocol-specific address isolation: every chain gets its own lane, and EIP-5564 dual-key stealth addresses issue one-time destinations per payment, so transactions can't be linked back to a single identity. Zero-knowledge circuits (Circom/snarkjs, with pinned and hash-verified prover assets) prove a payment is valid without revealing its contents.",
+        "Private XLM shielding runs natively on Stellar mainnet, and all signing material stays on-device in secure storage. Around the wallet sits a merchant stack — Express, Prisma, PostgreSQL, Redis queues — serving invoices, HMAC-signed webhooks, and an RPC proxy, with a background indexer reconciling on-chain state.",
+      ],
+      outcome: [
+        "Live at veilpayapp.com — stealth payments across 7+ chains, with private XLM generally available on Stellar mainnet and Monero, Zcash, and Midnight staged as experimental integrations.",
+        "The public monorepo carries the full stack — mobile app, merchant API, indexer, circuits — and states the external audit as pending rather than claimed. Private by default; honest by design.",
+      ],
+    },
   },
   {
     id: "freelancepay",
@@ -76,6 +97,21 @@ export const projects: Project[] = [
       decision: "Milestone escrows as deterministic Soroban contracts on Stellar.",
       outcome: "Won $250 USD in Stellar's Journey to Mastery.",
     },
+    caseStudy: {
+      lede: "FreelancePay is trustless milestone escrow for freelance work: the client locks USDC into a Soroban contract on Stellar, the freelancer ships, and the contract pays out. No platform in the middle, no cut taken.",
+      challenge: [
+        "Freelance payment runs on trust. The client can ghost after delivery; the freelancer can vanish after the deposit. Platforms solve it by sitting in the middle — and charging heavily for the privilege.",
+        "The goal was escrow as infrastructure: deterministic, non-custodial, and cheap enough that a small milestone makes as much sense as a large one.",
+      ],
+      decision: [
+        "Milestones as deterministic Soroban contracts on Stellar. The protocol reads like the work itself — connect a wallet (require_auth), fund the escrow in USDC (escrow.deposit), ship the work with a merged pull request as the signal, and the contract releases funds to the freelancer (escrow.transfer).",
+        "Zero platform fees by construction: the contract holds the money, so there is no house to skim — you pay gas, nothing else. The front end is Next.js, React 19, and Tailwind 4, with escrow state and receipts rendered as first-class interface.",
+      ],
+      outcome: [
+        "Live at freelancepayxbt.vercel.app — open source and non-custodial end to end.",
+        "Won $250 USD in Stellar's Journey to Mastery.",
+      ],
+    },
   },
   {
     id: "avisky",
@@ -94,6 +130,20 @@ export const projects: Project[] = [
       challenge: "An aviation academy needed a premium digital training portal.",
       decision: "Cinematic platform — test series, telemetry analytics, AI assistant.",
       outcome: "Client project, live in production.",
+    },
+    caseStudy: {
+      lede: "AviQ is an AI-powered aviation training portal for aspiring pilots — a cinematic learning platform built around DGCA exam preparation, with mock test series, performance analytics, and an always-on AI assistant.",
+      challenge: [
+        "An aviation academy needed a digital training portal that felt as premium as the career it feeds — not a PDF dump, but a place cadets actually train in.",
+        "Exam prep is a grind across subjects — Radio Aids, Aircraft Instrumentation, Aviation Meteorology, Air Regulations — and students had no signal on where they stood until the real exam.",
+      ],
+      decision: [
+        "A full test-series engine: full-length professional mock exams per subject — Air Regulations alone carries 20 full-length tests and 1,000 practice MCQs — with books, cart, and enrolment built into the same flow.",
+        "Analytics as the differentiator: predictive analytics surface performance gaps, and dynamic progression evolves the curriculum in real time. The AviQ AI assistant handles the operational questions — enrolment, payments, DGCA exam dates — around the clock.",
+      ],
+      outcome: [
+        "Client project, live in production at avisky.in — designed and developed end to end: interface, test engine, and AI assistant.",
+      ],
     },
   },
   {
@@ -114,6 +164,20 @@ export const projects: Project[] = [
       challenge: "Gates need proof of membership without exposing identity.",
       decision: "Zero-knowledge eligibility proofs on Midnight's preview network.",
       outcome: "Won $30 USD.",
+    },
+    caseStudy: {
+      lede: "VaultPass is privacy-first access control on the Midnight network — a gate where members prove they're on the list without ever revealing who they are.",
+      challenge: [
+        "Membership gates have a surveillance problem: proving you belong usually means showing a credential that identifies you, and every check becomes a log of who showed up and when.",
+        "The interesting question is selective disclosure — can a gate learn only \"eligible\" and nothing else?",
+      ],
+      decision: [
+        "Zero-knowledge eligibility proofs on Midnight's preview network. Operators generate a private credential, enroll only its hash on-chain, and share the secret privately; members connect a Midnight wallet (Lace or 1AM), paste the credential, and generate a proof.",
+        "The gate's public output is one bit — valid_proof: true. A per-gate nullifier stops confirmed proofs from being replayed, and an operator console deploys gates and enrolls hashes. The interface is deliberately honest: opening the vault is session UX after a confirmed proof — the on-chain truth is the proof transaction itself.",
+      ],
+      outcome: [
+        "Live on Midnight's preview network at vaultpassxbt.vercel.app, with a scripted seven-step demo flow for judges — and a $30 USD award for the build.",
+      ],
     },
   },
   {

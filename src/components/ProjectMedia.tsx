@@ -22,7 +22,18 @@ function useFinePointer() {
  * subtle pointer parallax. Falls back to a static corner chip on
  * coarse pointers and for reduced-motion users.
  */
-export function ProjectMedia({ project, fill = false }: { project: Project; fill?: boolean }) {
+export function ProjectMedia({
+  project,
+  fill = false,
+  linked = true,
+  sizes = "(min-width: 768px) 44vw, 100vw",
+}: {
+  project: Project;
+  fill?: boolean;
+  /** When false, render a plain frame (no outbound anchor / chip) — for case pages. */
+  linked?: boolean;
+  sizes?: string;
+}) {
   const href = project.liveUrl ?? project.repoUrl;
   const ref = useRef<HTMLAnchorElement>(null);
   const reduced = useReducedMotion();
@@ -76,45 +87,55 @@ export function ProjectMedia({ project, fill = false }: { project: Project; fill
     hover.set(1);
   };
 
+  const frame = `project-media relative block w-full overflow-hidden bg-surface ${
+    fill ? "h-full" : "aspect-[16/10] md:aspect-[21/9]"
+  }`;
+
+  const media = (
+    <motion.div
+      className="absolute inset-0"
+      style={interactive && linked ? { x: imgX, y: imgY, scale: mediaScale } : undefined}
+    >
+      {project.image ? (
+        <Image
+          src={project.image}
+          alt={`${project.title} interface preview`}
+          fill
+          sizes={sizes}
+          className="object-cover object-center"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-surface">
+          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full border border-red/35" />
+          <div className="absolute right-14 top-16 h-44 w-44 rounded-full border border-red/55" />
+          <div className="absolute right-28 top-28 h-20 w-20 rounded-full bg-red/15 blur-sm" />
+          <div className="signal-line absolute bottom-24 left-8 h-px w-72 bg-red/70" />
+          <p className="absolute bottom-7 left-8 font-mono text-[10px] uppercase tracking-[0.2em] text-red">
+            Private / Multi-chain / Payments
+          </p>
+        </div>
+      )}
+    </motion.div>
+  );
+
+  if (!linked) {
+    return <div className={frame}>{media}</div>;
+  }
+
   return (
     <a
       ref={ref}
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`project-media group/media relative block w-full overflow-hidden bg-surface ${
-        fill ? "h-full" : "aspect-[16/10] md:aspect-[21/9]"
-      }`}
+      className={`${frame} group/media`}
       aria-label={`View ${project.title}`}
       onMouseMove={interactive ? handleMove : undefined}
       onMouseLeave={interactive ? handleLeave : undefined}
       onFocus={interactive ? handleFocus : undefined}
       onBlur={interactive ? handleLeave : undefined}
     >
-      <motion.div
-        className="absolute inset-0"
-        style={interactive ? { x: imgX, y: imgY, scale: mediaScale } : undefined}
-      >
-        {project.image ? (
-          <Image
-            src={project.image}
-            alt={`${project.title} interface preview`}
-            fill
-            sizes="(min-width: 768px) 44vw, 100vw"
-            className="object-cover object-center"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-surface">
-            <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full border border-red/35" />
-            <div className="absolute right-14 top-16 h-44 w-44 rounded-full border border-red/55" />
-            <div className="absolute right-28 top-28 h-20 w-20 rounded-full bg-red/15 blur-sm" />
-            <div className="signal-line absolute bottom-24 left-8 h-px w-72 bg-red/70" />
-            <p className="absolute bottom-7 left-8 font-mono text-[10px] uppercase tracking-[0.2em] text-red">
-              Private / Multi-chain / Payments
-            </p>
-          </div>
-        )}
-      </motion.div>
+      {media}
 
       {interactive ? (
         <motion.span
