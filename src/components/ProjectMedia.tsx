@@ -87,8 +87,11 @@ export function ProjectMedia({
     hover.set(1);
   };
 
+  // Non-fill frames stay 21:9 at every viewport: the covers are designed
+  // 2.33:1 edge-to-edge (lockup bleeds to the corners), so any 16:10 crop
+  // slices the artwork. Only the list fallback uses this path.
   const frame = `project-media relative block w-full overflow-hidden bg-surface ${
-    fill ? "h-full" : "aspect-[16/10] md:aspect-[21/9]"
+    fill ? "h-full" : "aspect-[21/9]"
   }`;
 
   const media = (

@@ -259,6 +259,10 @@ npm run build      PASS (webpack) — /work/[slug] prerendered ● x4
 
 Runtime (`next start`): all four slugs 200; `/work/paytrack` (archived) and unknown slugs 404; one H1, canonical, per-project OG verified in HTML; sitemap lists all routes. Killed a **stale `next start` (PID 3060) left over from the interrupted session** that was holding port 3000 and serving the pre-case-study build. Browser pass (IAB): tuner "Read case file →" navigates to the case page; dark + light themes verified visually at 1440; VaultPass next-transmission wraps to Veilpay; 390px mobile renders clean (rail hidden, CTAs wrap).
 
+### Fix — mobile cover crop ("overlapping" ghost text)
+
+User report: at mobile width a stray "pay." fragment overlapped the first project image. Root cause: the list fallback's media frame was `aspect-[16/10]` below `md`, so `object-cover` cropped ~16% off each side of the 2.33:1 designed covers — slicing the bottom-left title lockup down to "…pay." peeking out from the frame edge (verified by hiding `#work img`: fragment gone). Fix: `ProjectMedia`'s non-fill frame is now `aspect-[21/9]` at all widths (the aspect the covers were designed for; only `TunerStationListItem` uses non-fill). Verified at 390px: covers render edge-to-edge, full lockups intact, dossier + CTAs clean.
+
 ## Pending
 
 ### Review
