@@ -135,7 +135,7 @@ export function SiteMenu({ open, onClose }: { open: boolean; onClose: () => void
           <button
             type="button"
             onClick={() => close()}
-            className="fixed right-6 top-6 rounded-full border border-line bg-background/80 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground backdrop-blur-md transition-colors hover:border-red hover:text-red"
+            className="neu fixed right-6 top-6 rounded-full px-4 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-foreground hover:text-red"
           >
             Close · Esc
           </button>
