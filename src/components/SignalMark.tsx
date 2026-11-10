@@ -5,7 +5,7 @@
 /**
  * codeRED red-signal identity mark: a miniaturized signal origin
  * (concentric rings, acquisition hairline, rotating arc, pulse).
- * Pure SVG + CSS â€” renders static under prefers-reduced-motion.
+ * Pure SVG + CSS — renders static under prefers-reduced-motion.
  */
 export function SignalMark({ className = "" }: SignalMarkProps) {
   return (

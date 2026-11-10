@@ -1,0 +1,30 @@
+# Vinayak Vashisth (codeRED)
+
+> Full-stack engineer building secure, expressive products for the web: backends, interfaces, and everything in between. Web3, SaaS, and product engineering. Based in India, working remote, available for select work.
+
+## About
+
+- [Portfolio](https://coderedxbt.dev): Selected works, case studies, stack, and contact.
+- [Resume (PDF)](https://coderedxbt.dev/documents/resume.pdf): Experience and skills summary.
+- [CLI card](https://coderedxbt.dev): `npx coderedxbt` prints the same profile in a terminal.
+
+## Case studies
+
+- [Veilpay](https://coderedxbt.dev/work/veilpay): Multi-chain privacy payments wallet: protocol-specific address isolation, EIP-5564 stealth addresses, ZK circuits; live at veilpayapp.com. Special mention at Stellar Build Station.
+- [FreelancePay](https://coderedxbt.dev/work/freelancepay): Trustless milestone escrow as deterministic Soroban contracts on Stellar; zero platform fees. Won $250 USD in Stellar's Journey to Mastery.
+- [Avisky (AviQ)](https://coderedxbt.dev/work/avisky): Avisky's AviQ platform: AI-powered aviation training portal with mock test series, predictive analytics, and an AI assistant. Client project, live at avisky.in.
+- [VaultPass](https://coderedxbt.dev/work/vaultpass): Privacy-first access control on Midnight: zero-knowledge eligibility proofs with per-gate nullifiers.
+
+## Stack
+
+- Product engineering: React, Next.js, TypeScript, Tailwind CSS, Motion
+- Web3: Solidity, Move, Web3.js, Ethereum, Aptos, Stellar
+- Backend & data: Node.js, Express, PostgreSQL, Firebase, API design
+- Workflow: Git, Figma, Vercel, Security, Performance
+
+## Contact
+
+- Email: codeREDx07@proton.me
+- GitHub: https://github.com/codeREDxbt
+- X: https://x.com/codeREDxbt
+- LinkedIn: https://www.linkedin.com/in/vinayak-vashisth-6b8204331

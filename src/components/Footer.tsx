@@ -39,12 +39,12 @@ function LocalTime() {
     return () => window.clearInterval(id);
   }, []);
 
-  return <span>{time ?? '—'} IST</span>;
+  return <span>{time ?? '…'} IST</span>;
 }
 
 /**
- * Curtain-reveal footer: fixed behind the page curtain (see page.tsx),
- * exposed once the curtain scrolls past. Measures its own height into
+ * Curtain-reveal footer: fixed behind every layer (see page.tsx), exposed
+ * once the pinned contact layer lifts off it. Measures its own height into
  * --footer-h so the spacer always matches. On reveal: red hairline sweep,
  * wordmark + content stagger in, and the mono ticker keeps it alive.
  */
@@ -164,7 +164,7 @@ export function Footer() {
           {/* columns */}
           <div className="mt-6 grid grid-cols-2 gap-5 border-t border-line pt-6 text-sm md:mt-8 md:gap-6 md:pt-8 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
             <motion.p variants={item} className="max-w-[34ch] leading-7 text-muted">
-              Full-stack engineer building secure, expressive products for the web — backend to
+              Full-stack engineer building secure, expressive products for the web. Backend to
               pixel.
             </motion.p>
 
@@ -217,7 +217,7 @@ export function Footer() {
               <span className="font-mono text-xs text-muted">
                 <VisitorCount /> visits
               </span>
-              <span className="text-muted">© 2026 {profile.handle}</span>
+              <span className="text-muted">© {new Date().getFullYear()} {profile.handle}</span>
             </motion.div>
           </div>
 

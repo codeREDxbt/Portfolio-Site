@@ -32,11 +32,11 @@ export async function generateMetadata({
   const project = featured.find((p) => p.id === slug);
   if (!project) return {};
   return {
-    title: `${project.title} — Case File | codeRED`,
+    title: `${project.title} Case File | codeRED`,
     description: project.description,
     alternates: { canonical: `/work/${project.id}` },
     openGraph: {
-      title: `${project.title} — codeRED case file`,
+      title: `${project.title} | codeRED case file`,
       description: project.description,
       images: project.image ? [{ url: project.image, width: 1600, height: 686 }] : undefined,
     },
@@ -73,7 +73,7 @@ export default async function CaseStudyPage({
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-red">
-                Case file — {project.number}/{String(featured.length).padStart(2, "0")}
+                Case file · {project.number}/{String(featured.length).padStart(2, "0")}
               </p>
               {project.award ? (
                 <span className="rounded-full border border-red/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-red">
@@ -104,7 +104,7 @@ export default async function CaseStudyPage({
                   rel="noopener noreferrer"
                   className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"
                 >
-                  Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
+                  Open feed ↗ <span className="sr-only">: {project.title} (opens in new tab)</span>
                 </a>
               ) : null}
               {project.repoUrl ? (
@@ -114,7 +114,7 @@ export default async function CaseStudyPage({
                   rel="noopener noreferrer"
                   className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
                 >
-                  Source ↗ <span className="sr-only">— {project.title} repository (opens in new tab)</span>
+                  Source ↗ <span className="sr-only">: {project.title} repository (opens in new tab)</span>
                 </a>
               ) : null}
               <Link
@@ -234,7 +234,7 @@ export default async function CaseStudyPage({
         <footer className="border-t border-line px-6 py-8 md:px-16">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.22em] text-dim">
             <p>
-              © {new Date().getFullYear()} {profile.handle} — {profile.name}
+              © {new Date().getFullYear()} {profile.handle} · {profile.name}
             </p>
             <a href={`mailto:${profile.email}`} className="transition-colors hover:text-red">
               {profile.email}

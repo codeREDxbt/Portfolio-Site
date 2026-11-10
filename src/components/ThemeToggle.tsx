@@ -26,8 +26,10 @@ function useTheme(): string {
 
 /**
  * Light/dark toggle with a circular View Transitions reveal radiating
- * from the button. Falls back to an instant swap for reduced motion
- * and browsers without startViewTransition.
+ * from the button. The icon is an eclipse dial: a red occulting disc
+ * drops through the signal sun on the way to light mode and rises back
+ * on the way to dark — a total eclipse mid-transit. Falls back to an
+ * instant swap for reduced motion and browsers without startViewTransition.
  */
 export function ThemeToggle() {
   const theme = useTheme();
@@ -78,13 +80,22 @@ export function ThemeToggle() {
       aria-pressed={theme === "light"}
       className="grid h-11 w-11 place-items-center rounded-full border border-line bg-background/70 text-foreground backdrop-blur-md transition-colors hover:border-red"
     >
-      <span className="theme-icon h-4 w-4" aria-hidden="true">
-        <svg className="icon-moon h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z" />
-        </svg>
-        <svg className="icon-sun h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+      <span className="eclipse-dial" aria-hidden="true">
+        <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]">
+          <g
+            className="dial-rays"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+          >
+            <path d="M12 0.8v2.4" />
+            <path d="M12 20.8v2.4" />
+            <path d="M0.8 12h2.4" />
+            <path d="M20.8 12h2.4" />
+          </g>
+          <circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+          <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+          <circle className="dial-occulter" cx="12" cy="5.6" r="5.4" fill="var(--red)" />
         </svg>
       </span>
     </button>

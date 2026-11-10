@@ -38,7 +38,7 @@ export function Hero() {
             </h1>
 
             <p className="fade-in-up mt-8 max-w-xl text-lg leading-8 text-muted [animation-delay:400ms]">
-              I build products end to end — backends, interfaces, and everything between. Currently building Veilpay.
+              I build products end to end: backends, interfaces, and everything between. Currently building Veilpay.
             </p>
 
             <div className="fade-in-up mt-10 flex flex-wrap items-center gap-3 [animation-delay:480ms]">
@@ -88,7 +88,7 @@ export function Hero() {
                 <div aria-hidden="true" className="plate-flash" />
               </div>
               <figcaption className="flex items-center justify-between border-t border-line px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-dim">
-                <span>SIG/001 — codeRED</span>
+                <span>SIG/001 · codeRED</span>
                 <span className="text-red">20.59° N / 78.96° E</span>
               </figcaption>
             </figure>

@@ -136,7 +136,7 @@ export function PageLoader() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.22, duration: 0.5 }}
                 >
-                  © 2026
+                  © {new Date().getFullYear()}
                 </motion.span>
               </div>
 
@@ -148,7 +148,7 @@ export function PageLoader() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.5 }}
                 >
-                  SIG/001 — 20.59° N / 78.96° E
+                  SIG/001 · 20.59° N / 78.96° E
                 </motion.p>
                 <motion.p
                   className="font-mono text-6xl font-medium leading-none tracking-[-0.04em] text-foreground md:text-8xl"

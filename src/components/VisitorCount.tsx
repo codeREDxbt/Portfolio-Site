@@ -22,5 +22,5 @@ export function VisitorCount() {
     };
   }, []);
 
-  return <span>{count ? count.toLocaleString() : "—"}</span>;
+  return <span>{count ? count.toLocaleString() : "…"}</span>;
 }

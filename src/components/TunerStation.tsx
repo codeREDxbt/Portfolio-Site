@@ -134,7 +134,7 @@ export function TunerStation({
                   tabIndex={active ? 0 : -1}
                   className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background transition-transform hover:-translate-y-0.5"
                 >
-                  Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
+                  Open feed ↗ <span className="sr-only">: {project.title} (opens in new tab)</span>
                 </a>
               ) : null}
               {project.caseStudy ? (
@@ -143,7 +143,7 @@ export function TunerStation({
                   tabIndex={active ? 0 : -1}
                   className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
                 >
-                  Read case file → <span className="sr-only">— {project.title}</span>
+                  Read case file → <span className="sr-only">: {project.title}</span>
                 </Link>
               ) : null}
             </div>
@@ -198,7 +198,7 @@ export function TunerStationListItem({ project }: { project: Project }) {
                 rel="noopener noreferrer"
                 className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-xs font-medium text-background"
               >
-                Open feed ↗ <span className="sr-only">— {project.title} (opens in new tab)</span>
+                Open feed ↗ <span className="sr-only">: {project.title} (opens in new tab)</span>
               </a>
             ) : null}
             {project.caseStudy ? (
@@ -206,7 +206,7 @@ export function TunerStationListItem({ project }: { project: Project }) {
                 href={`/work/${project.id}`}
                 className="inline-flex rounded-full border border-line px-5 py-2.5 text-xs font-medium text-foreground transition-colors hover:border-red"
               >
-                Read case file → <span className="sr-only">— {project.title}</span>
+                Read case file → <span className="sr-only">: {project.title}</span>
               </Link>
             ) : null}
           </div>

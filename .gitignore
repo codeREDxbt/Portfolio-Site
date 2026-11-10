@@ -38,6 +38,10 @@ build/
 tmp/
 temp/
 *.tmp
+*.done
+
+# Agent session data
+.zcode/
 
 # API keys and secrets (additional safeguard)
 *key.json

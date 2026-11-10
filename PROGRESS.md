@@ -277,6 +277,53 @@ Ops note: `next start` caches prerendered HTML in memory at boot — **always re
 
 The hero's 12-column grid carried a fixed `gap-x-8` at all widths: 11 gaps × 32px = 352px of gaps inside a ~327px content column, so the 12 `1fr` tracks clamped to zero and every `col-span-12` row became **352px wide — ~25px past the right padding** (plate measured x25→375 in a 375px clientWidth; it should be 24→351). The mark inside was centered; the *plate* wasn't. Fix: `gap-x-8` → `lg:gap-x-8` (the gaps only matter at lg, where col-8 + col-4 coexist). Verified at 390px: plate 24→351, symmetric 24px gutters. Checked the other grids — `grid-cols-2/1` with a single small gap are unaffected (the failure needs gap-total > content).
 
+## Session 5 — true chronology + constellation upgrade (Journey)
+
+### Change — the trail now runs in real build order (user-supplied timeline)
+
+The user clarified the actual build history; the site said "2025" for six projects that were really 2026 work. Corrected chronology, now driving the Journey section: **Aptos LMS (Q4 2025) → MediChainAI (Q1 2026) → Veilpay started (Q1 2026, ongoing) → Avisky client build (Apr–May 2026) → StellarPulse → PayTrack → VaultPass → FreelancePay (mid-2026) → Now (Veilpay continues)**.
+
+- `Project` gains a required `timeline: { date: "YYYY-MM", label, ongoing? }` field — `date` exists only for sorting, `label` is what renders (stays honest: "Mid-2026", never a fake exact day). `year` corrected for medichainai, stellarpulse, paytrack, vaultpass, freelancepay (2025 → 2026); every display of `year` (archive rows, hero index, tuner, case pages) inherits the fix.
+- `portfolio.ts` exports `projectsChronological` (sorted by `timeline.date`). The `projects` array stays curated display order — display order and chronology are no longer conflated.
+- `Journey.tsx` rebuilt: entries sort oldest → newest with "Now — still building Veilpay" as the terminal node (previously hardcoded first); entries carry period labels, award chips, and a pulsing "Ongoing" pill (Veilpay + Now).
+
+### Enhancement — constellation, same soul, more signal
+
+- Curved bezier arcs replace straight connectors (still draw with scroll); a signal pulse travels each arc once drawn (SMIL `animateMotion`, desynced negative begins).
+- Node grammar: featured = larger, awarded = second ring, ongoing (Veilpay, Now) = slowly rotating dashed ring; active node gets halo + pulse + title label.
+- A faint dashed **thread arcs from Veilpay's start node to "Now"** — the project that never stopped.
+- Deterministic twinkling star field (seeded pseudo-random, SSR-safe), era ruler along the bottom (`Q4 '25 · Q1 '26 · APR '26 · MID '26 · NOW`), header counter now reads `04 / 09 · APR–MAY 2026`.
+- Nodes are interactive: hover/focus reveals the title, click/Enter/Space scrolls to the entry via the Lenis-aware `scrollToTarget`; entries have anchor ids + `aria-current`.
+- Mobile: the 640-wide map scales down, so period + era labels hide below lg (active/hovered label still shows) instead of rendering as illegible noise.
+- Reduced motion: static arcs, no pulses/twinkle/rotation/pan.
+
+### Validation
+
+- `npm run lint` ✓, `npm run typecheck` ✓, `npm test` ✓ (9/9 — three new chronology guards: date format + year agreement, sorted unique dates, anchor ordering + single ongoing project), `npm run build` ✓.
+- Browser-verified at three scroll states (start / mid / end of trail): draw progression, active states, chips, thread arc, pan all render as designed.
+
+## Session 5 (cont.) — double curtain + custom controls
+
+### Change — the page now closes with a two-stage curtain chain (user request)
+
+Stack: **page curtain (hero → trail, z-20) → pinned Contact layer (z-10) → pinned Footer (z-0)**. Scrolling out of the trail lifts the curtain off a fixed, full-viewport Contact; once fully revealed, Contact itself lifts (scroll-coupled over the footer spacer's window) to uncover the pinned footer — the footer's reveal keeps its exact original pixel-accurate feel, bottom-first.
+
+- `Contact.tsx` is now the pinned middle layer: `fixed inset-x-0 bottom-0 z-10`, `min-h-screen`, measures itself into `--contact-h`; the spacer carries the `#contact` anchor (fixed elements can't be scroll targets). Content staggers in once revealed; the layer lifts via a motion value driven by `scrollY` over `[footerSpacerTop − viewportH, +footerH]`.
+- **BookingModal portals to `document.body`** — inside the fixed stacking context it would render beneath the curtain. Portal guard uses `useSyncExternalStore` (mounted) instead of a setState-in-effect (lint-clean).
+- `Footer.tsx` unchanged in behavior: fixed `z-0`, measures `--footer-h`, reveals via its spacer.
+- `page.tsx` restructured: curtain sheet → contact spacer (`#contact`) → footer spacer → Contact → Footer.
+
+### Change — custom controls (user request: "not so generic")
+
+- **DockNav "transmit key"**: hardware-bevel pill (inset hairlines + drop shadow), radar dot with a conic sweep that spins while hovered or open, label decode-scrambles between MENU and CLOSE (reuses `useDecode`), magnetic pull toward the cursor within 90px (springs, fine-pointer + full-motion only), tactile press dip. Hide-on-scroll-down / menu-open behavior untouched.
+- **Eclipse-dial theme toggle**: replaces the generic sun/moon swap — a red occulting disc drops through the signal sun on the way to light mode (total eclipse mid-transit) and rises back on the way to dark, rays rotate in for light; synced with the existing circular view-transition radiating from the button. CSS-driven via `[data-theme]`, reduced-motion safe.
+
+### Validation
+
+- `npm run lint` ✓, `npm run typecheck` ✓, `npm test` ✓ (9/9), `npm run build` ✓.
+- Browser-probed (dev server): curtain mid-reveal, full contact reveal, contact mid-lift off the footer, full footer reveal, transmit key hover, light-mode eclipse state, booking modal opening above the pinned layers — all verified in frames.
+- Ops note: killing node by name can orphan the `next-server` port listener — **kill by port** (`netstat -ano | grep :3001`) when a dev server survives; a zombie on 3001 silently served a stale build mid-session.
+
 ## Pending
 
 ### Review
